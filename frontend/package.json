@@ -1,0 +1,26 @@
+{
+  "name": "chatter-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "ajv": "^6.5.4",
+    "avataaars": "^1.2.0",
+    "axios": "^0.18.0",
+    "cpx": "^1.5.0",
+    "moment": "^2.22.2",
+    "react": "^16.5.2",
+    "react-custom-scrollbars": "^4.2.1",
+    "react-dom": "^16.5.2",
+    "react-scripts": "1.1.5",
+    "semantic-ui-css": "^2.4.0",
+    "semantic-ui-react": "^0.82.5",
+    "socket.io-client": "^2.1.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "copy": "cpx \"build/**/\" \"target/classes/META-INF/resources/webjars/frontend/\""
+  }
+}

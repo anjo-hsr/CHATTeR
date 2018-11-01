@@ -1,0 +1,168 @@
+
+<html>
+<head><title>Undertow Chat</title>
+  <script>
+    let me = {
+      name: '',
+      port: 0
+    };
+
+    let socket;
+    if (window.WebSocket) {
+      socket = new WebSocket("ws://localhost:8000/chat");
+      console.log(socket);
+
+      socket.onmessage = function (event) {
+        console.log(event);
+        const chat = document.getElementById('log');
+        chat.value += `${event.data}\n`;
+      };
+    } else {
+      alert("Your browser does not support Websockets. (Use Chrome)");
+    }
+
+    function send(content) {
+      if (!window.WebSocket) {
+        return false;
+      }
+
+      // this will have to have a 'to' for private messages
+      // implementation left as an exercise for the reader
+      const message = {
+        from: me.name,
+        content: content
+      };
+
+      if (socket.readyState == WebSocket.OPEN) {
+        socket.send(JSON.stringify(message));
+      } else {
+        alert("The socket is not open.");
+      }
+      return false;
+    }
+
+    function start() {
+      const name = document.getElementById('master-name').value;
+      const port = document.getElementById('master-ip').value;
+
+      if (name === "" || port === "") {
+        alert("Name or port undefined.");
+        return;
+      }
+
+      me = {name: name, port: port};
+
+      fetch("http://localhost:8000/start", {
+        method: 'POST',
+        body: JSON.stringify(me),
+        headers: {'Content-Type': 'application/json'}
+      })
+      .then(result => result.json())
+      .then(response => {
+        document.getElementById('log').value += `${response.message}\n`;
+        send("");
+      })
+
+    }
+
+    function join() {
+      const myName = document.getElementById('peer-name').value;
+      const myPort = document.getElementById('peer-port').value;
+      const masterName = document.getElementById('master-name').value;
+      const masterIp = document.getElementById('master-ip').value;
+
+      me = {name: myName, port: myPort};
+
+      if (myName === "" || myPort === "" || masterName === "" || masterIp === "") {
+        alert("Missing connection information");
+        return;
+      }
+
+      fetch("http://localhost:8000/join", {
+        method: 'POST',
+        body: JSON.stringify({
+          myName: myName,
+          myPort: myPort,
+          masterName: masterName,
+          masterIp: masterIp
+        }),
+        headers: {'Content-Type': 'application/json'}
+      })
+      .then(result => result.json())
+      .then(response => {
+        document.getElementById('log').value += `${response.message}\n`;
+        send("");
+      });
+    }
+
+    function addFriend(label) {
+      const name = label || document.getElementById('friend').value;
+
+      fetch("http://localhost:8000/friend", {
+        method: 'POST',
+        body: JSON.stringify({
+          me: me.name,
+          other: name
+        }),
+        headers: {'Content-Type': 'application/json'}
+      })
+      .then(result => result.json())
+      .then(response =>
+          document.getElementById('friend-list').innerHTML += `<li>${name}</li>`);
+    }
+
+    window.addEventListener("beforeunload", e => {
+      e.preventDefault();
+
+      fetch("http://localhost:8000/disconnect", {
+        method: 'POST',
+        body: JSON.stringify(me),
+        headers: {'Content-Type': 'application/json'}
+      }).then(result => console.log(result))
+
+      e.returnValue = "this is for you, chrome :-*"
+    });
+  </script>
+  <style type="text/css">
+  </style>
+</head>
+<body>
+<div class="page">
+  <div class="center" >
+    <form onsubmit="return false;" class="chatform" action="">
+      <div>
+        <label>Master Name:</label>
+        <input type="text" id="master-name">
+        <label>IP:Port:</label>
+        <input type="text" id="master-ip">
+      </div>
+      <div>
+        <button onclick="start()">Start</button>
+      </div>
+      <div>
+        <label>Peer Name</label>
+        <input type="text" id="peer-name">
+        <label>Port</label>
+        <input type="text" id="peer-port">
+        <button onclick="join()">Join</button>
+      </div>
+      <div>
+        <label>Friend Name</label>
+        <input type="text" name="friend" id="friend" onkeypress="if(event.keyCode==13){addFriend(this.form.friend.value); this.value=''}">
+        <button onclick="addFriend()">Add</button>
+      </div>
+      <div>
+        <ul id="friend-list">
+        </ul>
+      </div>
+    </form>
+    <form onsubmit="return false;" action="">
+      <textarea id="log" rows="20" cols="80"></textarea>
+      <div>
+        <input size="65" type="text" name="message" id="message" onkeypress="if(event.keyCode==13) { send(this.form.message.value); this.value='' } " />
+      </div>
+    </form>
+  </div>
+</div>
+</body>
+</html>

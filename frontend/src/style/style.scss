@@ -1,0 +1,150 @@
+$bodyXMarginSize: 1vw;
+$bodyYMarginSize: 1.5vh;
+$chatAvatarSize: 3rem;
+$deleteButtonSize: 2rem;
+$defaultBackgroundColor: rgba(#20c028, 0.03) !important;
+
+body {
+  padding: $bodyYMarginSize $bodyXMarginSize $bodyYMarginSize $bodyXMarginSize !important;
+  background: $defaultBackgroundColor;
+}
+
+.siteGrid {
+  height: (100vh - 2*$bodyYMarginSize) !important;
+}
+
+.peerOverview {
+  height: 90vh !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  padding: 0 !important;
+}
+
+.addPeer {
+  height: 10vh !important;
+}
+
+.chatAvatar {
+  width: $chatAvatarSize;
+  height: $chatAvatarSize;
+}
+
+.ui.cards {
+  margin: 0.2rem auto 0.2rem 0.5rem !important;
+  width: 90% !important;
+}
+
+.ui.card {
+  background: $defaultBackgroundColor;
+  margin: 0.7rem 0.2rem 0.7rem 0.4rem !important;
+  & > .content:first-child {
+    height: 5rem !important;
+    font-size: 1.1rem !important;
+    white-space: nowrap;
+    & > .header {
+      width: 75%;
+      overflow: hidden;
+    }
+    & > .description {
+      font-style: italic;
+      width: 80%;
+      overflow: hidden;
+    }
+  }
+}
+
+.peerAvatar {
+  .ui.card > .content > & {
+    position: absolute !important;
+    top: 0.5em;
+    right: 1rem;
+  }
+
+  &.offline {
+    filter: grayscale(100%);
+  }
+}
+
+.ui.active.transition.visible.inverted.dimmer {
+  background: $defaultBackgroundColor;
+  opacity: 0.5 !important;
+}
+
+.event.myMessage > .content {
+  text-align: right !important;
+  & .summary {
+    margin-right: 0 !important;
+  }
+  & .extra.text {
+    margin-right: 0 !important;
+    max-width: 100% !important;
+  }
+}
+
+.event.myMessage {
+  display: inline-block;
+  position: relative;
+  width: 90% !important;
+
+  & > .label {
+    position: absolute !important;
+    top: 0.5rem;
+    right: 1rem;
+  }
+}
+
+.ui.feed {
+  width: 100% !important;
+  padding: 0 3rem 0 2rem !important;
+  & .event > .content {
+    margin: 0.5rem 4rem 0.5rem 2rem !important;
+  }
+}
+
+.chatInformation {
+  height: 10vh !important;
+}
+
+.chatHistory {
+  height: 80vh !important;
+
+  & > .column {
+    padding: 0 2rem 0 1rem !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+}
+
+.chatInput {
+  height: 10vh !important;
+}
+
+.addAddress {
+  position: absolute !important;
+  bottom: 0.5rem;
+  right: 1rem;
+}
+
+.ui.mini.circular.icon.inverted.button {
+  margin: auto 1rem auto -2rem !important;
+  padding: 0 !important;
+  height: $deleteButtonSize !important;
+  width: $deleteButtonSize !important;
+  .event.myMessage > & {
+    position: absolute !important;
+    margin: auto -2rem auto 1rem !important;
+    right: 0;
+    top: 30%;
+  }
+}
+
+.ui.popup.transition.visible {
+  font-style: italic;
+}
+
+.disabled {
+  opacity: 1 !important;
+  &.field {
+    opacity: 0.5 !important;
+  }
+}
