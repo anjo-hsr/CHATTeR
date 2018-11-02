@@ -4,6 +4,9 @@ import {Grid} from 'semantic-ui-react';
 import Peers from './modules/peer/Peers';
 import ChatWindow from './modules/chat/ChatWindow';
 import {apiGet} from './helpers/apiHelpers';
+import {subscribeToServer, sendMessage} from './helpers/webSocketHelper';
+import ModalSetUsername from './modules/modal/ModalSetUsername';
+import {messageTypes} from './defaults/defaults';
 
 class App extends React.Component {
   constructor(props) {
@@ -19,9 +22,24 @@ class App extends React.Component {
       },
       chatHistory: [],
       isChatHistoryLoaded: false,
-      peers: []
+      peers: [],
+      username: undefined,
+      webSocket: null
     };
   }
+
+  componentDidMount() {
+    this.setState({webSocket: subscribeToServer()});
+  }
+
+  setUsername = username => {
+    sendMessage(this.state.webSocket, {messageType: messageTypes.setName, message: username});
+    this.setState({username});
+  };
+
+  updatePeers = () => {
+    sendMessage(this.state.webSocket, {messageType: messageTypes.getPeers, message: 'Please send peers.'});
+  };
 
   selectChatPartner = (address, name, avatar, isGroup, isOnline) => {
     this.setState({
@@ -39,12 +57,6 @@ class App extends React.Component {
     this.updateChat(address);
   };
 
-  updatePeers = () => {
-    apiGet.getPeers().then(res => {
-      this.setState({peers: JSON.parse(res.request.response)});
-    });
-  };
-
   updateChat = address => {
     apiGet.getChatHistory(address).then(res => {
       this.setState({
@@ -56,26 +68,32 @@ class App extends React.Component {
 
   render() {
     return (
-      <Grid className="siteGrid">
-        <Grid.Row columns="equal">
-          <Grid.Column className="chatPeers" width="4">
-            <Peers peers={this.state.peers} updatePeers={this.updatePeers} selecting={this.selectChatPartner} />
-          </Grid.Column>
-          <Grid.Column width="1" />
-          <Grid.Column className="chatWindow">
-            {this.state.chatPartnerSelected && (
-              <ChatWindow
-                chatPartner={this.state.chatPartner}
-                chatHistory={this.state.chatHistory}
-                isChatHistoryLoaded={this.state.isChatHistoryLoaded}
-                updateChat={this.updateChat.bind(this)}
-                updatePeers={this.updatePeers}
-              />
-            )}
-          </Grid.Column>
-          <Grid.Column width="1" />
-        </Grid.Row>
-      </Grid>
+      <div>
+        {Boolean(this.state.username) ? (
+          <Grid className="siteGrid">
+            <Grid.Row columns="equal">
+              <Grid.Column className="chatPeers" width="4">
+                <Peers peers={this.state.peers} updatePeers={this.updatePeers} selecting={this.selectChatPartner} />
+              </Grid.Column>
+              <Grid.Column width="1" />
+              <Grid.Column className="chatWindow">
+                {this.state.chatPartnerSelected && (
+                  <ChatWindow
+                    chatPartner={this.state.chatPartner}
+                    chatHistory={this.state.chatHistory}
+                    isChatHistoryLoaded={this.state.isChatHistoryLoaded}
+                    updateChat={this.updateChat.bind(this)}
+                    updatePeers={this.updatePeers}
+                  />
+                )}
+              </Grid.Column>
+              <Grid.Column width="1" />
+            </Grid.Row>
+          </Grid>
+        ) : (
+          <ModalSetUsername username={this.state.username} setUsername={this.setUsername} />
+        )}
+      </div>
     );
   }
 }
