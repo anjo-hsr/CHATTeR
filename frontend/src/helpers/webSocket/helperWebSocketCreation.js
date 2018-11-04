@@ -1,38 +1,56 @@
-import Sockette from 'sockette';
+import {webSocketOptions} from '../../defaults/defaults';
+import {actionTypes} from '../../redux/actions/actions';
+import {actionChats, actionMessages} from '../../redux/actions/actions';
 
-export default function subscribeToServer(name) {
-  return new Sockette(`ws://localhost:8000/chat`, {
-    timeout: 5e3,
-    maxAttempts: 10,
-    onopen: event => handleOpening(event),
-    onmessage: event => handleReceiving(event),
-    onreconnect: event => handleReconnecting(event),
-    onmaximum: event => handleMaximum(event),
-    onclose: event => handleClosing(event),
-    onerror: event => handleError(event)
-  });
-}
+export default function subscribeToServer(dispatch, username) {
+  const socket = new WebSocket(webSocketOptions.baseString);
 
-function handleOpening(event) {
-  console.log('Connected!', event);
-}
+  socket.onopen = () => {
+    socket.send(
+      JSON.stringify({
+        type: actionTypes.CHANGE_NAME,
+        username
+      })
+    );
+  };
 
-function handleReceiving(event) {
-  console.log('Received:', event);
-}
+  socket.onmessage = event => {
+    const data = JSON.parse(event.data);
+    switch (data.type) {
+      case actionTypes.ADD_MESSAGE: {
+        dispatch(
+          actionMessages.addMessage({
+            chatId: data.id,
+            message: {date: data.date, author: data.author, message: data.message}
+          })
+        );
+        break;
+      }
+      case actionTypes.ADD_MESSAGES: {
+        dispatch(actionMessages.addMessages(data.messages));
+        break;
+      }
+      case actionTypes.ADD_CHAT: {
+        dispatch(actionChats.addChat(data.id, data.name, data.peers, data.lastMessage));
+        break;
+      }
+      case actionTypes.ADD_CHATS: {
+        dispatch(actionChats.addChats(data.chats));
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+  };
 
-function handleReconnecting(event) {
-  console.log('Reconnecting...:', event);
-}
+  socket.onclose = () => {
+    socket.send(
+      JSON.stringify({
+        type: actionTypes.LOGOUT
+      })
+    );
+  };
 
-function handleMaximum(event) {
-  console.log('Stop Attempting!:', event);
-}
-
-function handleClosing(event) {
-  console.log('Closed!:', event);
-}
-
-function handleError(event) {
-  console.log('Error!:', event);
+  return socket;
 }

@@ -31,6 +31,7 @@ export default class ModalSetUsername extends React.Component {
                     name="name"
                     value={this.state.name}
                     onChange={this.handleChange}
+                    autoFocus
                     required
                   />
                 </Grid.Column>

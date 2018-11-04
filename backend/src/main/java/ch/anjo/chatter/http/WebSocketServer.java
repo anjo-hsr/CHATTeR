@@ -5,15 +5,16 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.javalin.Javalin;
 import io.javalin.websocket.WsSession;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class WebSocketServer {
 
   private static final int PORT = 8000;
   private static int sessionCounter = 1;
-  private static Map<WsSession, String> sessionUsernameMap = new ConcurrentHashMap<>();
-
+  private static Map<String, WsSession> usernameSessionMap = new ConcurrentHashMap<>();
 
   public static void main(String[] args) {
     runWebSocketServer();
@@ -29,7 +30,8 @@ public class WebSocketServer {
               ws.onConnect(
                   session -> {
                     String username = "UserID" + sessionCounter++;
-                    sessionUsernameMap.put(session, username);
+                    usernameSessionMap.put(username, session);
+                    printPeers();
                     broadcastPeers();
                   });
               ws.onMessage(
@@ -38,16 +40,12 @@ public class WebSocketServer {
                     Message message = gson.fromJson(JsonMessage, Message.class);
 
                     switch (message.messageType) {
-                      case "chat":
-                        broadcastMessage(sessionUsernameMap.get(session), message.message);
+                      case "ADD_MESSAGE":
+                        broadcastMessage(getUsername(session), message.message);
                         break;
-                      case "getPeers":
-                        sendPeers(session);
-                        break;
-                      case "setName":
-                        sessionUsernameMap.replace(session, message.message);
+                      case "CHANGE_NAME":
+                        usernameSessionMap.put(message.message, session);
                         broadcastPeers();
-                        System.out.println(sessionUsernameMap.get(session) + " joined CHATTeR");
                         break;
                     }
                   });
@@ -55,30 +53,48 @@ public class WebSocketServer {
         .start(PORT);
   }
 
-  private static void sendPeers(WsSession reciever) {
-    JsonObject message = new JsonObject();
-    JsonArray sessions = new JsonArray();
-    sessionUsernameMap
+  private static String getUsername(WsSession session) {
+    Optional<String> possibleUsername = usernameSessionMap
         .keySet()
         .stream()
-        .filter(WsSession::isOpen)
-        .forEach(session -> {
-          if (!session.equals(reciever)) {
-            sessions.add(sessionUsernameMap.get(session));
-          }
-        });
-    message.addProperty("messageType", "sendPeers");
-    message.add("peers", sessions);
-    sendMessage("Server", reciever, message.toString());
+        .filter(username -> usernameSessionMap.get(username).equals(session))
+        .findFirst();
+    return possibleUsername.orElse("");
   }
 
-  private static void sendMessage(String sender, WsSession reciever, String messageString) {
-    reciever.send(messageString);
+  private static void printPeers() {
+    for (String username : usernameSessionMap.keySet()) {
+      System.out.println(username + " at -> " + usernameSessionMap.get(username).toString());
+    }
+  }
+
+  private static void sendPeers(String receiver) {
+    JsonObject message = new JsonObject();
+    JsonArray sessions = new JsonArray();
+    usernameSessionMap
+        .keySet()
+        .forEach(
+            username -> {
+              WsSession wsSession = usernameSessionMap.get(username);
+              if (wsSession.isOpen()) {
+                if (!wsSession.equals(usernameSessionMap.get(receiver))) {
+                  wsSession.send(message.toString());
+                }
+
+              }
+            });
+    message.addProperty("messageType", "sendPeers");
+    message.add("peers", sessions);
+    sendMessage(receiver, message.toString());
+  }
+
+  private static void sendMessage(String receiver, String messageString) {
+    usernameSessionMap.get(receiver).send(messageString);
   }
 
   private static void broadcastPeers() {
-    for (WsSession reciever : sessionUsernameMap.keySet()) {
-      sendPeers(reciever);
+    for (String username : usernameSessionMap.keySet()) {
+      sendPeers(username);
     }
   }
 
@@ -88,13 +104,14 @@ public class WebSocketServer {
     message.addProperty("sender", sender);
     message.addProperty("message", messageString);
 
-    sessionUsernameMap
+    usernameSessionMap
         .keySet()
-        .stream()
-        .filter(WsSession::isOpen)
         .forEach(
-            session -> {
-              session.send(message.toString());
+            username -> {
+              WsSession wsSession = usernameSessionMap.get(username);
+              if (wsSession.isOpen()) {
+                wsSession.send(message.toString());
+              }
             });
   }
 

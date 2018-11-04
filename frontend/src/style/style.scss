@@ -13,14 +13,14 @@ body {
   height: (100vh - 2*$bodyYMarginSize) !important;
 }
 
-.peerOverview {
+.chatOverview {
   height: 90vh !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
   padding: 0 !important;
 }
 
-.addPeer {
+.addChat {
   height: 10vh !important;
 }
 
@@ -53,7 +53,7 @@ body {
   }
 }
 
-.peerAvatar {
+.chatAvatar {
   .ui.card > .content > & {
     position: absolute !important;
     top: 0.5em;

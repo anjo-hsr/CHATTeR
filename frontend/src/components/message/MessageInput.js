@@ -1,9 +1,9 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import {Form, Grid} from 'semantic-ui-react';
 
-import {apiPost} from '../../helpers/apiHelpers';
-
-export default class ChatInput extends React.Component {
+export default class MessageInput extends React.Component {
   constructor(props) {
     super(props);
 
@@ -16,18 +16,13 @@ export default class ChatInput extends React.Component {
     this.setState({message: target.value});
   };
 
-  handleFormSubmit = () => {
-    apiPost.postNewMessage(this.props.chatPartner.address, this.state.message);
-    setTimeout(() => {
-      this.setState({message: ''});
-      this.props.updateChat(this.props.chatPartner.address);
-      this.props.updatePeers();
-    }, 500);
-  };
-
   render() {
     return (
-      <Form onSubmit={this.handleFormSubmit}>
+      <Form
+        onSubmit={() => {
+          this.props.dispatch(this.state.message);
+        }}
+      >
         <Grid>
           <Grid.Row columns="equal">
             <Grid.Column>
@@ -52,3 +47,7 @@ export default class ChatInput extends React.Component {
     );
   }
 }
+
+MessageInput.PropTypes = {
+  dispatch: PropTypes.func.isRequired
+};

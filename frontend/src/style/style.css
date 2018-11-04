@@ -5,13 +5,13 @@ body {
 .siteGrid {
   height: 97vh !important; }
 
-.peerOverview {
+.chatOverview {
   height: 90vh !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
   padding: 0 !important; }
 
-.addPeer {
+.addChat {
   height: 10vh !important; }
 
 .chatAvatar {
@@ -37,11 +37,11 @@ body {
       width: 80%;
       overflow: hidden; }
 
-.ui.card > .content > .peerAvatar {
+.ui.card > .content > .chatAvatar {
   position: absolute !important;
   top: 0.5em;
   right: 1rem; }
-.peerAvatar.offline {
+.chatAvatar.offline {
   filter: grayscale(100%); }
 
 .ui.active.transition.visible.inverted.dimmer {

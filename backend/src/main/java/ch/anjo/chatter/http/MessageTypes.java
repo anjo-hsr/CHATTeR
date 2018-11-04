@@ -1,5 +1,6 @@
 package ch.anjo.chatter.http;
 
 public enum MessageTypes {
-  chat, getPeers, setName;
+  GET_MESSAGES,
+  ADD_MESSAGE
 }

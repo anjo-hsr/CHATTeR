@@ -1,8 +1,6 @@
 import React from 'react';
 import {Button, Form, Grid, Modal} from 'semantic-ui-react';
 
-import {apiPost} from '../../helpers/apiHelpers';
-
 export default class ModalAddAddress extends React.Component {
   constructor(props) {
     super(props);
@@ -35,13 +33,13 @@ export default class ModalAddAddress extends React.Component {
       >
         <Modal.Header content="Add new contact" />
         <Modal.Content>
-          <Form onSubmit={apiPost.postNewPeers.bind(this)}>
+          <Form onSubmit={() => ({})}>
             <Grid>
               <Grid.Row columns="equal">
                 <Grid.Column>
                   <Form.Input
                     fluid
-                    label="Name of Peer"
+                    label="Name of Chat"
                     placeholder="Enter Name"
                     type="text"
                     name="name"
@@ -55,7 +53,7 @@ export default class ModalAddAddress extends React.Component {
                 <Grid.Column>
                   <Form.Input
                     fluid
-                    label="Address of Peer"
+                    label="Address of Chat"
                     placeholder="Enter Address"
                     type="text"
                     name="address"
