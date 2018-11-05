@@ -1,5 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {Button, Form, Grid, Modal} from 'semantic-ui-react';
+
+import Select from 'react-select';
 
 export default class ModalAddAddress extends React.Component {
   constructor(props) {
@@ -7,13 +10,23 @@ export default class ModalAddAddress extends React.Component {
 
     this.state = {
       name: '',
-      address: '',
+      selectedPeers: null,
       open: false
     };
   }
 
-  handleChange = (event, target) => {
+  handleTextChange = (event, target) => {
     this.setState({[target.name]: target.value});
+  };
+
+  handleSelectChange = selectedPeers => {
+    this.setState({selectedPeers});
+  };
+
+  getRandomId = () => {
+    const MIN_VALUE = 100;
+    const MAX_VALUE = 100000;
+    return Math.floor(Math.random() * (MAX_VALUE - MIN_VALUE + 1)) + MIN_VALUE;
   };
 
   render() {
@@ -33,7 +46,16 @@ export default class ModalAddAddress extends React.Component {
       >
         <Modal.Header content="Add new contact" />
         <Modal.Content>
-          <Form onSubmit={() => ({})}>
+          <Form
+            onSubmit={() => {
+              this.props.addChat({
+                id: this.getRandomId(),
+                name: this.state.name,
+                peers: this.state.selectedPeers.map(peers => peers.label).concat(this.props.self)
+              });
+              this.setState({open: false});
+            }}
+          >
             <Grid>
               <Grid.Row columns="equal">
                 <Grid.Column>
@@ -44,24 +66,20 @@ export default class ModalAddAddress extends React.Component {
                     type="text"
                     name="name"
                     value={this.state.name}
-                    onChange={this.handleChange}
+                    onChange={this.handleTextChange}
                     required
+                  />
+                  <Select
+                    value={this.state.selectedPeers}
+                    onChange={this.handleSelectChange}
+                    options={this.props.peers}
+                    placeholder="Select Peers"
+                    isMulti
                   />
                 </Grid.Column>
               </Grid.Row>
               <Grid.Row columns="equal">
-                <Grid.Column>
-                  <Form.Input
-                    fluid
-                    label="Address of Chat"
-                    placeholder="Enter Address"
-                    type="text"
-                    name="address"
-                    value={this.state.address}
-                    onChange={this.handleChange}
-                    required
-                  />
-                </Grid.Column>
+                <Grid.Column />
               </Grid.Row>
               <Grid.Row columns="equal">
                 <Grid.Column />
@@ -76,3 +94,8 @@ export default class ModalAddAddress extends React.Component {
     );
   }
 }
+
+ModalAddAddress.PropTypes = {
+  addChat: PropTypes.func.isRequired,
+  peers: PropTypes.arrayOf(PropTypes.string).isRequired
+};

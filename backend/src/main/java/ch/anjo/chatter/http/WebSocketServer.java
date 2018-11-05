@@ -1,118 +1,61 @@
 package ch.anjo.chatter.http;
 
+import ch.anjo.chatter.http.handlers.SessionHandler;
+import ch.anjo.chatter.http.handlers.outbound.OutboundHandler;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import io.javalin.Javalin;
-import io.javalin.websocket.WsSession;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class WebSocketServer {
 
   private static final int PORT = 8000;
-  private static int sessionCounter = 1;
-  private static Map<String, WsSession> usernameSessionMap = new ConcurrentHashMap<>();
 
   public static void main(String[] args) {
-    runWebSocketServer();
+    SessionHandler sessionHandler = new SessionHandler();
+    runWebSocketServer(sessionHandler);
   }
 
-  private static void runWebSocketServer() {
-    Javalin.create()
-        .enableStaticFiles("/frontend")
-        .enableCorsForOrigin("*")
-        .ws(
-            "/chat",
-            ws -> {
-              ws.onConnect(
-                  session -> {
-                    String username = "UserID" + sessionCounter++;
-                    usernameSessionMap.put(username, session);
-                    printPeers();
-                    broadcastPeers();
-                  });
-              ws.onMessage(
-                  (session, JsonMessage) -> {
-                    Gson gson = new Gson();
-                    Message message = gson.fromJson(JsonMessage, Message.class);
+  private static void runWebSocketServer(SessionHandler sessionHandler) {
+    try {
+      Javalin.create()
+          .enableStaticFiles("/frontend")
+          .enableCorsForOrigin("*")
+          .ws(
+              "/chat",
+              ws -> {
+                ws.onConnect(session -> {
+                  Optional<String> sessionNameOptional = Optional.of(session.queryParam("username"));
+                  sessionHandler.saveSession(sessionNameOptional.orElse(""), session);
+                  OutboundHandler.broadcastPeers(sessionHandler, session);
+                });
+                ws.onMessage(
+                    (session, JsonMessage) -> {
+                      Gson gson = new Gson();
+                      System.out.println(JsonMessage);
+                      Message message = gson.fromJson(JsonMessage, Message.class);
 
-                    switch (message.messageType) {
-                      case "ADD_MESSAGE":
-                        broadcastMessage(getUsername(session), message.message);
-                        break;
-                      case "CHANGE_NAME":
-                        usernameSessionMap.put(message.message, session);
-                        broadcastPeers();
-                        break;
-                    }
-                  });
-            })
-        .start(PORT);
-  }
-
-  private static String getUsername(WsSession session) {
-    Optional<String> possibleUsername = usernameSessionMap
-        .keySet()
-        .stream()
-        .filter(username -> usernameSessionMap.get(username).equals(session))
-        .findFirst();
-    return possibleUsername.orElse("");
-  }
-
-  private static void printPeers() {
-    for (String username : usernameSessionMap.keySet()) {
-      System.out.println(username + " at -> " + usernameSessionMap.get(username).toString());
+                      switch (message.type) {
+                        case "ADD_MESSAGE":
+                          OutboundHandler.broadcastMessage(
+                              sessionHandler,
+                              sessionHandler.getSessionName(session),
+                              message.message);
+                          break;
+                        case "SET_USERNAME":
+                          sessionHandler.changeName(message.username, session);
+                          OutboundHandler.broadcastPeers(sessionHandler);
+                          sessionHandler.printSession(session);
+                          break;
+                        case "SET_CONNECTION":
+                          System.out.println("Connection etablished :)");
+                      }
+                    });
+              })
+          .start(PORT);
+    } catch (Exception e) {
+      System.out.println("Exception");
+      //Jap, empty catch block.
     }
-  }
-
-  private static void sendPeers(String receiver) {
-    JsonObject message = new JsonObject();
-    JsonArray sessions = new JsonArray();
-    usernameSessionMap
-        .keySet()
-        .forEach(
-            username -> {
-              WsSession wsSession = usernameSessionMap.get(username);
-              if (wsSession.isOpen()) {
-                if (!wsSession.equals(usernameSessionMap.get(receiver))) {
-                  wsSession.send(message.toString());
-                }
-
-              }
-            });
-    message.addProperty("messageType", "sendPeers");
-    message.add("peers", sessions);
-    sendMessage(receiver, message.toString());
-  }
-
-  private static void sendMessage(String receiver, String messageString) {
-    usernameSessionMap.get(receiver).send(messageString);
-  }
-
-  private static void broadcastPeers() {
-    for (String username : usernameSessionMap.keySet()) {
-      sendPeers(username);
-    }
-  }
-
-  private static void broadcastMessage(String sender, String messageString) {
-    JsonObject message = new JsonObject();
-    message.addProperty("messageType", "broadcast");
-    message.addProperty("sender", sender);
-    message.addProperty("message", messageString);
-
-    usernameSessionMap
-        .keySet()
-        .forEach(
-            username -> {
-              WsSession wsSession = usernameSessionMap.get(username);
-              if (wsSession.isOpen()) {
-                wsSession.send(message.toString());
-              }
-            });
   }
 
   // this is the client control channel over http. Instead of blocking handlers, these

@@ -1,20 +1,14 @@
 import {actionTypes} from '../actions/actions';
 
-export default function reducer(state = [], action) {
+export default function reducer(reduxStore = {}, action) {
   switch (action.type) {
+    case actionTypes.CHANGE_CHAT:
     case actionTypes.ADD_CHAT: {
-      return state.concat([
-        {
-          id: action.id,
-          name: action.name,
-          peers: action.peers,
-          lastMessage: action.lastMessage
-        }
-      ]);
+      return concatChats(reduxStore, action.chatObject);
     }
 
     case actionTypes.ADD_CHATS: {
-      return state.concat(
+      return reduxStore.concat(
         action.chats.map(chat => {
           return {
             id: chat.id,
@@ -25,6 +19,17 @@ export default function reducer(state = [], action) {
     }
 
     default:
-      return state;
+      return reduxStore;
   }
 }
+
+const concatChats = (originalStore, chatObject) => {
+  let store = {...originalStore};
+  let chat = store[chatObject.id];
+  if (Boolean(chat)) {
+    store[chatObject.id] = chatObject.chat;
+  } else {
+    store[chatObject.id] = chatObject.chat;
+  }
+  return store;
+};

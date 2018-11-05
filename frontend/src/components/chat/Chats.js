@@ -1,10 +1,11 @@
 import React from 'react';
-import {Card, Grid} from 'semantic-ui-react';
-import {Scrollbars} from 'react-custom-scrollbars';
 import PropTypes from 'prop-types';
 
-import {ChatCard} from '../../containers/ChatCard';
-import ModalAddAddress from '../modal/ModalAddAddress';
+import {Card, Grid} from 'semantic-ui-react';
+import {Scrollbars} from 'react-custom-scrollbars';
+
+import {ChatCard} from '../../containers/chat/ChatCard';
+import {ModalAddChat} from '../../containers/modal/ModalAddChat';
 import {numbers} from '../../defaults/defaults';
 
 export default class Chats extends React.Component {
@@ -14,15 +15,15 @@ export default class Chats extends React.Component {
         <Grid.Row className="chatOverview">
           <Scrollbars autoHide autoHideTimeout={numbers.autoHideTimeout} autoHideDuration={numbers.autoHideDuration}>
             <Card.Group>
-              {this.props.chats.map(chat => (
-                <ChatCard key={chat.id} chat={chat} />
-              ))}
+              {this.props.keys.map(key => {
+                return <ChatCard key={key} chatKey={key} chat={this.props.chats[key]} />;
+              })}
             </Card.Group>
           </Scrollbars>
         </Grid.Row>
         <Grid.Row className="addChat">
           <Grid.Column verticalAlign="bottom" textAlign="right">
-            <ModalAddAddress />
+            <ModalAddChat />
           </Grid.Column>
         </Grid.Row>
       </Grid>
@@ -30,17 +31,12 @@ export default class Chats extends React.Component {
   }
 }
 
-Chats.propTypes = {
-  chats: PropTypes.arrayOf(
+Chats.PropTypes = {
+  keys: PropTypes.arrayOf(PropTypes.string).isRequired,
+  chats: PropTypes.objectOf(
     PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      name: PropTypes.string,
-      peers: PropTypes.arrayOf(
-        PropTypes.shape({
-          name: PropTypes.string.isRequired
-        })
-      ).isRequired,
-      lastMessage: PropTypes.string.isRequired
+      name: PropTypes.string.isRequired,
+      peers: PropTypes.arrayOf(PropTypes.string).isRequired
     }).isRequired
   ).isRequired
 };

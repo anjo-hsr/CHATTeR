@@ -1,31 +1,31 @@
 import {actionTypes} from '../actions/actions';
 
-export default function reducer(state = {}, action) {
+export default function reducer(reduxStore = {}, action) {
   switch (action.type) {
     case actionTypes.ADD_MESSAGE: {
-      return concatMessages(state, action.messageObject);
+      return concatMessages(reduxStore, action.messageObject);
     }
 
     case actionTypes.ADD_MESSAGES: {
       return action.messageObjects.reduce((stateCopy, messageObject) => {
         return concatMessages(stateCopy, messageObject);
-      }, state);
+      }, reduxStore);
     }
 
     default:
-      return state;
+      return reduxStore;
   }
 }
 
-const concatMessages = (originalState, messageObject) => {
-  let state = {...originalState};
-  let chat = state[messageObject.chatId];
+const concatMessages = (originalStore, messageObject) => {
+  let store = {...originalStore};
+  let chat = store[messageObject.chatId];
   if (Boolean(chat)) {
-    state[messageObject.chatId] = sortArray(chat.messages, messageObject.message);
+    store[messageObject.chatId] = sortArray(chat.messages, messageObject.message);
   } else {
-    state[messageObject.chatId] = [messageObject.message];
+    store[messageObject.chatId] = [messageObject.message];
   }
-  return state;
+  return store;
 };
 
 const sortArray = (array, newValue) => {

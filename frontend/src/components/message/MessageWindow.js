@@ -1,37 +1,30 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import {Scrollbars} from 'react-custom-scrollbars';
 import {Grid, Header, Image} from 'semantic-ui-react';
 
-import {MessageHistory} from '../../containers/MessageHistory';
-import {MessageInput} from '../../containers/MessageInput';
-import {avatarBuilder} from '../../helpers/avatarHelpers';
-import Anonymous from '../../media/anonymous.png';
+import {ModalChangeChat} from '../../containers/modal/ModalChangeChat';
+import {MessageHistory} from '../../containers/message/MessageHistory';
+import {MessageInput} from '../../containers/message/MessageInput';
 import {numbers} from '../../defaults/defaults';
+
+import Anonymous from '../../media/anonymous.png';
 import AnonymousGroup from '../../media/anonymousGroup.png';
-import PropTypes from 'prop-types';
 
 export default class MessageWindow extends React.Component {
   render() {
-    const chatPartner = this.props.chatPartner;
-
     return (
       <Grid>
-        <div>{'Hallo' + this.props.selectedChat}</div>
         <Grid.Row columns="equal" className="chatInformation">
           <Grid.Column width="2">
-            <div className={'chatAvatar ' + (chatPartner.isOnline ? 'online' : 'offline')}>
-              {Boolean(chatPartner.avatar) ? (
-                <div>{avatarBuilder.getOtherAvatar(chatPartner.avatar)}</div>
-              ) : (
-                <Image src={chatPartner.isGroup ? AnonymousGroup : Anonymous} />
-              )}
-            </div>
+            <Image src={this.props.isGroup ? AnonymousGroup : Anonymous} />
           </Grid.Column>
           <Grid.Column verticalAlign="middle">
-            <Header>
-              {'Chat with ' + chatPartner.name}
-              {!chatPartner.isOnline && <i> - currently offline</i>}
-            </Header>
+            <Header>{'Chat with ' + this.props.chatName}</Header>
+          </Grid.Column>
+          <Grid.Column width="2">
+            <ModalChangeChat />
           </Grid.Column>
         </Grid.Row>
         <Grid.Row className="chatHistory" columns="equal">
@@ -52,5 +45,14 @@ export default class MessageWindow extends React.Component {
 }
 
 MessageWindow.propTypes = {
-  selectedChat: PropTypes.number.isRequired
+  selectedChat: PropTypes.string.isRequired,
+  chatName: PropTypes.string.isRequired,
+  chatPeers: PropTypes.array.isRequired,
+  messages: PropTypes.arrayOf(
+    PropTypes.shape({
+      date: PropTypes.string.isRequired,
+      author: PropTypes.string.isRequired,
+      message: PropTypes.string.isRequired
+    })
+  )
 };

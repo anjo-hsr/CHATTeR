@@ -1,18 +1,10 @@
 import {webSocketOptions} from '../../defaults/defaults';
 import {actionTypes} from '../../redux/actions/actions';
 import {actionChats, actionMessages} from '../../redux/actions/actions';
+import actionPeers from '../../redux/actions/actionPeers';
 
 export default function subscribeToServer(dispatch, username) {
-  const socket = new WebSocket(webSocketOptions.baseString);
-
-  socket.onopen = () => {
-    socket.send(
-      JSON.stringify({
-        type: actionTypes.CHANGE_NAME,
-        username
-      })
-    );
-  };
+  const socket = new WebSocket(`${webSocketOptions.baseString}?username=${username}`);
 
   socket.onmessage = event => {
     const data = JSON.parse(event.data);
@@ -31,12 +23,15 @@ export default function subscribeToServer(dispatch, username) {
         break;
       }
       case actionTypes.ADD_CHAT: {
-        dispatch(actionChats.addChat(data.id, data.name, data.peers, data.lastMessage));
+        dispatch(actionChats.addChat(data.id, data.name, data.peers));
         break;
       }
       case actionTypes.ADD_CHATS: {
         dispatch(actionChats.addChats(data.chats));
         break;
+      }
+      case actionTypes.ADD_PEERS: {
+        dispatch(actionPeers.addPeers(data.peers));
       }
       default: {
         break;
