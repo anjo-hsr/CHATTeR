@@ -19,18 +19,18 @@ export default function reducer(reduxStore = {}, action) {
 
 const concatMessages = (originalStore, messageObject) => {
   let store = {...originalStore};
-  let chat = store[messageObject.chatId];
-  if (Boolean(chat)) {
-    store[messageObject.chatId] = sortArray(chat.messages, messageObject.message);
+  let chatArray = store[messageObject.chatId];
+  if (Boolean(chatArray)) {
+    store[messageObject.chatId] = addMessage(chatArray, messageObject.message);
   } else {
     store[messageObject.chatId] = [messageObject.message];
   }
   return store;
 };
 
-const sortArray = (array, newValue) => {
-  array.concat(newValue);
-  array.sort((a, b) => {
-    return a.date - b.date;
+const addMessage = (array, newElement) => {
+  array.push(newElement);
+  return array.sort((element1, element2) => {
+    return new Date(element1.date) > new Date(element2.date) ? 1 : -1;
   });
 };

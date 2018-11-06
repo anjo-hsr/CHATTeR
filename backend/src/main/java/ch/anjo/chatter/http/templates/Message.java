@@ -1,6 +1,6 @@
-package ch.anjo.chatter.http;
+package ch.anjo.chatter.http.templates;
 
-class Message {
+public class Message {
   public String type;
   public String message;
   public String username;

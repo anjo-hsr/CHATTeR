@@ -27,6 +27,13 @@ export default {
     };
   },
 
+  deleteChat(id) {
+    return {
+      type: types.DELETE_CHAT,
+      id
+    };
+  },
+
   addChats(chats) {
     return {
       type: types.ADD_CHATS,

@@ -1,17 +1,18 @@
 package ch.anjo.chatter.http;
 
+import ch.anjo.chatter.http.handlers.InboundHandler;
 import ch.anjo.chatter.http.handlers.SessionHandler;
-import ch.anjo.chatter.http.handlers.outbound.OutboundHandler;
+import ch.anjo.chatter.http.templates.Message;
 import com.google.gson.Gson;
 import io.javalin.Javalin;
-import java.util.Optional;
 
 public class WebSocketServer {
 
   private static final int PORT = 8000;
 
   public static void main(String[] args) {
-    SessionHandler sessionHandler = new SessionHandler();
+    SessionHandler sessionHandler = new SessionHandler(null, "");
+    WebSocketServer server = new WebSocketServer();
     runWebSocketServer(sessionHandler);
   }
 
@@ -24,31 +25,15 @@ public class WebSocketServer {
               "/chat",
               ws -> {
                 ws.onConnect(session -> {
-                  Optional<String> sessionNameOptional = Optional.of(session.queryParam("username"));
-                  sessionHandler.saveSession(sessionNameOptional.orElse(""), session);
-                  OutboundHandler.broadcastPeers(sessionHandler, session);
+                  InboundHandler.handleSession(sessionHandler, session);
+                  sessionHandler.printSession();
                 });
                 ws.onMessage(
                     (session, JsonMessage) -> {
                       Gson gson = new Gson();
-                      System.out.println(JsonMessage);
                       Message message = gson.fromJson(JsonMessage, Message.class);
 
-                      switch (message.type) {
-                        case "ADD_MESSAGE":
-                          OutboundHandler.broadcastMessage(
-                              sessionHandler,
-                              sessionHandler.getSessionName(session),
-                              message.message);
-                          break;
-                        case "SET_USERNAME":
-                          sessionHandler.changeName(message.username, session);
-                          OutboundHandler.broadcastPeers(sessionHandler);
-                          sessionHandler.printSession(session);
-                          break;
-                        case "SET_CONNECTION":
-                          System.out.println("Connection etablished :)");
-                      }
+                      InboundHandler.handleMessageTypes(sessionHandler, message);
                     });
               })
           .start(PORT);

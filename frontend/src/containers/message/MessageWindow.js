@@ -8,7 +8,7 @@ export const MessageWindow = connect(
     if (Boolean(chat)) {
       return {
         selectedChat: reduxStore.state.selectedChat,
-        isGroup: chat.peers.length > 1,
+        isGroup: chat.peers.length > 2,
         chatName: chat.name,
         chatPeers: chat.peers
       };

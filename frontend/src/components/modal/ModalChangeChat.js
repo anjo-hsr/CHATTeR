@@ -89,9 +89,19 @@ export default class ModalChangeChat extends React.Component {
   }
 }
 
-ModalChangeChat.PropTypes = {
+ModalChangeChat.propTypes = {
   changeChat: PropTypes.func.isRequired,
+  peers: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      value: PropTypes.string.isRequired
+    })
+  ).isRequired,
   selectedChat: PropTypes.string.isRequired,
-  selectedPeers: PropTypes.arrayOf(PropTypes.string).isRequired,
-  peers: PropTypes.arrayOf(PropTypes.string).isRequired
+  selectedPeers: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      value: PropTypes.string.isRequired
+    })
+  ).isRequired
 };

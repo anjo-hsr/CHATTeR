@@ -7,6 +7,10 @@ export default function reducer(reduxStore = {}, action) {
       return concatChats(reduxStore, action.chatObject);
     }
 
+    case actionTypes.DELETE_CHAT: {
+      return removeChat(reduxStore, action.id);
+    }
+
     case actionTypes.ADD_CHATS: {
       return reduxStore.concat(
         action.chats.map(chat => {
@@ -32,4 +36,14 @@ const concatChats = (originalStore, chatObject) => {
     store[chatObject.id] = chatObject.chat;
   }
   return store;
+};
+
+const removeChat = (originalState, id) => {
+  let store = {...originalState};
+  return Object.keys(store).reduce((newStore, key) => {
+    if (key !== id) {
+      newStore[key] = store[key];
+    }
+    return newStore;
+  }, {});
 };

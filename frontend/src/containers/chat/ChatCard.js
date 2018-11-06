@@ -1,10 +1,14 @@
-import {actionState} from '../../redux/actions/actions';
+import {actionChats, actionState} from '../../redux/actions/actions';
 import connect from 'react-redux/es/connect/connect';
 import ChatCardComponent from '../../components/chat/ChatCard';
 
-const selectChat = dispatch => ({
+const mapStateToProps = dispatch => ({
   selectChat: chatId => {
     dispatch(actionState.selectChat(chatId));
+  },
+  deleteChat: chatId => {
+    dispatch(actionState.selectChat(null));
+    dispatch(actionChats.deleteChat(chatId));
   }
 });
 
@@ -14,5 +18,5 @@ export const ChatCard = connect(
       self: reduxStore.state.username
     };
   },
-  selectChat
+  mapStateToProps
 )(ChatCardComponent);

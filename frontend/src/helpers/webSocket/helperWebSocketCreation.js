@@ -26,12 +26,9 @@ export default function subscribeToServer(dispatch, username) {
         dispatch(actionChats.addChat(data.id, data.name, data.peers));
         break;
       }
-      case actionTypes.ADD_CHATS: {
-        dispatch(actionChats.addChats(data.chats));
-        break;
-      }
       case actionTypes.ADD_PEERS: {
-        dispatch(actionPeers.addPeers(data.peers));
+        dispatch(actionPeers.addPeers(JSON.parse(data.peers)));
+        break;
       }
       default: {
         break;

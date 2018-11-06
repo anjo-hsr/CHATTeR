@@ -20,7 +20,12 @@ export default class MessageInput extends React.Component {
     return (
       <Form
         onSubmit={() => {
-          this.props.addMessage(this.props.chatId, {date: new Date(), author: this.props.username, message:this.state.message});
+          this.props.addMessage(this.props.chatId, {
+            date: new Date(),
+            author: this.props.username,
+            message: this.state.message
+          });
+          this.setState({message: ''});
         }}
       >
         <Grid>
@@ -29,9 +34,7 @@ export default class MessageInput extends React.Component {
               <Form.Input
                 fluid
                 label="New message"
-                /*
-                autoFocus={this.props.chatPartner.isOnline}
-                disabled={!this.props.chatPartner.isOnline}*/
+                autoFocus
                 placeholder="Enter Message"
                 type="text"
                 value={this.state.message}
@@ -40,7 +43,7 @@ export default class MessageInput extends React.Component {
               />
             </Grid.Column>
             <Grid.Column width="2" verticalAlign="bottom">
-              <Form.Button className={'' /*this.props.chatPartner.isOnline ? '' : 'disabled'*/} content="Send" />
+              <Form.Button content="Send" />
             </Grid.Column>
           </Grid.Row>
         </Grid>
@@ -49,7 +52,7 @@ export default class MessageInput extends React.Component {
   }
 }
 
-MessageInput.PropTypes = {
+MessageInput.propTypes = {
   chatId: PropTypes.string.isRequired,
   addMessage: PropTypes.func.isRequired
 };

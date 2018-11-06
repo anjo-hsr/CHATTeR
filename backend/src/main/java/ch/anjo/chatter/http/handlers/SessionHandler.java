@@ -1,65 +1,40 @@
 package ch.anjo.chatter.http.handlers;
 
 import io.javalin.websocket.WsSession;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+
 
 public class SessionHandler {
 
-  private int sessionCounter = 1;
-  private final Map<String, WsSession> sessionNameSessionMap;
+  private WsSession session;
+  private String username;
 
-  public SessionHandler() {
-    this.sessionNameSessionMap = new ConcurrentHashMap<>();
+  public SessionHandler(WsSession session, String username) {
+    this.session = session;
+    this.username = username;
   }
 
-  public void saveSession(String sessionName, WsSession session) {
-    sessionName = sessionName.equals("") ? "UserID" + sessionCounter++ : sessionName;
-    this.sessionNameSessionMap.put(sessionName, session);
+  public WsSession getSession() {
+    return this.session;
   }
 
-  public Map<String, WsSession> getSessionNameSessionMap() {
-    return sessionNameSessionMap;
+  public String getUsername() {
+    return this.username;
   }
 
-  public WsSession getSession(String key) {
-    return this.sessionNameSessionMap.get(key);
+  public void setSession(WsSession session) {
+    this.session = session;
   }
 
-  public Set<String> getKeySet() {
-    return this.sessionNameSessionMap.keySet();
+  public void setUsername(String username) {
+    this.username = username;
   }
 
-  public String getSessionName(WsSession session) {
-    Optional<String> possibleUsername =
-        this.sessionNameSessionMap
-            .keySet()
-            .stream()
-            .filter(username -> this.sessionNameSessionMap.get(username).equals(session))
-            .findFirst();
-    return possibleUsername.orElse("");
+  public void saveSession(WsSession session, String username) {
+    this.session = session;
+    this.username = username;
   }
 
-  public void printSession(WsSession session) {
-    sessionNameSessionMap.keySet()
-        .stream()
-        .filter(sessionName -> sessionNameSessionMap.get(sessionName).equals(session))
-        .forEach(sessionName -> System.out.println(sessionName + " at -> " + session.toString()));
-  }
-
-
-  public void printSessions() {
-    sessionNameSessionMap.keySet().forEach(sessionName -> System.out
-        .println(sessionName + " at -> " + sessionNameSessionMap.get(sessionName).toString())
-    );
-  }
-
-  public void changeName(String message, WsSession session) {
-    String sessionName = this.getSessionName(session);
-    System.out.println(sessionName);
-    this.sessionNameSessionMap.remove(sessionName);
-    this.sessionNameSessionMap.put(message, session);
+  public void printSession() {
+    System.out.println(this.username + " at -> " + this.session.toString());
   }
 }

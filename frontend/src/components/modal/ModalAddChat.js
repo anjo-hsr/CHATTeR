@@ -10,7 +10,8 @@ export default class ModalAddAddress extends React.Component {
 
     this.state = {
       name: '',
-      selectedPeers: null,
+      selectedPeers: [],
+      isAPeerSelected: true,
       open: false
     };
   }
@@ -21,6 +22,12 @@ export default class ModalAddAddress extends React.Component {
 
   handleSelectChange = selectedPeers => {
     this.setState({selectedPeers});
+  };
+
+  checkPeers = selectedPeers => {
+    const check = selectedPeers.length > 0;
+    this.setState({isAPeerSelected: check});
+    return check;
   };
 
   getRandomId = () => {
@@ -48,12 +55,14 @@ export default class ModalAddAddress extends React.Component {
         <Modal.Content>
           <Form
             onSubmit={() => {
-              this.props.addChat({
-                id: this.getRandomId(),
-                name: this.state.name,
-                peers: this.state.selectedPeers.map(peers => peers.label).concat(this.props.self)
-              });
-              this.setState({open: false});
+              if (this.checkPeers(this.state.selectedPeers)) {
+                this.props.addChat({
+                  id: this.getRandomId().toString(),
+                  name: this.state.name,
+                  peers: this.state.selectedPeers.map(peers => peers.label).concat(this.props.self)
+                });
+                this.setState({open: false, name: '', selectedPeers: []});
+              }
             }}
           >
             <Grid>
@@ -95,7 +104,12 @@ export default class ModalAddAddress extends React.Component {
   }
 }
 
-ModalAddAddress.PropTypes = {
+ModalAddAddress.propTypes = {
   addChat: PropTypes.func.isRequired,
-  peers: PropTypes.arrayOf(PropTypes.string).isRequired
+  peers: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      value: PropTypes.string.isRequired
+    })
+  ).isRequired
 };

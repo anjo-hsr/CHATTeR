@@ -31,7 +31,7 @@ export default class Chats extends React.Component {
   }
 }
 
-Chats.PropTypes = {
+Chats.propTypes = {
   keys: PropTypes.arrayOf(PropTypes.string).isRequired,
   chats: PropTypes.objectOf(
     PropTypes.shape({

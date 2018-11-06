@@ -26,14 +26,14 @@ export default class ChatCard extends React.Component {
             {Boolean(this.props.chat.avatar) ? (
               <div>{avatarBuilder.getOtherAvatar(this.props.chat.avatar)}</div>
             ) : (
-              <Image src={this.props.chat.peers.length > 1 ? AnonymousGroup : Anonymous} />
+              <Image src={this.props.chat.peers.length > 2 ? AnonymousGroup : Anonymous} />
             )}
           </div>
         </Card.Content>
         <Card.Content extra>
           <div className="ui two buttons">
             <Button inverted color="green" content="Chat" onClick={() => this.props.selectChat(this.props.chatKey)} />
-            <Button inverted color="red" content="Remove" onClick={() => this.deleteChat(this.props.chat.id)} />
+            <Button inverted color="red" content="Remove" onClick={() => this.props.deleteChat(this.props.chatKey)} />
           </div>
         </Card.Content>
       </Card>
@@ -42,6 +42,7 @@ export default class ChatCard extends React.Component {
 }
 
 ChatCard.propTypes = {
+  deleteChat: PropTypes.func.isRequired,
   selectChat: PropTypes.func.isRequired,
   self: PropTypes.string.isRequired
 };

@@ -6,7 +6,8 @@ export const MessageHistory = connect(
   reduxStore => {
     return {
       username: reduxStore.state.username,
-      chatHistory: reduxStore.messages[reduxStore.state.selectedChat] || []
+      chatHistory: reduxStore.messages,
+      selectedChat: reduxStore.state.selectedChat
     };
   },
   {}

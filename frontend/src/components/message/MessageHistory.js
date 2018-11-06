@@ -14,23 +14,19 @@ export default class MessageHistory extends React.Component {
     return author === this.props.username;
   };
 
-  render() {
-    const messages = [...this.props.chatHistory];
+  getCurrentChatHistory = () => {
+    return this.props.chatHistory[this.props.selectedChat] || [];
+  };
 
+  render() {
     return (
       <Feed>
-        {messages.map((message, index, array) => (
+        {this.getCurrentChatHistory().map((message, index, array) => (
           <Feed.Event
             className={this.isMe(message.author) ? 'myMessage' : ''}
             key={message.date + message.message + Math.random()}
           >
-            <Icon
-              inverted
-              circular
-              color={message.received ? 'blue' : 'grey'}
-              className={this.isMe(message.author) ? 'myMessage' : ''}
-              name={message.received ? 'check circle outline' : 'check circle'}
-            />
+            <Icon inverted circular color="grey" name="check circle" />
             <Feed.Label>{isAvatarNeeded(array, index) && <Image src={Anonymous} />}</Feed.Label>
             <Feed.Content>
               <Feed.Summary>
@@ -54,13 +50,8 @@ export default class MessageHistory extends React.Component {
   }
 }
 
-MessageHistory.PropTypes = {
+MessageHistory.propTypes = {
   username: PropTypes.string.isRequired,
-  chatHistory: PropTypes.arrayOf(
-    PropTypes.shape({
-      date: PropTypes.string.isRequired,
-      author: PropTypes.string.isRequired,
-      message: PropTypes.string.isRequired
-    })
-  )
+  chatHistory: PropTypes.object,
+  selectedChat: PropTypes.string
 };

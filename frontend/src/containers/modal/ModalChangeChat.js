@@ -8,8 +8,8 @@ const mapDispatchToProps = dispatch => ({
   }
 });
 
-const getSelectObjects = peers => {
-  return peers.map(peer => ({value: peer.toLowerCase(), label: peer}));
+const getSelectObjects = (peers, excludedPeer) => {
+  return peers.filter(peer => peer !== excludedPeer).map(peer => ({value: peer.toLowerCase(), label: peer}));
 };
 
 export const ModalChangeChat = connect(
@@ -17,7 +17,7 @@ export const ModalChangeChat = connect(
     return {
       selectedChat: reduxStore.state.selectedChat,
       name: reduxStore.chats[reduxStore.state.selectedChat].name,
-      selectedPeers: getSelectObjects(reduxStore.chats[reduxStore.state.selectedChat].peers),
+      selectedPeers: getSelectObjects(reduxStore.chats[reduxStore.state.selectedChat].peers, reduxStore.state.username),
       peers: getSelectObjects(reduxStore.peers),
       self: reduxStore.state.username
     };
