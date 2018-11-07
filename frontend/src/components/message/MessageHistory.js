@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {Feed, Icon, Image, Popup} from 'semantic-ui-react';
 
 import MessageMoment from './MessageMoment';
-import {isAvatarNeeded} from '../../helpers/avatarHelpers';
+import isAvatarNeeded from '../../helpers/avatarHelpers';
 
 import Anonymous from '../../media/anonymous.png';
 import moment from 'moment';

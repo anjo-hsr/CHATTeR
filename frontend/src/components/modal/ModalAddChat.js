@@ -48,7 +48,7 @@ export default class ModalAddAddress extends React.Component {
         open={this.state.open}
         trigger={
           <Button
-            className="addAddress"
+            className="addChat"
             inverted
             icon="plus square outline"
             size="large"

@@ -1,6 +1,11 @@
 import {actionTypes as types} from './actions';
 
 export default {
+  toggleMenu() {
+    return {
+      type: types.TOGGLE_MENU
+    };
+  },
   selectChat(chatId) {
     return {
       type: types.SELECT_CHAT,

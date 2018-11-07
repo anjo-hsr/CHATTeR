@@ -5,8 +5,8 @@ $CHATTeR-color: #20c028;
   position: fixed;
   width: 36px;
   height: 30px;
-  left: 36px;
-  top: 36px;
+  left: 8px;
+  top: 8px;
 }
 
 /* Color/shape of burger icon bars */
@@ -28,8 +28,9 @@ $CHATTeR-color: #20c028;
 /* General sidebar styles */
 .bm-menu {
   background: rgba($CHATTeR-color,0.1);
-  padding: 7vh 0 10vh 0.5em;
-  font-size: 1.15em;
+  padding: 0.5em;
+  margin-right: 0.5em;
+  font-size: 1em;
 }
 
 /* Morph shape necessary with bubble or elastic */
@@ -50,7 +51,7 @@ $CHATTeR-color: #20c028;
 
 /* Styling of overlay */
 .bm-overlay {
-  background: rgba($CHATTeR-color, 0.05) !important;
+  background: rgba($CHATTeR-color, 0) !important;
 }
 
 

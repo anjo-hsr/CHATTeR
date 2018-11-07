@@ -5,26 +5,43 @@ body {
 .siteGrid {
   height: 97vh !important; }
 
+.siteHeader {
+  height: 5vh;
+  padding: 0 !important;
+  margin-bottom: 1em; }
+  .siteHeader > .headerButton {
+    padding: 0 !important; }
+
+.siteContent {
+  height: 90vh;
+  padding: 0 !important; }
+
+.chatContainer {
+  height: 70vh !important; }
+
 .chatOverview {
-  height: 90vh !important;
+  height: 70vh !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
   padding: 0 !important; }
 
-.addChat {
-  height: 10vh !important; }
-
 .chatAvatar {
   width: 3rem;
   height: 3rem; }
+  .ui.card > .content > .chatAvatar {
+    position: absolute !important;
+    top: 0.5em;
+    right: 1rem; }
+  .chatAvatar.offline {
+    filter: grayscale(100%); }
 
 .ui.cards {
-  margin: 0.2rem auto 0.2rem 0.5rem !important;
+  margin: 0.5rem auto 1rem 0.5rem !important;
   width: 90% !important; }
 
 .ui.card {
   background: rgba(32, 192, 40, 0.03) !important;
-  margin: 0.7rem 0.2rem 0.7rem 0.4rem !important; }
+  margin: 0.5rem 0.2rem 0.5rem 0.2rem !important; }
   .ui.card > .content:first-child {
     height: 5rem !important;
     font-size: 1.1rem !important;
@@ -36,13 +53,6 @@ body {
       font-style: italic;
       width: 80%;
       overflow: hidden; }
-
-.ui.card > .content > .chatAvatar {
-  position: absolute !important;
-  top: 0.5em;
-  right: 1rem; }
-.chatAvatar.offline {
-  filter: grayscale(100%); }
 
 .ui.active.transition.visible.inverted.dimmer {
   background: rgba(32, 192, 40, 0.03) !important;
@@ -71,23 +81,25 @@ body {
   .ui.feed .event > .content {
     margin: 0.5rem 4rem 0.5rem 2rem !important; }
 
-.chatInformation {
-  height: 10vh !important; }
+.messageInformation {
+  height: 10vh !important;
+  padding-top: 0 !important; }
 
-.chatHistory {
-  height: 80vh !important; }
-  .chatHistory > .column {
+.messageHistory {
+  height: 72vh !important; }
+  .messageHistory > .column {
     padding: 0 2rem 0 1rem !important;
     overflow-x: hidden !important;
     overflow-y: auto !important; }
 
-.chatInput {
+.messageInput {
   height: 10vh !important; }
 
-.addAddress {
+.addChat {
   position: absolute !important;
-  bottom: 0.5rem;
-  right: 1rem; }
+  bottom: 0;
+  right: 0.5em;
+  margin-top: 3rem !important; }
 
 .ui.mini.circular.icon.inverted.button {
   margin: auto 1rem auto -2rem !important;
@@ -107,5 +119,13 @@ body {
   opacity: 1 !important; }
   .disabled.field {
     opacity: 0.5 !important; }
+
+.ui.overlay.left.thin.visible.sidebar {
+  background: rgba(32, 192, 40, 0.1); }
+
+@media only screen and (min-width: 720px) {
+  .ui.cards {
+    margin: 0 auto 0 0.5rem !important;
+    width: 90% !important; } }
 
 /*# sourceMappingURL=style.css.map */

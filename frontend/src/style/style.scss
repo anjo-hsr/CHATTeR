@@ -1,8 +1,10 @@
 $bodyXMarginSize: 1vw;
 $bodyYMarginSize: 1.5vh;
+$headerHeight: 5vh;
 $chatAvatarSize: 3rem;
 $deleteButtonSize: 2rem;
-$defaultBackgroundColor: rgba(#20c028, 0.03) !important;
+$CHATTeR-color: #20c028;
+$defaultBackgroundColor: rgba($CHATTeR-color, 0.03) !important;
 
 body {
   padding: $bodyYMarginSize $bodyXMarginSize $bodyYMarginSize $bodyXMarginSize !important;
@@ -13,30 +15,54 @@ body {
   height: (100vh - 2*$bodyYMarginSize) !important;
 }
 
+.siteHeader {
+  height: $headerHeight;
+  padding: 0 !important;
+  margin-bottom: 1em;
+  & > .headerButton {
+    padding: 0 !important;
+  }
+}
+
+.siteContent {
+  height: 95vh - $headerHeight;
+  padding: 0 !important;
+}
+
+.chatContainer {
+  height: 70vh !important;
+}
+
 .chatOverview {
-  height: 90vh !important;
+  height: 75vh - $headerHeight !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
   padding: 0 !important;
 }
 
-.addChat {
-  height: 10vh !important;
-}
-
 .chatAvatar {
   width: $chatAvatarSize;
   height: $chatAvatarSize;
+
+  .ui.card > .content > & {
+    position: absolute !important;
+    top: 0.5em;
+    right: 1rem;
+  }
+
+  &.offline {
+    filter: grayscale(100%);
+  }
 }
 
 .ui.cards {
-  margin: 0.2rem auto 0.2rem 0.5rem !important;
+  margin: 0.5rem auto 1rem 0.5rem !important;
   width: 90% !important;
 }
 
 .ui.card {
   background: $defaultBackgroundColor;
-  margin: 0.7rem 0.2rem 0.7rem 0.4rem !important;
+  margin: 0.5rem 0.2rem 0.5rem 0.2rem !important;
   & > .content:first-child {
     height: 5rem !important;
     font-size: 1.1rem !important;
@@ -50,18 +76,6 @@ body {
       width: 80%;
       overflow: hidden;
     }
-  }
-}
-
-.chatAvatar {
-  .ui.card > .content > & {
-    position: absolute !important;
-    top: 0.5em;
-    right: 1rem;
-  }
-
-  &.offline {
-    filter: grayscale(100%);
   }
 }
 
@@ -101,12 +115,13 @@ body {
   }
 }
 
-.chatInformation {
+.messageInformation {
   height: 10vh !important;
+  padding-top: 0 !important;
 }
 
-.chatHistory {
-  height: 80vh !important;
+.messageHistory {
+  height: 72vh !important;
 
   & > .column {
     padding: 0 2rem 0 1rem !important;
@@ -115,14 +130,15 @@ body {
   }
 }
 
-.chatInput {
+.messageInput {
   height: 10vh !important;
 }
 
-.addAddress {
+.addChat {
   position: absolute !important;
-  bottom: 0.5rem;
-  right: 1rem;
+  bottom: 0;
+  right: 0.5em;
+  margin-top: 3rem !important;
 }
 
 .ui.mini.circular.icon.inverted.button {
@@ -146,5 +162,16 @@ body {
   opacity: 1 !important;
   &.field {
     opacity: 0.5 !important;
+  }
+}
+
+.ui.overlay.left.thin.visible.sidebar{
+  background: rgba($CHATTeR-color, 0.1);
+}
+
+@media only screen and (min-width: 720px) {
+  .ui.cards {
+    margin: 0 auto 0 0.5rem !important;
+    width: 90% !important;
   }
 }

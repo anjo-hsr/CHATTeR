@@ -16,25 +16,25 @@ export default class MessageWindow extends React.Component {
   render() {
     return (
       <Grid>
-        <Grid.Row columns="equal" className="chatInformation">
-          <Grid.Column width="2">
+        <Grid.Row columns="equal" className="messageInformation">
+          <Grid.Column width="2" verticalAlign="middle">
             <Image src={this.props.isGroup ? AnonymousGroup : Anonymous} />
           </Grid.Column>
           <Grid.Column verticalAlign="middle">
             <Header>{'Chat with ' + this.props.chatName}</Header>
           </Grid.Column>
-          <Grid.Column width="2">
+          <Grid.Column width="2" verticalAlign="middle">
             <ModalChangeChat />
           </Grid.Column>
         </Grid.Row>
-        <Grid.Row className="chatHistory" columns="equal">
+        <Grid.Row className="messageHistory" columns="equal">
           <Grid.Column>
             <Scrollbars autoHide autoHideTimeout={numbers.autoHideTimeout} autoHideDuration={numbers.autoHideDuration}>
               <MessageHistory />
             </Scrollbars>
           </Grid.Column>
         </Grid.Row>
-        <Grid.Row className="chatInput" columns="equal">
+        <Grid.Row className="messageInput" columns="equal">
           <Grid.Column>
             <MessageInput />
           </Grid.Column>

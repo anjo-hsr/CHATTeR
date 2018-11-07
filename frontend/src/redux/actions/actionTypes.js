@@ -11,7 +11,9 @@ let actionTypes = {
   SET_USERNAME: 'SET_USERNAME',
   SET_CONNECTION: 'SET_CONNECTION',
 
-  ADD_PEERS: 'ADD_PEERS'
+  ADD_PEERS: 'ADD_PEERS',
+
+  TOGGLE_MENU: 'TOGGLE_MENU'
 };
 
 export default Object.freeze(Object.assign({}, actionTypes));

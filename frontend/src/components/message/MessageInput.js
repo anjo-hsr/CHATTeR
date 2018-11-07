@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import {isMobile} from 'react-device-detect';
 import {Form, Grid} from 'semantic-ui-react';
 
 export default class MessageInput extends React.Component {
@@ -42,7 +43,7 @@ export default class MessageInput extends React.Component {
                 required
               />
             </Grid.Column>
-            <Grid.Column width="2" verticalAlign="bottom">
+            <Grid.Column width={isMobile ? 4 : 2} verticalAlign="bottom">
               <Form.Button content="Send" />
             </Grid.Column>
           </Grid.Row>

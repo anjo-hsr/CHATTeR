@@ -3,8 +3,8 @@
   position: fixed;
   width: 36px;
   height: 30px;
-  left: 36px;
-  top: 36px; }
+  left: 8px;
+  top: 8px; }
 
 /* Color/shape of burger icon bars */
 .bm-burger-bars {
@@ -22,8 +22,9 @@
 /* General sidebar styles */
 .bm-menu {
   background: rgba(32, 192, 40, 0.1);
-  padding: 7vh 0 10vh 0.5em;
-  font-size: 1.15em; }
+  padding: 0.5em;
+  margin-right: 0.5em;
+  font-size: 1em; }
 
 /* Morph shape necessary with bubble or elastic */
 .bm-morph-shape {
@@ -40,7 +41,7 @@
 
 /* Styling of overlay */
 .bm-overlay {
-  background: rgba(32, 192, 40, 0.05) !important; }
+  background: rgba(32, 192, 40, 0) !important; }
 
 .chatOverview {
   height: 80vh !important;
