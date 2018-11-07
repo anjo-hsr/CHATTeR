@@ -1,7 +1,7 @@
-package ch.sbi.blockchat.lib;
+package ch.anjo.chatter.lib;
 
-import ch.sbi.blockchain.Constants;
-import ch.sbi.blockchain.NotaryService;
+//import ch.anjo.chatter.Constants;
+//import ch.anjo.chatter.NotaryService;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import java.io.IOException;
@@ -33,7 +33,7 @@ public class ClientPeer {
   private final Peer me;
   private final PeerDHT dht;
   private final User user;
-  private final NotaryService notaryService;
+  //private final NotaryService notaryService;
   private final List<PeerMessage> history = new ArrayList<>();
 
   /**
@@ -49,7 +49,7 @@ public class ClientPeer {
 
     this.user = new User(email, ethAddress, port);
     dht.put(new Number160(user.getHash().asBytes())).data(new Data(user)).start();
-    notaryService = new NotaryService(this.user.getWallet(), Constants.DEFAULT_PASSWORD);
+    //notaryService = new NotaryService(this.user.getWallet(), Constants.DEFAULT_PASSWORD);
   }
 
   /** Creates a 'slave' peer, and must be initialized with information about master */
@@ -62,7 +62,7 @@ public class ClientPeer {
     dht = new PeerBuilderDHT(me).storageLayer(new StorageLayer(new StorageMemory())).start();
 
     this.user = new User(myEmail, ethAddress, myPort);
-    notaryService = new NotaryService(this.user.getWallet(), Constants.DEFAULT_PASSWORD);
+    //notaryService = new NotaryService(this.user.getWallet(), Constants.DEFAULT_PASSWORD);
     BootstrapBuilder builder = me.bootstrap();
     String[] address = masterIp.split(":");
     builder
@@ -201,14 +201,14 @@ public class ClientPeer {
           // we haven't received this message yet
           if (received.count() <= 0) {
             history.add(message);
-            this.notaryService
+      /*      this.notaryService
                 .storeMessageOnBlockchain(message.getContent())
                 .thenRun(
                     () -> {
                       send(message.getFrom(), "I received the message: " + message.getContent());
                       System.out.println(
                           String.format("%s: %s", message.getFrom(), message.getContent()));
-                    });
+                    });*/
           }
 
           // we haven't verified this message yet
@@ -223,11 +223,11 @@ public class ClientPeer {
             String from = User.ETH_WALLETS.get(message.getFrom());
             String m = message.getContent();
 
-            var b = notaryService.verifySenderOfMessage(from, m).get();
-            if (b && !message.getFrom().equals(user.getEmail())) {
+            //var b = notaryService.verifySenderOfMessage(from, m).get();
+            /*if (b && !message.getFrom().equals(user.getEmail())) {
               System.out.println(String.format("Verified that %s has received '%s'", from, m));
               unverified.forEach(x -> x.verify());
-            }
+            }*/
           }
 
           return String.format("%s confirming from %s", me.peerID(), sender.peerId());

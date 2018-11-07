@@ -1,4 +1,4 @@
-package ch.sbi.blockchat.lib;
+package ch.anjo.chatter.lib;
 
 import java.io.Serializable;
 

@@ -1,7 +1,7 @@
-package ch.sbi.blockchat.lib;
+package ch.anjo.chatter.lib;
 
-import ch.sbi.blockchat.http.ConnectionRequest;
-import ch.sbi.blockchat.http.WebUser;
+import ch.anjo.chatter.http.ConnectionRequest;
+import ch.anjo.chatter.http.WebUser;
 import java.io.IOException;
 
 public class HttpPeer {
