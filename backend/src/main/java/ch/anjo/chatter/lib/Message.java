@@ -1,4 +1,4 @@
-package ch.anjo.chatter.lib;
+package ch.sbi.blockchat.lib;
 
 import java.util.Date;
 
@@ -18,28 +18,28 @@ public class Message {
     this.time = time;
   }
 
-  public void setAutor(ClientPeer autor) {
-    this.autor = autor;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public void setText(String text) {
-    this.text = text;
-  }
-
   public ClientPeer getAutor() {
     return autor;
+  }
+
+  public void setAutor(ClientPeer autor) {
+    this.autor = autor;
   }
 
   public String getText() {
     return text;
   }
 
+  public void setText(String text) {
+    this.text = text;
+  }
+
   public Long getId() {
     return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
   }
 
   @Override

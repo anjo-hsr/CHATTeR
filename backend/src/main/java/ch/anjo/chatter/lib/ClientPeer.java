@@ -1,10 +1,14 @@
-package ch.anjo.chatter.lib;
+package ch.sbi.blockchat.lib;
 
+import ch.sbi.blockchain.Constants;
+import ch.sbi.blockchain.NotaryService;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import net.tomp2p.dht.FutureGet;
@@ -22,12 +26,15 @@ import net.tomp2p.p2p.builder.BootstrapBuilder;
 import net.tomp2p.peers.Number160;
 import net.tomp2p.peers.PeerAddress;
 import net.tomp2p.storage.Data;
+import org.web3j.crypto.CipherException;
 
 public class ClientPeer {
 
   private final Peer me;
   private final PeerDHT dht;
   private final User user;
+  private final NotaryService notaryService;
+  private final List<PeerMessage> history = new ArrayList<>();
 
   /**
    * Creates a 'master' peer (with ID 1 for now) that starts to listen on port.
@@ -35,25 +42,27 @@ public class ClientPeer {
    * @param port Port to start listening on
    * @throws IOException
    */
-  public ClientPeer(String email, int port) throws IOException {
+  public ClientPeer(String email, String ethAddress, int port) throws IOException, CipherException {
     byte[] hash = emailHash(email).asBytes();
     me = new PeerBuilder(new Number160(hash)).ports(port).start();
     dht = new PeerBuilderDHT(me).storageLayer(new StorageLayer(new StorageMemory())).start();
 
-    this.user = new User(email, port);
+    this.user = new User(email, ethAddress, port);
     dht.put(new Number160(user.getHash().asBytes())).data(new Data(user)).start();
+    notaryService = new NotaryService(this.user.getWallet(), Constants.DEFAULT_PASSWORD);
   }
 
   /** Creates a 'slave' peer, and must be initialized with information about master */
-  public ClientPeer(String masterEmail, String masterIp, String myEmail, int myPort)
-      throws IOException {
+  public ClientPeer(
+      String masterEmail, String ethAddress, String masterIp, String myEmail, int myPort)
+      throws IOException, CipherException {
     var master =
         new PeerBuilder(new Number160(emailHash(masterEmail).asBytes())).ports(myPort).start();
     me = new PeerBuilder(new Number160(emailHash(myEmail).asBytes())).masterPeer(master).start();
     dht = new PeerBuilderDHT(me).storageLayer(new StorageLayer(new StorageMemory())).start();
 
-    this.user = new User(myEmail, myPort);
-
+    this.user = new User(myEmail, ethAddress, myPort);
+    notaryService = new NotaryService(this.user.getWallet(), Constants.DEFAULT_PASSWORD);
     BootstrapBuilder builder = me.bootstrap();
     String[] address = masterIp.split(":");
     builder
@@ -79,9 +88,11 @@ public class ClientPeer {
                             if (data != null) {
                               user.addFriends(((User) data.object()).getFriendEmails());
                             }
+                            user.setOnline(true);
                             dht.put(user.get160Hash()).data(new Data(user)).start();
                             System.out.println(String.format("Connected to %s", masterEmail));
                             me.broadcast(new Number160(new Random().nextInt())).start();
+                            sendAll("Hey, I'm online.");
                           }
                         });
               }
@@ -89,9 +100,18 @@ public class ClientPeer {
   }
 
   public void disconnect() {
+    this.user.setOnline(false);
+
+    try {
+      dht.put(user.get160Hash()).data(new Data(user)).start();
+    } catch (IOException e) {
+      // noperino
+    }
+
     me.announceShutdown().start().awaitUninterruptibly();
     me.shutdown().awaitUninterruptibly();
     dht.shutdown().awaitUninterruptibly();
+    System.out.println("Successfully disconnected");
   }
 
   private static HashCode emailHash(String email) {
@@ -103,27 +123,33 @@ public class ClientPeer {
   }
 
   public void sendAll(String message) throws IOException, ClassNotFoundException {
-    sendAllWithListener(message, nullConfirmation());
+    sendAllWithListener(message);
   }
 
-  public void sendAllWithConfirmation(String message) throws IOException, ClassNotFoundException {
-    sendAllWithListener(message, printConfirmation());
+  public void sendAllWithConfirmation(String message) {
+    throw new RuntimeException("Not implemented");
+    //sendAllWithListener(message, printConfirmation());
   }
 
-  private void sendAllWithListener(String message, BaseFutureAdapter listener)
-      throws IOException, ClassNotFoundException {
-
+  private void sendAllWithListener(String message) {
     user.getFriendEmails()
         .stream()
-        .map(friend -> dht.get(byteHash(friend)).start().awaitUninterruptibly().data())
-        .filter(Objects::nonNull)
-        .map(ClientPeer::readUser)
-        .filter(Objects::nonNull)
-        .forEach(
-            other ->
-                me.sendDirect(other.getAsPeerAddress())
-                    .object(new PeerMessage(user.getEmail(), other.getEmail(), message))
-                    .start());
+        .map(
+            f ->
+                dht.get(byteHash(f))
+                    .start()
+                    .addListener(
+                        new BaseFutureAdapter<FutureGet>() {
+                          @Override
+                          public void operationComplete(FutureGet future) throws Exception {
+                            var data = future.data();
+                            if (!data.isEmpty()) {
+                              var other = ClientPeer.readUser(data);
+                              var m = new PeerMessage(user.getEmail(), other.getEmail(), message);
+                              me.sendDirect(other.getAsPeerAddress()).object(m).start();
+                            }
+                          }
+                        }));
   }
 
   public void send(String other, String message) {
@@ -143,12 +169,15 @@ public class ClientPeer {
         .map(ClientPeer::readUser)
         .filter(Objects::nonNull)
         .forEach(
-            f ->
-                dht.send(f.get160Hash())
-                    .object(new PeerMessage(user.getEmail(), f.getEmail(), message))
-                    .requestP2PConfiguration(new RequestP2PConfiguration(1, 5, 0))
-                    .start()
-                    .addListener(listener));
+            f -> {
+              var m = new PeerMessage(user.getEmail(), f.getEmail(), message);
+              // history.add(m);
+              dht.send(f.get160Hash())
+                  .object(m)
+                  .requestP2PConfiguration(new RequestP2PConfiguration(1, 5, 0))
+                  .start()
+                  .addListener(listener);
+            });
   }
 
   public void addPeer(String email) throws IOException, ClassNotFoundException {
@@ -166,7 +195,41 @@ public class ClientPeer {
     me.objectDataReply(
         (sender, request) -> {
           PeerMessage message = (PeerMessage) request;
-          System.out.println(String.format("%s: %s", message.getFrom(), message.getContent()));
+          var received =
+              history.stream().filter(m -> message.getContent().contains(m.getContent()));
+
+          // we haven't received this message yet
+          if (received.count() <= 0) {
+            history.add(message);
+            this.notaryService
+                .storeMessageOnBlockchain(message.getContent())
+                .thenRun(
+                    () -> {
+                      send(message.getFrom(), "I received the message: " + message.getContent());
+                      System.out.println(
+                          String.format("%s: %s", message.getFrom(), message.getContent()));
+                    });
+          }
+
+          // we haven't verified this message yet
+          var unverified =
+              history
+                  .stream()
+                  .filter(m -> message.getContent().contains(m.getContent()))
+                  .filter(m -> !m.isVerified());
+
+          if (message.getContent().startsWith("I received the message: ")
+              && unverified.count() > 0) {
+            String from = User.ETH_WALLETS.get(message.getFrom());
+            String m = message.getContent();
+
+            var b = notaryService.verifySenderOfMessage(from, m).get();
+            if (b && !message.getFrom().equals(user.getEmail())) {
+              System.out.println(String.format("Verified that %s has received '%s'", from, m));
+              unverified.forEach(x -> x.verify());
+            }
+          }
+
           return String.format("%s confirming from %s", me.peerID(), sender.peerId());
         });
   }

@@ -1,4 +1,4 @@
-package ch.anjo.chatter.lib;
+package ch.sbi.blockchat.lib;
 
 import java.util.ArrayList;
 
