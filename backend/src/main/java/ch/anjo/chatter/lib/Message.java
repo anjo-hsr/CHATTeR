@@ -18,28 +18,28 @@ public class Message {
     this.time = time;
   }
 
-  public ClientPeer getAutor() {
-    return autor;
-  }
-
   public void setAutor(ClientPeer autor) {
     this.autor = autor;
   }
 
-  public String getText() {
-    return text;
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public void setText(String text) {
     this.text = text;
   }
 
-  public Long getId() {
-    return id;
+  public ClientPeer getAutor() {
+    return autor;
   }
 
-  public void setId(Long id) {
-    this.id = id;
+  public String getText() {
+    return text;
+  }
+
+  public Long getId() {
+    return id;
   }
 
   @Override

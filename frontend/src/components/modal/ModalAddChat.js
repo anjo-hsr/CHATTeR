@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {Button, Form, Grid, Modal} from 'semantic-ui-react';
 
 import Select from 'react-select';
+import Buttons from './Buttons';
 
 export default class ModalAddAddress extends React.Component {
   constructor(props) {
@@ -24,8 +25,8 @@ export default class ModalAddAddress extends React.Component {
     this.setState({selectedPeers});
   };
 
-  checkPeers = selectedPeers => {
-    const check = selectedPeers.length > 0;
+  checkPeers = () => {
+    const check = this.state.selectedPeers.length > 0;
     this.setState({isAPeerSelected: check});
     return check;
   };
@@ -34,6 +35,11 @@ export default class ModalAddAddress extends React.Component {
     const MIN_VALUE = 100;
     const MAX_VALUE = 100000;
     return Math.floor(Math.random() * (MAX_VALUE - MIN_VALUE + 1)) + MIN_VALUE;
+  };
+
+  close = event => {
+    event.preventDefault();
+    this.setState({open: false});
   };
 
   render() {
@@ -55,9 +61,9 @@ export default class ModalAddAddress extends React.Component {
         <Modal.Content>
           <Form
             onSubmit={() => {
-              if (this.checkPeers(this.state.selectedPeers)) {
+              if (this.checkPeers()) {
                 this.props.addChat({
-                  id: this.getRandomId().toString(),
+                  chatId: this.getRandomId().toString(),
                   name: this.state.name,
                   peers: this.state.selectedPeers.map(peers => peers.label).concat(this.props.self)
                 });
@@ -87,15 +93,7 @@ export default class ModalAddAddress extends React.Component {
                   />
                 </Grid.Column>
               </Grid.Row>
-              <Grid.Row columns="equal">
-                <Grid.Column />
-              </Grid.Row>
-              <Grid.Row columns="equal">
-                <Grid.Column />
-                <Grid.Column width="2">
-                  <Form.Button color="green" basic content="Save" />
-                </Grid.Column>
-              </Grid.Row>
+              <Buttons cancelNeeded={true} closeAction={this.close.bind(this)} />
             </Grid>
           </Form>
         </Modal.Content>

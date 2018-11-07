@@ -1,7 +1,6 @@
-package ch.anjo.chatter.http.handlers;
+package ch.anjo.chatter.http.handlers.handlerClasses;
 
 import io.javalin.websocket.WsSession;
-
 
 public class SessionHandler {
 
@@ -11,14 +10,6 @@ public class SessionHandler {
   public SessionHandler(WsSession session, String username) {
     this.session = session;
     this.username = username;
-  }
-
-  public WsSession getSession() {
-    return this.session;
-  }
-
-  public String getUsername() {
-    return this.username;
   }
 
   public void setSession(WsSession session) {
@@ -32,6 +23,14 @@ public class SessionHandler {
   public void saveSession(WsSession session, String username) {
     this.session = session;
     this.username = username;
+  }
+
+  public WsSession getSession() {
+    return session;
+  }
+
+  public String getUsername() {
+    return username;
   }
 
   public void printSession() {

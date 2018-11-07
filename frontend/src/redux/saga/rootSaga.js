@@ -1,16 +1,16 @@
-import {take} from 'redux-saga/effects';
+import {all, fork} from 'redux-saga/effects';
 
-import {actionTypes} from '../actions/actions';
+import {addChat, changeChat, deleteChat} from './chatSaga';
+import {addMessage, getMessages} from './messageSaga';
+import {setConnection} from './connectionSaga';
 
 export function* rootSaga(socket) {
-  yield take(action => {
-    console.log(action.type);
-    switch (action.type) {
-      case actionTypes.ADD_MESSAGE:
-      case actionTypes.SET_CONNECTION: {
-        console.log(action.type);
-        socket.send(JSON.stringify(action.message));
-      }
-    }
-  });
+  yield all([
+    fork(addChat, socket),
+    fork(changeChat, socket),
+    fork(deleteChat, socket),
+    fork(addMessage, socket),
+    fork(getMessages, socket),
+    fork(setConnection, socket)
+  ]);
 }

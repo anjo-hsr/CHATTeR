@@ -1,5 +1,7 @@
 import React from 'react';
 import {Form, Grid, Modal} from 'semantic-ui-react';
+import PropTypes from 'prop-types';
+import Buttons from './Buttons';
 
 export default class ModalSetUsername extends React.Component {
   constructor(props) {
@@ -7,11 +9,18 @@ export default class ModalSetUsername extends React.Component {
 
     this.state = {
       name: window.localStorage.getItem('username') || '',
-      ipAddress: window.localStorage.getItem('ipString') || '',
+      ipAddress: window.localStorage.getItem('ipAddress') || '',
       portNumber: window.localStorage.getItem('portNumber') || '',
       isIpCorrect: true,
-      isPortCorrect: true
+      isPortCorrect: true,
+      completlyLoaded: false
     };
+  }
+
+  componentDidMount() {
+    setTimeout(() => {
+      this.setState({completlyLoaded: true});
+    }, 1000);
   }
 
   handleChange = (event, target) => {
@@ -26,6 +35,8 @@ export default class ModalSetUsername extends React.Component {
         case 'portNumber': {
           this.validatePort();
           break;
+        }
+        default: {
         }
       }
     }, CHECK_TIMEOUT_TIMER);
@@ -59,7 +70,7 @@ export default class ModalSetUsername extends React.Component {
 
   setLocalStorage = () => {
     window.localStorage.setItem('username', this.state.name);
-    window.localStorage.setItem('ipString', this.state.ipAddress);
+    window.localStorage.setItem('ipAddress', this.state.ipAddress);
     window.localStorage.setItem('portNumber', this.state.portNumber);
   };
 
@@ -73,7 +84,6 @@ export default class ModalSetUsername extends React.Component {
               if (this.checkInput()) {
                 this.setLocalStorage();
                 this.props.setConnection(this.state.name, this.state.ipAddress, this.state.portNumber);
-                this.props.setUsername(this.state.name);
               }
             }}
           >
@@ -115,12 +125,7 @@ export default class ModalSetUsername extends React.Component {
                   />
                 </Grid.Column>
               </Grid.Row>
-              <Grid.Row columns="equal">
-                <Grid.Column />
-                <Grid.Column width="2">
-                  <Form.Button color="green" basic content="Save" />
-                </Grid.Column>
-              </Grid.Row>
+              <Buttons cancelNeeded={false} />
             </Grid>
           </Form>
         </Modal.Content>
@@ -128,3 +133,7 @@ export default class ModalSetUsername extends React.Component {
     );
   }
 }
+
+ModalSetUsername.propTypes = {
+  setConnection: PropTypes.func.isRequired
+};

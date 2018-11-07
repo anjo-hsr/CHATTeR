@@ -15,13 +15,13 @@ export default {
     };
   },
 
-  setConnection(name, ipAddress, portNumber) {
+  setConnection(name, masterIpAddress, masterPortNumber) {
     return {
       type: types.SET_CONNECTION,
       connection: {
         name,
-        ipAddress,
-        portNumber
+        masterIpAddress,
+        masterPortNumber
       }
     };
   }

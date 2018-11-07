@@ -15,8 +15,8 @@ export default class Chats extends React.Component {
         <Grid.Row className="chatOverview">
           <Scrollbars autoHide autoHideTimeout={numbers.autoHideTimeout} autoHideDuration={numbers.autoHideDuration}>
             <Card.Group>
-              {this.props.keys.map(key => {
-                return <ChatCard key={key} chatKey={key} chat={this.props.chats[key]} />;
+              {this.props.keys.map(chatId => {
+                return <ChatCard key={chatId} chatId={chatId} chat={this.props.chats[chatId]} />;
               })}
             </Card.Group>
           </Scrollbars>

@@ -7,7 +7,6 @@ public class PeerStore {
 
   private ArrayList<Peer> peers;
 
-
   public PeerStore(ArrayList<Peer> peers) {
     this.peers = peers;
   }
@@ -17,6 +16,6 @@ public class PeerStore {
   }
 
   public void addMessage(Peer peer) {
-    this.peers.add(peer);
+    peers.add(peer);
   }
 }

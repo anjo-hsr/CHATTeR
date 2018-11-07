@@ -1,68 +1,62 @@
 package ch.anjo.chatter.http.handlers;
 
-import ch.anjo.chatter.http.ConnectionRequest;
+import ch.anjo.chatter.http.handlers.handlerClasses.Handler;
 import ch.anjo.chatter.http.templates.Message;
-import ch.anjo.chatter.lib.HttpPeer;
+import ch.anjo.chatter.http.templates.message.MessageInformation;
 import com.google.gson.JsonObject;
 import io.javalin.websocket.WsSession;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Optional;
-import java.util.TimeZone;
 
 public class InboundHandler {
 
-  public static void handleSession(SessionHandler sessionHandler, WsSession session) {
+  public static void handleSession(Handler handler, WsSession session) {
     String username = session.queryParam("username");
     if (username != null) {
-      sessionHandler.saveSession(session, username);
-      OutboundHandler.broadcastPeers(sessionHandler);
+      handler.saveSession(session, username);
+      OutboundHandler.broadcastPeers(handler.getSessionHandler());
     }
   }
 
-  public static void handleMessageTypes(SessionHandler sessionHandler, Message message) {
+  public static void handleMessageTypes(Handler handler, Message message) {
     switch (message.type) {
       case "ADD_MESSAGE":
-        saveMessage(sessionHandler, message.message);
+        saveMessage(handler, message.chatId, message.messageInformation);
         break;
       case "SET_USERNAME":
-        setUsername(sessionHandler, message);
+        setUsername(handler, message);
         break;
       case "SET_CONNECTION":
-        System.out.println(message.message);
+        message.connection.printInformation();
+        OutboundHandler.sendChats(handler);
         break;
+      case "ADD_CHAT":
+      case "CHANGE_CHAT":
+        handler.getChatHandler().saveChat(message);
+        break;
+      case "DELETE_CHAT":
+        handler.getChatHandler().deleteChat(message.chatId);
+        break;
+      case "SELECT_CHAT":
+        OutboundHandler.sendChatMessages(handler, message.chatId);
     }
   }
 
-  private static void setUsername(SessionHandler sessionHandler, Message message) {
-    sessionHandler.setUsername(message.username);
-    OutboundHandler.broadcastPeers(sessionHandler);
-    sessionHandler.printSession();
+  private static void setUsername(Handler handler, Message message) {
+    handler.setUsername(message.username);
+    OutboundHandler.broadcastPeers(handler.getSessionHandler());
+    handler.getSessionHandler().printSession();
   }
 
-  public static void saveMessage(SessionHandler sessionHandler, String message) {
-    JsonObject messageObject = createMessageObject(sessionHandler.getUsername(), true, message);
+  public static void saveMessage(Handler handler, String chatId, MessageInformation message) {
+    JsonObject messageInformation = createMessageInformation(message);
+    handler.saveMessage(chatId, messageInformation.toString());
   }
 
-  public static void saveMessage(String sender, String message) {
-    createMessageObject(sender, false, message);
-  }
-
-  private static JsonObject createMessageObject(String sender, Boolean isMe, String message) {
-    JsonObject messageObject = new JsonObject();
-    messageObject.addProperty("author", sender);
-    messageObject.addProperty("isMe", isMe);
-    messageObject.addProperty("message", message);
-    messageObject.addProperty("date", new Date().toString());
-    System.out.println(messageObject.toString());
-    return messageObject;
-  }
-
-  private static String getCurrentDate() {
-    TimeZone timeZone = TimeZone.getTimeZone("UTC");
-    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
-    dateFormat.setTimeZone(timeZone);
-    return dateFormat.format(new Date());
+  private static JsonObject createMessageInformation(MessageInformation message) {
+    JsonObject messageInformation = new JsonObject();
+    messageInformation.addProperty("date", message.date);
+    messageInformation.addProperty("author", message.author);
+    messageInformation.addProperty("message", message.message);
+    messageInformation.addProperty("isMe", message.isMe);
+    return messageInformation;
   }
 }

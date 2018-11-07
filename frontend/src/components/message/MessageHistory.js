@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import {Feed, Icon, Image, Popup} from 'semantic-ui-react';
-import moment from 'moment';
 
-import Loader from '../view/Loader';
+import MessageMoment from './MessageMoment';
 import {isAvatarNeeded} from '../../helpers/avatarHelpers';
 
 import Anonymous from '../../media/anonymous.png';
+import moment from 'moment';
 
 export default class MessageHistory extends React.Component {
   isMe = author => {
@@ -35,8 +35,14 @@ export default class MessageHistory extends React.Component {
                   <i>
                     <Popup
                       position="top center"
-                      trigger={<div>{moment(message.date, 'YYYY-MM-DD HH:mm:ss').fromNow()}</div>}
-                      content={message.date}
+                      trigger={<MessageMoment date={message.date} />}
+                      content={
+                        <div>
+                          {moment(message.date)
+                            .format('YYYY-MM-DD HH:mm:ss')
+                            .toString()}
+                        </div>
+                      }
                     />
                   </i>
                 </Feed.Date>

@@ -1,21 +1,18 @@
 import {connect} from 'react-redux';
-import ModalSetUsernameComponent from '../../components/modal/ModalSetUsername';
+import ModalSetConnectionComponent from '../../components/modal/ModalSetConnection';
 import {actionState} from '../../redux/actions/actions';
 
 const mapDispatchToProps = dispatch => ({
-  setConnection: (name, ipAddress, portNumber) => {
-    dispatch(actionState.setConnection(name, ipAddress, portNumber));
-  },
-  setUsername: username => {
+  setConnection: username => {
     dispatch(actionState.setUsername(username));
   }
 });
 
-export const ModalSetUsername = connect(
+export const ModalSetConnection = connect(
   reduxStore => {
     return {
       username: reduxStore.state.username
     };
   },
   mapDispatchToProps
-)(ModalSetUsernameComponent);
+)(ModalSetConnectionComponent);

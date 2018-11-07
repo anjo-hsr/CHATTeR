@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Button, Form, Grid, Modal} from 'semantic-ui-react';
 
+import Buttons from './Buttons';
+
 import Select from 'react-select';
 
 export default class ModalChangeChat extends React.Component {
@@ -21,6 +23,11 @@ export default class ModalChangeChat extends React.Component {
 
   handleSelectChange = selectedPeers => {
     this.setState({selectedPeers});
+  };
+
+  close = event => {
+    event.preventDefault();
+    this.setState({open: false});
   };
 
   render() {
@@ -43,7 +50,7 @@ export default class ModalChangeChat extends React.Component {
           <Form
             onSubmit={() => {
               this.props.changeChat({
-                id: this.props.selectedChat,
+                chatId: this.props.selectedChat,
                 name: this.state.name,
                 peers: this.state.selectedPeers.map(peers => peers.label).concat(this.props.self)
               });
@@ -72,15 +79,7 @@ export default class ModalChangeChat extends React.Component {
                   />
                 </Grid.Column>
               </Grid.Row>
-              <Grid.Row columns="equal">
-                <Grid.Column />
-              </Grid.Row>
-              <Grid.Row columns="equal">
-                <Grid.Column />
-                <Grid.Column width="2">
-                  <Form.Button color="green" basic content="Save" />
-                </Grid.Column>
-              </Grid.Row>
+              <Buttons cancelNeeded={true} closeAction={this.close.bind(this)} />
             </Grid>
           </Form>
         </Modal.Content>

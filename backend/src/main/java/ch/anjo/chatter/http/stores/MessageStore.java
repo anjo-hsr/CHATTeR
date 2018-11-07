@@ -7,7 +7,6 @@ public class MessageStore {
 
   private ArrayList<JsonObject> messages;
 
-
   public MessageStore(ArrayList<JsonObject> messages) {
     this.messages = messages;
   }
@@ -17,6 +16,6 @@ public class MessageStore {
   }
 
   public void addMessage(JsonObject newMessage) {
-    this.messages.add(newMessage);
+    messages.add(newMessage);
   }
 }

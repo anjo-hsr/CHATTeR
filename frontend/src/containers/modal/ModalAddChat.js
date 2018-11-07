@@ -3,9 +3,9 @@ import ModalAddChatComponent from '../../components/modal/ModalAddChat';
 import {actionChats, actionState} from '../../redux/actions/actions';
 
 const mapDispatchToProps = dispatch => ({
-  addChat: ({id, peers, name}) => {
-    dispatch(actionChats.addChat({id, chatObject: {name, peers}}));
-    dispatch(actionState.selectChat(id));
+  addChat: ({chatId, peers, name}) => {
+    dispatch(actionChats.addChat({chatId, chatObject: {name, peers}}));
+    dispatch(actionState.selectChat(chatId));
   }
 });
 

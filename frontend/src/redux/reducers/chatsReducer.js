@@ -2,41 +2,23 @@ import {actionTypes} from '../actions/actions';
 
 export default function reducer(reduxStore = {}, action) {
   switch (action.type) {
-    case actionTypes.CHANGE_CHAT:
-    case actionTypes.ADD_CHAT: {
-      return concatChats(reduxStore, action.chatObject);
+    case actionTypes.ADD_CHAT:
+    case actionTypes.CHANGE_CHAT: {
+      return Object.assign({}, reduxStore, {[action.chatId]: action.chatInformation});
     }
 
     case actionTypes.DELETE_CHAT: {
-      return removeChat(reduxStore, action.id);
+      return removeChat(reduxStore, action.chatId);
     }
 
     case actionTypes.ADD_CHATS: {
-      return reduxStore.concat(
-        action.chats.map(chat => {
-          return {
-            id: chat.id,
-            chats: chat.chats
-          };
-        })
-      );
+      return Object.assign({}, reduxStore, action.chats);
     }
 
     default:
       return reduxStore;
   }
 }
-
-const concatChats = (originalStore, chatObject) => {
-  let store = {...originalStore};
-  let chat = store[chatObject.id];
-  if (Boolean(chat)) {
-    store[chatObject.id] = chatObject.chat;
-  } else {
-    store[chatObject.id] = chatObject.chat;
-  }
-  return store;
-};
 
 const removeChat = (originalState, id) => {
   let store = {...originalState};

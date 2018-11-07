@@ -4,17 +4,16 @@ export default {
   addMessage({chatId, message}) {
     return {
       type: types.ADD_MESSAGE,
-      messageObject: {
-        chatId,
-        message
-      }
+      chatId,
+      messageInformation: message
     };
   },
 
-  addMessages(messages) {
+  addMessages(messageObject) {
     return {
       type: types.ADD_MESSAGES,
-      messages
+      messages: messageObject.messages,
+      chatId: messageObject.chatId
     };
   }
 };

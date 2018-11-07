@@ -3,12 +3,12 @@ import {actionTypes} from '../actions/actions';
 export default function reducer(reduxStore = {}, action) {
   switch (action.type) {
     case actionTypes.ADD_MESSAGE: {
-      return concatMessages(reduxStore, action.messageObject);
+      return concatMessages(reduxStore, action.chatId, action.messageInformation);
     }
 
     case actionTypes.ADD_MESSAGES: {
-      return action.messageObjects.reduce((stateCopy, messageObject) => {
-        return concatMessages(stateCopy, messageObject);
+      return action.messages.reduce((stateCopy, messageObject) => {
+        return concatMessages(stateCopy, action.chatId, messageObject);
       }, reduxStore);
     }
 
@@ -17,15 +17,32 @@ export default function reducer(reduxStore = {}, action) {
   }
 }
 
-const concatMessages = (originalStore, messageObject) => {
+const concatMessages = (originalStore, chatId, message) => {
   let store = {...originalStore};
-  let chatArray = store[messageObject.chatId];
+  let chatArray = store[chatId];
   if (Boolean(chatArray)) {
-    store[messageObject.chatId] = addMessage(chatArray, messageObject.message);
+    if (checkIfAlreadyInStore(store, chatId, message)) {
+      store[chatId] = addMessage(chatArray, message);
+    }
   } else {
-    store[messageObject.chatId] = [messageObject.message];
+    store[chatId] = [message];
   }
   return store;
+};
+
+const checkIfAlreadyInStore = (store, chatId, message) => {
+  return store[chatId].some(element => {
+    return equalMessages(element, message);
+  });
+};
+
+const equalMessages = (leftSide, rightSide) => {
+  return (
+    leftSide.date === rightSide.date &&
+    leftSide.author === rightSide.author &&
+    leftSide.message === rightSide.message &&
+    leftSide.isMe === rightSide.isMe
+  );
 };
 
 const addMessage = (array, newElement) => {

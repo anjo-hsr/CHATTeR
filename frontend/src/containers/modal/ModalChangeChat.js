@@ -3,8 +3,8 @@ import ModalChangeChatComponent from '../../components/modal/ModalChangeChat';
 import {actionChats} from '../../redux/actions/actions';
 
 const mapDispatchToProps = dispatch => ({
-  changeChat: ({id, peers, name}) => {
-    dispatch(actionChats.changeChat({id, chatObject: {name, peers}}));
+  changeChat: ({chatId, peers, name}) => {
+    dispatch(actionChats.changeChat({chatId, chatObject: {name, peers}}));
   }
 });
 

@@ -1,7 +1,9 @@
 package ch.anjo.chatter.http;
 
+import ch.anjo.chatter.http.handlers.handlerClasses.ChatHandler;
 import ch.anjo.chatter.http.handlers.InboundHandler;
-import ch.anjo.chatter.http.handlers.SessionHandler;
+import ch.anjo.chatter.http.handlers.handlerClasses.Handler;
+import ch.anjo.chatter.http.handlers.handlerClasses.SessionHandler;
 import ch.anjo.chatter.http.templates.Message;
 import com.google.gson.Gson;
 import io.javalin.Javalin;
@@ -11,36 +13,35 @@ public class WebSocketServer {
   private static final int PORT = 8000;
 
   public static void main(String[] args) {
-    SessionHandler sessionHandler = new SessionHandler(null, "");
+    Handler handler = new Handler(null, "");
+    ChatHandler chatHandler = new ChatHandler();
     WebSocketServer server = new WebSocketServer();
-    runWebSocketServer(sessionHandler);
+    runWebSocketServer(handler);
   }
 
-  private static void runWebSocketServer(SessionHandler sessionHandler) {
-    try {
-      Javalin.create()
-          .enableStaticFiles("/frontend")
-          .enableCorsForOrigin("*")
-          .ws(
-              "/chat",
-              ws -> {
-                ws.onConnect(session -> {
-                  InboundHandler.handleSession(sessionHandler, session);
-                  sessionHandler.printSession();
-                });
-                ws.onMessage(
-                    (session, JsonMessage) -> {
-                      Gson gson = new Gson();
-                      Message message = gson.fromJson(JsonMessage, Message.class);
+  private static void runWebSocketServer(Handler handler) {
+    Javalin.create()
+        .enableStaticFiles("/frontend")
+        .enableCorsForOrigin("*")
+        .ws(
+            "/chat",
+            ws -> {
+              ws.onConnect(
+                  session -> {
+                    InboundHandler.handleSession(handler, session);
+                    handler.getSessionHandler().printSession();
+                  });
+              ws.onMessage(
+                  (session, JsonMessage) -> {
+                    Gson gson = new Gson();
+                    System.out.println(JsonMessage);
+                    Message message = gson.fromJson(JsonMessage, Message.class);
 
-                      InboundHandler.handleMessageTypes(sessionHandler, message);
-                    });
-              })
-          .start(PORT);
-    } catch (Exception e) {
-      System.out.println("Exception");
-      //Jap, empty catch block.
-    }
+                    InboundHandler.handleMessageTypes(handler, message);
+                  });
+            })
+        .start(PORT);
+
   }
 
   // this is the client control channel over http. Instead of blocking handlers, these

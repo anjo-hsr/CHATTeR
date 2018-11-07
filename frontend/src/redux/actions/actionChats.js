@@ -1,36 +1,32 @@
 import {actionTypes as types} from './actions';
 
 export default {
-  addChat({id, chatObject}) {
+  addChat({chatId, chatObject}) {
     return {
       type: types.ADD_CHAT,
-      chatObject: {
-        id,
-        chat: {
-          name: chatObject.name || chatObject.peers.toString(),
-          peers: chatObject.peers
-        }
+      chatId,
+      chatInformation: {
+        name: chatObject.name || chatObject.peers.toString(),
+        peers: chatObject.peers
       }
     };
   },
 
-  changeChat({id, chatObject}) {
+  changeChat({chatId, chatObject}) {
     return {
       type: types.CHANGE_CHAT,
-      chatObject: {
-        id,
-        chat: {
-          name: chatObject.name || chatObject.peers.toString(),
-          peers: chatObject.peers
-        }
+      chatId,
+      chatInformation: {
+        name: chatObject.name || chatObject.peers.toString(),
+        peers: chatObject.peers
       }
     };
   },
 
-  deleteChat(id) {
+  deleteChat(chatId) {
     return {
       type: types.DELETE_CHAT,
-      id
+      chatId
     };
   },
 

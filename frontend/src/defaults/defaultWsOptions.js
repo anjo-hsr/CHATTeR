@@ -1,6 +1,6 @@
 let defaultWsOptions = {
   protocol: 'ws',
-  server: 'localhost',
+  server: window.location.hostname,
   port: 8000
 };
 
