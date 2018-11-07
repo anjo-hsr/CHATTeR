@@ -7,8 +7,8 @@ export default function reducer(reduxStore = {}, action) {
     }
 
     case actionTypes.ADD_MESSAGES: {
-      return action.messages.reduce((stateCopy, messageObject) => {
-        return concatMessages(stateCopy, action.chatId, messageObject);
+      return action.messages.reduce((stateCopy, messageInformation) => {
+        return concatMessages(stateCopy, action.chatId, messageInformation);
       }, reduxStore);
     }
 
@@ -21,7 +21,7 @@ const concatMessages = (originalStore, chatId, message) => {
   let store = {...originalStore};
   let chatArray = store[chatId];
   if (Boolean(chatArray)) {
-    if (checkIfAlreadyInStore(store, chatId, message)) {
+    if (!checkIfAlreadyInStore(store, chatId, message)) {
       store[chatId] = addMessage(chatArray, message);
     }
   } else {
