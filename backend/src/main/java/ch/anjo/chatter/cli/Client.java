@@ -1,6 +1,6 @@
-package ch.sbi.blockchat.cli;
+package ch.anjo.chatter.cli;
 
-import ch.sbi.blockchat.lib.ClientPeer;
+import ch.anjo.chatter.lib.ClientPeer;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
