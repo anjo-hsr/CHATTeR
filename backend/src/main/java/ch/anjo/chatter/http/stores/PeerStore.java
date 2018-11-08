@@ -2,16 +2,17 @@ package ch.anjo.chatter.http.stores;
 
 import ch.anjo.chatter.http.templates.Peer;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PeerStore {
 
-  private ArrayList<Peer> peers;
+  private List<Peer> peers;
 
   public PeerStore(ArrayList<Peer> peers) {
     this.peers = peers;
   }
 
-  public ArrayList<Peer> getPeers() {
+  public List<Peer> getPeers() {
     return peers;
   }
 

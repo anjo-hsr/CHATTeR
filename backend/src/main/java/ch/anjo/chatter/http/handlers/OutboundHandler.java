@@ -13,14 +13,13 @@ import com.google.gson.JsonParser;
 import io.javalin.websocket.WsSession;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class OutboundHandler {
 
-  public OutboundHandler() {
-  }
+  public OutboundHandler() {}
 
   public static void sendChats(Handler handler) {
     SessionHandler sessionHandler = handler.getSessionHandler();
@@ -32,17 +31,20 @@ public class OutboundHandler {
     JsonObject chats = new JsonObject();
 
     HashMap<String, ChatInformation> chatStore = handler.getChatHandler().getChatStore();
-    chatStore.keySet().forEach(chatId -> {
-      ChatInformation chatInformation = chatStore.get(chatId);
-      JsonObject jsonChatInformation = new JsonObject();
-      jsonChatInformation.addProperty("name", chatInformation.getName());
+    chatStore
+        .keySet()
+        .forEach(
+            chatId -> {
+              ChatInformation chatInformation = chatStore.get(chatId);
+              JsonObject jsonChatInformation = new JsonObject();
+              jsonChatInformation.addProperty("name", chatInformation.getName());
 
-      JsonArray peers = new JsonArray();
-      chatInformation.getPeers().forEach(peers::add);
-      jsonChatInformation.add("peers", peers.getAsJsonArray());
+              JsonArray peers = new JsonArray();
+              chatInformation.getPeers().forEach(peers::add);
+              jsonChatInformation.add("peers", peers.getAsJsonArray());
 
-      chats.add(chatId, jsonChatInformation);
-    });
+              chats.add(chatId, jsonChatInformation);
+            });
     message.add("chats", chats);
     session.send(message.toString());
   }
@@ -100,16 +102,17 @@ public class OutboundHandler {
 
   public static void sendChatMessages(Handler handler, String chatId) {
     WsSession session = handler.getSessionHandler().getSession();
-    ArrayList<String> messages = handler.getChatHandler().getChatMessages(chatId);
+    List<String> messages = handler.getChatHandler().getChatMessages(chatId);
     JsonObject response = new JsonObject();
     response.addProperty("type", "ADD_MESSAGES");
 
     JsonArray jsonMessages = new JsonArray();
     JsonParser jsonParser = new JsonParser();
-    messages.forEach(stringMessage -> {
-      JsonObject jsonMessage = jsonParser.parse(stringMessage).getAsJsonObject();
-      jsonMessages.add(jsonMessage);
-    });
+    messages.forEach(
+        stringMessage -> {
+          JsonObject jsonMessage = jsonParser.parse(stringMessage).getAsJsonObject();
+          jsonMessages.add(jsonMessage);
+        });
 
     response.addProperty("chatId", chatId);
     response.add("messages", jsonMessages);

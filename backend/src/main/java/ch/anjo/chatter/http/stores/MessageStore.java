@@ -2,16 +2,17 @@ package ch.anjo.chatter.http.stores;
 
 import com.google.gson.JsonObject;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MessageStore {
 
-  private ArrayList<JsonObject> messages;
+  private List<JsonObject> messages;
 
   public MessageStore(ArrayList<JsonObject> messages) {
     this.messages = messages;
   }
 
-  public ArrayList<JsonObject> getMessages() {
+  public List<JsonObject> getMessages() {
     return messages;
   }
 

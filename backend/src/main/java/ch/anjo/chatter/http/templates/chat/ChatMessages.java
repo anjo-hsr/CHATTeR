@@ -1,15 +1,16 @@
 package ch.anjo.chatter.http.templates.chat;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ChatMessages {
-  private ArrayList<String> messages;
+  private List<String> messages;
 
-  public ChatMessages(){
+  public ChatMessages() {
     this.messages = new ArrayList<>();
   }
 
-  public ChatMessages(String message){
+  public ChatMessages(String message) {
     this.messages = new ArrayList<>();
     this.messages.add(message);
   }
@@ -18,7 +19,7 @@ public class ChatMessages {
     this.messages = messages;
   }
 
-  public ArrayList<String> getMessages() {
+  public List<String> getMessages() {
     return messages;
   }
 

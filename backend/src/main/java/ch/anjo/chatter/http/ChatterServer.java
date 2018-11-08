@@ -1,25 +1,106 @@
 package ch.anjo.chatter.http;
 
-import ch.anjo.chatter.http.handlers.handlerClasses.ChatHandler;
 import ch.anjo.chatter.http.handlers.InboundHandler;
 import ch.anjo.chatter.http.handlers.handlerClasses.Handler;
-import ch.anjo.chatter.http.handlers.handlerClasses.SessionHandler;
 import ch.anjo.chatter.http.templates.Message;
+import ch.anjo.chatter.lib.ChatterPeer;
+import ch.anjo.chatter.lib.Validator;
 import com.google.gson.Gson;
 import io.javalin.Javalin;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.Scanner;
 
-public class WebSocketServer {
+public class ChatterServer {
 
-  private static final int PORT = 8000;
+  public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
+    if (!Validator.isArgsLengthOk(args)) {
+      System.err.println("Wrong parameters given. " + "Please use at mimimum: [mode] [username]");
+      terminate();
+    }
 
-  public static void main(String[] args) {
-    Handler handler = new Handler(null, "");
-    ChatHandler chatHandler = new ChatHandler();
-    WebSocketServer server = new WebSocketServer();
-    runWebSocketServer(handler);
+    Parameters parameters = new Parameters(args);
+    Validator validator = new Validator(parameters);
+
+    if (!validator.areMinimalParametersGiven()) {
+      terminate();
+    }
+
+    switch (parameters.getMode()) {
+      case "master":
+      case "client":
+        {
+          ChatterPeer myself = new ChatterPeer(parameters);
+
+          Thread webSocketServer = new WebSocketServer(parameters.getWebSocketPort());
+          webSocketServer.start();
+
+          listen(myself);
+          break;
+        }
+      default:
+        terminate();
+    }
   }
 
-  private static void runWebSocketServer(Handler handler) {
+  private static void listen(ChatterPeer myself) {
+      myself.replyToData();
+      for (Scanner scanner = new Scanner(System.in); ; ) {
+      var message = scanner.nextLine();
+      if (message.startsWith("$")) {
+        var command = message.replace("$", "").split(" ");
+        switch (command[0]) {
+          case ("add"):
+            myself.addPeer(command[1]);
+            break;
+          case ("send"):
+            myself.send(command[1], String.join(" ", Arrays.copyOfRange(command, 2, command.length)));
+            break;
+          case ("broadcast"):
+            myself.sendAll(message);
+            break;
+          default:
+            System.out.println("Invalid command.");
+            break;
+        }
+      } else {
+        System.out.println("Invalid command.");
+      }
+    }
+  }
+
+  private static void terminate() {
+    System.err.println(
+        "\nUse the following parameters for the two modes:\n"
+            + "\tmaster: \tmaster [username] [etherAddress] [listening port | default:5000] "
+            + "[webSocket port | default:8000]\n"
+            + "\tclient: \tclient [username] [etherAddress] [listening port | default:5000] "
+            + "[webSocket port | default:8000] [username@ipAddress:port]");
+    System.err.println("\n\nTerminating...");
+    System.exit(1);
+  }
+
+  private static void logout() {
+    Runtime.getRuntime()
+        .addShutdownHook(
+            new Thread(() -> System.out.println("Adios"))
+            // new Thread(me::disconnect)
+            );
+  }
+}
+
+class WebSocketServer extends Thread {
+
+  private final int port;
+  private final Handler handler;
+
+  WebSocketServer(int webSocketPort) {
+    this.port = webSocketPort;
+    this.handler = new Handler(null, "");
+  }
+
+  public void run() {
     Javalin.create()
         .enableStaticFiles("/frontend")
         .enableCorsForOrigin("*")
@@ -40,8 +121,7 @@ public class WebSocketServer {
                     InboundHandler.handleMessageTypes(handler, message);
                   });
             })
-        .start(PORT);
-
+        .start(port);
   }
 
   // this is the client control channel over http. Instead of blocking handlers, these
@@ -55,7 +135,7 @@ public class WebSocketServer {
               new BlockingHandler(
                   exchange -> {
                     exchange.startBlocking();
-                    var user = readJson(exchange.getInputStream(), WebUser.class);
+                    var user = readJson(exchange.getInputStream(), ChatterUser.class);
                     var peer = new HttpPeer(user);
                     sessions.put(user.getName(), peer);
                     var response = new GenericResponse("Started new DHT");
@@ -83,7 +163,7 @@ public class WebSocketServer {
               new BlockingHandler(
                   exchange -> {
                     exchange.startBlocking();
-                    var user = readJson(exchange.getInputStream(), WebUser.class);
+                    var user = readJson(exchange.getInputStream(), ChatterUser.class);
                     String format = String.format("Disconnecting user %s", user);
                     System.out.println(format);
 

@@ -85,6 +85,11 @@
       <artifactId>core</artifactId>
       <version>3.4.0</version>
     </dependency>
+    <dependency>
+      <groupId>commons-validator</groupId>
+      <artifactId>commons-validator</artifactId>
+      <version>1.6</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -113,7 +118,7 @@
           <!-- This will probably require a multi-module project for non-standard clients -->
           <!--<mainClass>ch.sbi.blockchat.app.App</mainClass>-->
           <!--<mainClass>ch.sbi.blockchat.cli.Client</mainClass>-->
-          <mainClass>ch.anjo.chatter.http.WebSocketServer</mainClass>
+          <mainClass>ch.anjo.chatter.http.ChatterServer</mainClass>
           <arguments>
           </arguments>
           <systemProperties>

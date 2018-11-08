@@ -12,10 +12,6 @@ public class SessionHandler {
     this.username = username;
   }
 
-  public void setSession(WsSession session) {
-    this.session = session;
-  }
-
   public void setUsername(String username) {
     this.username = username;
   }

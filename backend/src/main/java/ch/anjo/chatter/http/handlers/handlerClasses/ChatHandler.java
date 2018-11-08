@@ -5,6 +5,7 @@ import ch.anjo.chatter.http.templates.chat.ChatInformation;
 import ch.anjo.chatter.http.templates.chat.ChatMessages;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class ChatHandler {
 
@@ -20,7 +21,7 @@ public class ChatHandler {
     return chatStore;
   }
 
-  public ArrayList<String> getChatMessages(String chatId) {
+  public List<String> getChatMessages(String chatId) {
     if (!chatMessages.containsKey(chatId)) {
       return new ArrayList<>();
     }
@@ -40,7 +41,7 @@ public class ChatHandler {
     chatStore.put(message.chatId, message.chatInformation);
   }
 
-  public void deleteChat(String chatId){
+  public void deleteChat(String chatId) {
     chatStore.remove(chatId);
   }
 

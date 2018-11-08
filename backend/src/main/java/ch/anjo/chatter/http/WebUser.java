@@ -19,6 +19,6 @@ public class WebUser {
 
   @Override
   public String toString() {
-    return "WebUser{" + "name='" + name + '\'' + ", port='" + port + '\'' + '}';
+    return "ChatterUser{" + "name='" + name + '\'' + ", port='" + port + '\'' + '}';
   }
 }
