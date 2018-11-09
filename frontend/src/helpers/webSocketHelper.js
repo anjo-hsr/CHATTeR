@@ -1,12 +1,15 @@
 import {webSocketOptions} from '../defaults/defaults';
-import {actionTypes} from '../redux/actions/actions';
+import {actionState, actionTypes} from '../redux/actions/actions';
 import {actionChats, actionMessages} from '../redux/actions/actions';
 import actionPeers from '../redux/actions/actionPeers';
 
-export default function webSocketHelper(dispatch, username) {
-  const socket = new WebSocket(`${webSocketOptions.baseString}?username=${username}`);
+export default function webSocketHelper(dispatch) {
+  const createSocket = () => {
+    return new WebSocket(webSocketOptions.baseString);
+  };
 
-  socket.onmessage = event => {
+  const onMessage = event => {
+    dispatch(actionState.setSocketStateOpen(JSON.stringify({type: actionTypes.SOCKET_OPEN})));
     const data = JSON.parse(event.data);
     switch (data.type) {
       case actionTypes.ADD_MESSAGE: {
@@ -35,19 +38,18 @@ export default function webSocketHelper(dispatch, username) {
         dispatch(actionPeers.addPeers(JSON.parse(data.peers)));
         break;
       }
+      case actionTypes.SET_USERNAME: {
+        dispatch(actionState.setUsername(data.username));
+        break;
+      }
       default: {
         break;
       }
     }
   };
 
-  socket.onclose = () => {
-    socket.send(
-      JSON.stringify({
-        type: actionTypes.LOGOUT
-      })
-    );
-  };
+  let socket = createSocket();
+  socket.onmessage = onMessage;
 
   return socket;
 }

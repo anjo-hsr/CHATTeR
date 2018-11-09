@@ -15,14 +15,15 @@ export default {
     };
   },
 
-  setConnection(name, masterIpAddress, masterPortNumber) {
+  setSocketStateOpen() {
     return {
-      type: types.SET_CONNECTION,
-      connection: {
-        name,
-        masterIpAddress,
-        masterPortNumber
-      }
+      type: types.SOCKET_OPEN
+    };
+  },
+
+  setSocketStateClosed() {
+    return {
+      type: types.SOCKET_CLOSED
     };
   }
 };

@@ -1,7 +1,6 @@
 package ch.anjo.chatter.http.handlers;
 
 import ch.anjo.chatter.http.handlers.handlerClasses.Handler;
-import ch.anjo.chatter.http.handlers.handlerClasses.SessionHandler;
 import ch.anjo.chatter.http.templates.Peer;
 import ch.anjo.chatter.http.templates.chat.ChatInformation;
 import com.google.common.base.Charsets;
@@ -19,11 +18,14 @@ import java.util.List;
 
 public class OutboundHandler {
 
-  public OutboundHandler() {}
+  public OutboundHandler() {
+  }
 
   public static void sendChats(Handler handler) {
-    SessionHandler sessionHandler = handler.getSessionHandler();
-    WsSession session = sessionHandler.getSession();
+    WsSession frontendSession = handler.getSessionHandler().getFrontendSession();
+    if (frontendSession == null) {
+      return;
+    }
 
     JsonObject message = new JsonObject();
     message.addProperty("type", "ADD_CHATS");
@@ -46,18 +48,24 @@ public class OutboundHandler {
               chats.add(chatId, jsonChatInformation);
             });
     message.add("chats", chats);
-    session.send(message.toString());
+
+    frontendSession.send(message.toString());
   }
 
-  public static void sendPeers(SessionHandler sessionHandler) {
+  public static void sendUsername(Handler handler) {
+    WsSession frontendSession = handler.getSessionHandler().getFrontendSession();
+    if (frontendSession == null) {
+      return;
+    }
+
     JsonObject message = new JsonObject();
-    JsonArray sessions = new JsonArray();
-    message.addProperty("messageType", "sendPeers");
-    message.add("peers", sessions);
-    sendMessage(sessionHandler, message.toString());
+    message.addProperty("type", "SET_USERNAME");
+    message.addProperty("username", handler.getSessionHandler().getUsername());
+
+    frontendSession.send(message.toString());
   }
 
-  public static void broadcastPeers(SessionHandler sessionHandler) {
+  public static void sendPeers(Handler handler) {
     Peer[] peers = getPeerArray();
     JsonArray jsonPeers = new JsonArray();
 
@@ -71,16 +79,7 @@ public class OutboundHandler {
     message.addProperty("type", "ADD_PEERS");
     message.addProperty("peers", jsonPeers.toString());
 
-    sendMessage(sessionHandler, message.toString());
-  }
-
-  public static void broadcastMessage(
-      SessionHandler sessionHandler, String sender, String messageString) {
-    JsonObject message = new JsonObject();
-    message.addProperty("type", "MESSAGE_BROADCAST");
-    message.addProperty("sender", sender);
-    message.addProperty("message", messageString);
-    sendMessage(sessionHandler, message.toString());
+    sendMessage(handler.getSessionHandler().getFrontendSession(), message.toString());
   }
 
   private static Peer[] getPeerArray() {
@@ -96,12 +95,19 @@ public class OutboundHandler {
     return gson.fromJson(jsonString, Peer[].class);
   }
 
-  private static void sendMessage(SessionHandler sessionHandler, String messageString) {
-    sessionHandler.getSession().send(messageString);
+  private static void sendMessage(WsSession session, String messageString) {
+    session.send(messageString);
+  }
+
+  public static void sendMessageToSibling(Handler handler, WsSession session, String messageString){
+    if(handler.getSessionHandler().existsSessionSibling()){
+      WsSession sessionSibling = handler.getSessionHandler().getSessionSibling(session);
+      sessionSibling.send(messageString);
+    }
   }
 
   public static void sendChatMessages(Handler handler, String chatId) {
-    WsSession session = handler.getSessionHandler().getSession();
+    WsSession session = handler.getSessionHandler().getFrontendSession();
     List<String> messages = handler.getChatHandler().getChatMessages(chatId);
     JsonObject response = new JsonObject();
     response.addProperty("type", "ADD_MESSAGES");

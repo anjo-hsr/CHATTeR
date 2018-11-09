@@ -2,6 +2,9 @@ body {
   padding: 1.5vh 1vw 1.5vh 1vw !important;
   background: rgba(32, 192, 40, 0.03) !important; }
 
+.loadingModal {
+  height: 10vh !important; }
+
 .siteGrid {
   height: 97vh !important; }
 
@@ -107,5 +110,7 @@ body {
   opacity: 1 !important; }
   .disabled.field {
     opacity: 0.5 !important; }
+  .disabled .cardi {
+    display: block; }
 
 /*# sourceMappingURL=style.css.map */

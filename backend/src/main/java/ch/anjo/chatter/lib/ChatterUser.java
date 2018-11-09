@@ -48,7 +48,7 @@ public class ChatterUser implements Serializable {
     return new Number160(getHash(username).asBytes());
   }
 
-  public void addFriend(String username){
+  public void addFriend(String username) {
     friends.add(username);
   }
 }

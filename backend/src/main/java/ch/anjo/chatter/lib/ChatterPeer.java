@@ -116,7 +116,7 @@ public class ChatterPeer {
 
   public void addPeer(String username) throws IOException, ClassNotFoundException {
     Data possibleFriend = peerDht.get(byteHash(username)).start().awaitUninterruptibly().data();
-    if(possibleFriend != null){
+    if (possibleFriend != null) {
       ChatterUser friend = (ChatterUser) possibleFriend.object();
       chatterUser.addFriend(username);
       peerDht.put(chatterUser.usernameToByteHash()).data(new Data(chatterUser)).start();

@@ -7,16 +7,18 @@ import {Grid} from 'semantic-ui-react';
 
 import {Chats} from '../containers/chat/Chats';
 import {MessageWindow} from '../containers/message/MessageWindow';
-import {ModalSetConnection} from '../containers/modal/ModalSetConnection';
 import webSocketHelper from '../helpers/webSocketHelper';
 import {rootSaga} from '../redux/saga/rootSaga';
+import ModalWaitForWebSocket from './modal/ModalWaitForWebSocket';
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       newSocketNeeded: true,
-      sidebarOpen: true
+      sidebarOpen: true,
+      isSocketOpen: true,
+      socket: null
     };
     this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this);
   }
@@ -26,18 +28,13 @@ export default class App extends React.Component {
   }
 
   setSocket = () => {
-    if (Boolean(this.props.username) && this.state.newSocketNeeded) {
-      const socket = webSocketHelper(this.props.dispatch, this.props.username);
+    if (this.props.isSocketOpen === undefined && this.state.newSocketNeeded) {
+      const socket = webSocketHelper(this.props.dispatch);
       this.props.sagaMiddleware.run(rootSaga, socket);
-
+      this.props.setSocketStateOpen();
       setTimeout(() => {
-        this.props.setConnection(
-          this.props.username,
-          window.localStorage.getItem('ipAddress'),
-          window.localStorage.getItem('portNumber')
-        );
-        this.setState({newSocketNeeded: false});
-      }, 300);
+        this.setState({socket, newSocketNeeded: false});
+      }, 50);
     }
   };
 
@@ -45,26 +42,22 @@ export default class App extends React.Component {
     this.setSocket();
     return (
       <div>
-        {Boolean(this.props.username) ? (
-          <Grid className="siteGrid">
-            <Grid.Row columns="equal">
-              {isMobile ? (
-                <Menu>
-                  <Chats />
-                </Menu>
-              ) : (
-                <Grid.Column width="5">
-                  <Chats />
-                </Grid.Column>
-              )}
-              <Grid.Column width={isMobile ? 5 : 1} />
-              <Grid.Column className="chatWindow">{Boolean(this.props.selectedChat) && <MessageWindow />}</Grid.Column>
-              <Grid.Column width="1" />
-            </Grid.Row>
-          </Grid>
-        ) : (
-          <ModalSetConnection />
-        )}
+        <Grid className="siteGrid">
+          <Grid.Row columns="equal">
+            {isMobile ? (
+              <Menu>
+                <Chats />
+              </Menu>
+            ) : (
+              <Grid.Column width="5">
+                <Chats />
+              </Grid.Column>
+            )}
+            <Grid.Column width={isMobile ? 5 : 1} />
+            <Grid.Column className="chatWindow">{Boolean(this.props.selectedChat) && <MessageWindow />}</Grid.Column>
+            <Grid.Column width="1" />
+          </Grid.Row>
+        </Grid>
       </div>
     );
   }
@@ -72,8 +65,9 @@ export default class App extends React.Component {
 
 App.propTypes = {
   dispatch: PropTypes.func.isRequired,
+  isSocketOpen: PropTypes.bool,
+  setSocketStateOpen: PropTypes.func.isRequired,
   sagaMiddleware: PropTypes.func.isRequired,
-  setConnection: PropTypes.func.isRequired,
   username: PropTypes.string,
   selectedChat: PropTypes.string
 };

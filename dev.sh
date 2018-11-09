@@ -6,6 +6,7 @@
   "-DskipTests=true" \
   "-Ddeactivate-dev-tools=false" \
   clean install exec:java \
+  "-Dexec.args=master root 0xc0a71f7eb1a04a867a65022021f962b3a65a40a5" \
   &
 
 

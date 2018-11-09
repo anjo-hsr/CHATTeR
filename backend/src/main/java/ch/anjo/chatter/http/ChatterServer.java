@@ -1,22 +1,20 @@
 package ch.anjo.chatter.http;
 
-import ch.anjo.chatter.http.handlers.InboundHandler;
-import ch.anjo.chatter.http.handlers.handlerClasses.Handler;
-import ch.anjo.chatter.http.templates.Message;
 import ch.anjo.chatter.lib.ChatterPeer;
 import ch.anjo.chatter.lib.Validator;
-import com.google.gson.Gson;
-import io.javalin.Javalin;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.Scanner;
+import ch.anjo.chatter.http.services.*;
 
 public class ChatterServer {
 
-  public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
+  public static void main(String[] args)
+      throws IOException, NoSuchAlgorithmException, URISyntaxException, InterruptedException {
     if (!Validator.isArgsLengthOk(args)) {
-      System.err.println("Wrong parameters given. " + "Please use at mimimum: [mode] [username]");
+      System.err.println(
+          "Wrong parameters given. " + "Please use at mimimum: [mode] [username] [etherAddress]");
+      System.err.println(args.length);
       terminate();
     }
 
@@ -29,44 +27,17 @@ public class ChatterServer {
 
     switch (parameters.getMode()) {
       case "master":
-      case "client":
-        {
-          ChatterPeer myself = new ChatterPeer(parameters);
+      case "client": {
+        ChatterPeer myself = new ChatterPeer(parameters);
 
-          Thread webSocketServer = new WebSocketServer(parameters.getWebSocketPort());
-          webSocketServer.start();
+        Thread webSocketServer = new WebSocketService(parameters.getWebSocketPort());
+        webSocketServer.start();
 
-          listen(myself);
-          break;
-        }
+        TomP2pService.listen(myself, parameters.getWebSocketPort(), parameters.getUsername());
+        break;
+      }
       default:
         terminate();
-    }
-  }
-
-  private static void listen(ChatterPeer myself) {
-      myself.replyToData();
-      for (Scanner scanner = new Scanner(System.in); ; ) {
-      var message = scanner.nextLine();
-      if (message.startsWith("$")) {
-        var command = message.replace("$", "").split(" ");
-        switch (command[0]) {
-          case ("add"):
-            myself.addPeer(command[1]);
-            break;
-          case ("send"):
-            myself.send(command[1], String.join(" ", Arrays.copyOfRange(command, 2, command.length)));
-            break;
-          case ("broadcast"):
-            myself.sendAll(message);
-            break;
-          default:
-            System.out.println("Invalid command.");
-            break;
-        }
-      } else {
-        System.out.println("Invalid command.");
-      }
     }
   }
 
@@ -86,47 +57,13 @@ public class ChatterServer {
         .addShutdownHook(
             new Thread(() -> System.out.println("Adios"))
             // new Thread(me::disconnect)
-            );
+        );
   }
 }
 
-class WebSocketServer extends Thread {
-
-  private final int port;
-  private final Handler handler;
-
-  WebSocketServer(int webSocketPort) {
-    this.port = webSocketPort;
-    this.handler = new Handler(null, "");
-  }
-
-  public void run() {
-    Javalin.create()
-        .enableStaticFiles("/frontend")
-        .enableCorsForOrigin("*")
-        .ws(
-            "/chat",
-            ws -> {
-              ws.onConnect(
-                  session -> {
-                    InboundHandler.handleSession(handler, session);
-                    handler.getSessionHandler().printSession();
-                  });
-              ws.onMessage(
-                  (session, JsonMessage) -> {
-                    Gson gson = new Gson();
-                    System.out.println(JsonMessage);
-                    Message message = gson.fromJson(JsonMessage, Message.class);
-
-                    InboundHandler.handleMessageTypes(handler, message);
-                  });
-            })
-        .start(port);
-  }
-
-  // this is the client control channel over http. Instead of blocking handlers, these
-  // should all have proper callbacks that are passed into httppeer and peppered with
-  // real information there.
+// this is the client control channel over http. Instead of blocking handlers, these
+// should all have proper callbacks that are passed into httppeer and peppered with
+// real information there.
 
   /*RoutingHandler paths =
       new RoutingHandler()
@@ -234,4 +171,3 @@ class WebSocketServer extends Thread {
       Undertow.builder().addHttpListener(8000, "localhost").setHandler(handler).build();
 
   server.start();*/
-}

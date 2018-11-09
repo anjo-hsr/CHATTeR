@@ -1,28 +1,54 @@
 package ch.anjo.chatter.http.handlers.handlerClasses;
 
+import ch.anjo.chatter.http.templates.WebSocketPair;
 import io.javalin.websocket.WsSession;
+import java.util.List;
 
 public class SessionHandler {
 
-  private WsSession session;
+  private WebSocketPair sessions;
   private String username;
 
-  public SessionHandler(WsSession session, String username) {
-    this.session = session;
+  public SessionHandler(String username) {
+    this.sessions = new WebSocketPair();
     this.username = username;
   }
 
   public void setUsername(String username) {
-    this.username = username;
+    if (username != null) {
+      this.username = username;
+    }
   }
 
-  public void saveSession(WsSession session, String username) {
-    this.session = session;
-    this.username = username;
+  public void replaceSession(WsSession session, String type) {
+    switch (type) {
+      case "frontend":
+        this.sessions.setFrontendSession(session);
+        break;
+      case "backend":
+        this.sessions.setBackendSession(session);
+        break;
+    }
   }
 
-  public WsSession getSession() {
-    return session;
+  public List<WsSession> getSessions() {
+    return sessions.getSessions();
+  }
+
+  public WsSession getFrontendSession() {
+    return sessions.getFrontendSession();
+  }
+
+  public WsSession getBackendSession() {
+    return sessions.getBackendSession();
+  }
+
+  public boolean existsSessionSibling() {
+    return sessions.getBackendSession() != null && sessions.getFrontendSession() != null;
+  }
+
+  public WsSession getSessionSibling(WsSession session) {
+    return sessions.getSibling(session);
   }
 
   public String getUsername() {
@@ -30,6 +56,6 @@ public class SessionHandler {
   }
 
   public void printSession() {
-    System.out.println(this.username + " at -> " + this.session.toString());
+    System.out.println(this.username + " at -> " + this.sessions.toString());
   }
 }

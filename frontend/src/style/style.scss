@@ -9,6 +9,10 @@ body {
   background: $defaultBackgroundColor;
 }
 
+.loadingModal {
+  height: 10vh !important;
+}
+
 .siteGrid {
   height: (100vh - 2*$bodyYMarginSize) !important;
 }
@@ -146,5 +150,10 @@ body {
   opacity: 1 !important;
   &.field {
     opacity: 0.5 !important;
+  }
+
+  
+  .cardi {
+    display: block;
   }
 }

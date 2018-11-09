@@ -10,8 +10,16 @@ export default function reducer(reduxStore = {}, action) {
       return {...reduxStore, username: action.username};
     }
 
-    case actionTypes.SET_CONNECTION: {
-      return {...reduxStore, connection: action.connection};
+    case actionTypes.SOCKET_OPEN: {
+      const socketState = reduxStore.isSocketOpen;
+      if (socketState !== undefined) {
+        return {...reduxStore, isSocketOpen: !socketState};
+      }
+      return {...reduxStore, isSocketOpen: false};
+    }
+
+    case actionTypes.SOCKET_CLOSED: {
+      return {...reduxStore, isSocketOpen: false};
     }
 
     default:
