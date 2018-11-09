@@ -26,5 +26,5 @@ node/**
 package-lock.json
 
 #SCSS
-**/style.css
-**/style.css.map
+*.css
+*.css.map
