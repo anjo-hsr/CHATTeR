@@ -11,6 +11,10 @@ body {
   background: $defaultBackgroundColor;
 }
 
+.loadingModal {
+  height: 10vh !important;
+}
+
 .siteGrid {
   height: (100vh - 2*$bodyYMarginSize) !important;
 }

@@ -9,6 +9,5 @@ public class Message {
   public String username;
   public String chatId;
   public MessageInformation messageInformation;
-  public ConnectionObject connection;
   public ChatInformation chatInformation;
 }

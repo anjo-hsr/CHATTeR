@@ -4,11 +4,12 @@ import PropTypes from 'prop-types';
 import {isMobile} from 'react-device-detect';
 import {Grid, Sidebar} from 'semantic-ui-react';
 
-import {ModalSetConnection} from '../containers/modal/ModalSetConnection';
+import {Chats} from '../containers/chat/Chats';
+import {MessageWindow} from '../containers/message/MessageWindow';
 import webSocketHelper from '../helpers/webSocketHelper';
 import viewHelper from '../helpers/viewHelper';
 import {rootSaga} from '../redux/saga/rootSaga';
-import {Chats} from '../containers/chat/Chats';
+import ModalWaitForWebSocket from './modal/ModalWaitForWebSocket';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -17,7 +18,9 @@ export default class App extends React.Component {
       newSocketNeeded: true,
       sidebarOpen: true,
       iconName: 'bars',
-      visible: false
+      visible: false,
+      isSocketOpen: true,
+      socket: null
     };
     this.getHeader = viewHelper.getHeader.bind(this);
     this.getSideBar = viewHelper.getSideBar.bind(this);
@@ -27,18 +30,13 @@ export default class App extends React.Component {
   }
 
   setSocket = () => {
-    if (Boolean(this.props.username) && this.state.newSocketNeeded) {
-      const socket = webSocketHelper(this.props.dispatch, this.props.username);
+    if (this.props.isSocketOpen === undefined && this.state.newSocketNeeded) {
+      const socket = webSocketHelper(this.props.dispatch);
       this.props.sagaMiddleware.run(rootSaga, socket);
-
+      this.props.setSocketStateOpen();
       setTimeout(() => {
-        this.props.setConnection(
-          this.props.username,
-          window.localStorage.getItem('ipAddress'),
-          window.localStorage.getItem('portNumber')
-        );
-        this.setState({newSocketNeeded: false});
-      }, 300);
+        this.setState({socket, newSocketNeeded: false});
+      }, 50);
     }
   };
 
@@ -46,7 +44,7 @@ export default class App extends React.Component {
     this.setSocket();
     return (
       <div>
-        {Boolean(this.props.username) ? (
+        {Boolean(this.props.username) && (
           <Grid className="siteGrid" padded>
             {this.getHeader(true)}
             {isMobile ? (
@@ -69,8 +67,6 @@ export default class App extends React.Component {
               </Grid.Row>
             )}
           </Grid>
-        ) : (
-          <ModalSetConnection />
         )}
       </div>
     );
@@ -79,8 +75,9 @@ export default class App extends React.Component {
 
 App.propTypes = {
   dispatch: PropTypes.func.isRequired,
+  isSocketOpen: PropTypes.bool,
+  setSocketStateOpen: PropTypes.func.isRequired,
   sagaMiddleware: PropTypes.func.isRequired,
-  setConnection: PropTypes.func.isRequired,
   username: PropTypes.string,
   selectedChat: PropTypes.string
 };

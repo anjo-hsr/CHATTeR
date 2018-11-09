@@ -1,52 +1,69 @@
 package ch.anjo.chatter.http;
 
-import ch.anjo.chatter.http.handlers.handlerClasses.ChatHandler;
-import ch.anjo.chatter.http.handlers.InboundHandler;
-import ch.anjo.chatter.http.handlers.handlerClasses.Handler;
-import ch.anjo.chatter.http.handlers.handlerClasses.SessionHandler;
-import ch.anjo.chatter.http.templates.Message;
-import com.google.gson.Gson;
-import io.javalin.Javalin;
+import ch.anjo.chatter.lib.ChatterPeer;
+import ch.anjo.chatter.lib.Validator;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.NoSuchAlgorithmException;
+import ch.anjo.chatter.http.services.*;
 
-public class WebSocketServer {
+public class ChatterServer {
 
-  private static final int PORT = 8000;
+  public static void main(String[] args)
+      throws IOException, NoSuchAlgorithmException, URISyntaxException, InterruptedException {
+    if (!Validator.isArgsLengthOk(args)) {
+      System.err.println(
+          "Wrong parameters given. " + "Please use at mimimum: [mode] [username] [etherAddress]");
+      System.err.println(args.length);
+      terminate();
+    }
 
-  public static void main(String[] args) {
-    Handler handler = new Handler(null, "");
-    ChatHandler chatHandler = new ChatHandler();
-    WebSocketServer server = new WebSocketServer();
-    runWebSocketServer(handler);
+    Parameters parameters = new Parameters(args);
+    Validator validator = new Validator(parameters);
+
+    if (!validator.areMinimalParametersGiven()) {
+      terminate();
+    }
+
+    switch (parameters.getMode()) {
+      case "master":
+      case "client": {
+        ChatterPeer myself = new ChatterPeer(parameters);
+
+        Thread webSocketServer = new WebSocketService(parameters.getWebSocketPort());
+        webSocketServer.start();
+
+        TomP2pService.listen(myself, parameters.getWebSocketPort(), parameters.getUsername());
+        break;
+      }
+      default:
+        terminate();
+    }
   }
 
-  private static void runWebSocketServer(Handler handler) {
-    Javalin.create()
-        .enableStaticFiles("/frontend")
-        .enableCorsForOrigin("*")
-        .ws(
-            "/chat",
-            ws -> {
-              ws.onConnect(
-                  session -> {
-                    InboundHandler.handleSession(handler, session);
-                    handler.getSessionHandler().printSession();
-                  });
-              ws.onMessage(
-                  (session, JsonMessage) -> {
-                    Gson gson = new Gson();
-                    System.out.println(JsonMessage);
-                    Message message = gson.fromJson(JsonMessage, Message.class);
-
-                    InboundHandler.handleMessageTypes(handler, message);
-                  });
-            })
-        .start(PORT);
-
+  private static void terminate() {
+    System.err.println(
+        "\nUse the following parameters for the two modes:\n"
+            + "\tmaster: \tmaster [username] [etherAddress] [listening port | default:5000] "
+            + "[webSocket port | default:8000]\n"
+            + "\tclient: \tclient [username] [etherAddress] [listening port | default:5000] "
+            + "[webSocket port | default:8000] [username@ipAddress:port]");
+    System.err.println("\n\nTerminating...");
+    System.exit(1);
   }
 
-  // this is the client control channel over http. Instead of blocking handlers, these
-  // should all have proper callbacks that are passed into httppeer and peppered with
-  // real information there.
+  private static void logout() {
+    Runtime.getRuntime()
+        .addShutdownHook(
+            new Thread(() -> System.out.println("Adios"))
+            // new Thread(me::disconnect)
+        );
+  }
+}
+
+// this is the client control channel over http. Instead of blocking handlers, these
+// should all have proper callbacks that are passed into httppeer and peppered with
+// real information there.
 
   /*RoutingHandler paths =
       new RoutingHandler()
@@ -55,7 +72,7 @@ public class WebSocketServer {
               new BlockingHandler(
                   exchange -> {
                     exchange.startBlocking();
-                    var user = readJson(exchange.getInputStream(), WebUser.class);
+                    var user = readJson(exchange.getInputStream(), ChatterUser.class);
                     var peer = new HttpPeer(user);
                     sessions.put(user.getName(), peer);
                     var response = new GenericResponse("Started new DHT");
@@ -83,7 +100,7 @@ public class WebSocketServer {
               new BlockingHandler(
                   exchange -> {
                     exchange.startBlocking();
-                    var user = readJson(exchange.getInputStream(), WebUser.class);
+                    var user = readJson(exchange.getInputStream(), ChatterUser.class);
                     String format = String.format("Disconnecting user %s", user);
                     System.out.println(format);
 
@@ -154,4 +171,3 @@ public class WebSocketServer {
       Undertow.builder().addHttpListener(8000, "localhost").setHandler(handler).build();
 
   server.start();*/
-}

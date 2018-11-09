@@ -10,30 +10,30 @@ public class InboundHandler {
 
   public static void handleSession(Handler handler, WsSession session) {
     String username = session.queryParam("username");
-    if (username != null) {
-      handler.saveSession(session, username);
-      OutboundHandler.broadcastPeers(handler.getSessionHandler());
+    String wsType = session.queryParam("wsType");
+    if (wsType != null) {
+      handler.getSessionHandler().replaceSession(session, wsType);
+      handler.getSessionHandler().setUsername(username);
     }
   }
 
-  public static void handleMessageTypes(Handler handler, Message message) {
+  public static void handleMessageTypes(Handler handler, WsSession session, String jsonMessage, Message message) {
     switch (message.type) {
       case "ADD_MESSAGE":
         saveMessage(handler, message.chatId, message.messageInformation);
+        OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
         break;
       case "SET_USERNAME":
         setUsername(handler, message);
         break;
-      case "SET_CONNECTION":
-        message.connection.printInformation();
-        OutboundHandler.sendChats(handler);
-        break;
       case "ADD_CHAT":
       case "CHANGE_CHAT":
         handler.getChatHandler().saveChat(message);
+        OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
         break;
       case "DELETE_CHAT":
         handler.getChatHandler().deleteChat(message.chatId);
+        OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
         break;
       case "SELECT_CHAT":
         OutboundHandler.sendChatMessages(handler, message.chatId);
@@ -42,7 +42,7 @@ public class InboundHandler {
 
   private static void setUsername(Handler handler, Message message) {
     handler.setUsername(message.username);
-    OutboundHandler.broadcastPeers(handler.getSessionHandler());
+    OutboundHandler.sendPeers(handler);
     handler.getSessionHandler().printSession();
   }
 

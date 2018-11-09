@@ -9,7 +9,7 @@ public class Handler {
 
   public Handler(WsSession session, String username) {
     this.chatHandler = new ChatHandler();
-    this.sessionHandler = new SessionHandler(session, username);
+    this.sessionHandler = new SessionHandler(username);
   }
 
   public ChatHandler getChatHandler() {
@@ -18,10 +18,6 @@ public class Handler {
 
   public SessionHandler getSessionHandler() {
     return sessionHandler;
-  }
-
-  public void saveSession(WsSession session, String username) {
-    sessionHandler.saveSession(session, username);
   }
 
   public void setUsername(String username) {

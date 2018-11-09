@@ -13,7 +13,10 @@ let actionTypes = {
 
   ADD_PEERS: 'ADD_PEERS',
 
-  TOGGLE_MENU: 'TOGGLE_MENU'
+  TOGGLE_MENU: 'TOGGLE_MENU',
+
+  SOCKET_CLOSED: 'SOCKET_CLOSED',
+  SOCKET_OPEN: 'SOCKET_OPEN'
 };
 
 export default Object.freeze(Object.assign({}, actionTypes));
