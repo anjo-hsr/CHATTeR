@@ -37,6 +37,14 @@ public class InboundHandler {
         break;
       case "SELECT_CHAT":
         OutboundHandler.sendChatMessages(handler, message.chatId);
+        break;
+      case "PING_MESSAGE":
+        JsonObject responseMessage = new JsonObject();
+        responseMessage.addProperty("type", "PONG_MESSAGE");
+        session.send(responseMessage.toString());
+        break;
+      default:
+        return;
     }
   }
 

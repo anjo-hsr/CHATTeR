@@ -49,6 +49,7 @@ public class ChatterServer {
     webSocketServer.start();
 
     TomP2pService.listen(myself, parameters.getWebSocketPort(), parameters.getUsername());
+    webSocketServer.stop();
   }
 
   private static void terminate() {

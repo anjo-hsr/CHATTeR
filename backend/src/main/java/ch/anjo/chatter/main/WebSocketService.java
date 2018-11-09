@@ -40,9 +40,10 @@ public class WebSocketService extends Thread {
               ws.onMessage(
                   (session, jsonMessage) -> {
                     Gson gson = new Gson();
-                    System.out.println(jsonMessage);
                     Message message = gson.fromJson(jsonMessage, Message.class);
-
+                    if(message != null && !message.type.equals("PING_MESSAGE")){
+                      System.out.println(message);
+                    }
                     InboundHandler.handleMessageTypes(handler, session, jsonMessage, message);
                   });
             })

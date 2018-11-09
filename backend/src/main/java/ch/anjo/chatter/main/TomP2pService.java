@@ -1,10 +1,12 @@
 package ch.anjo.chatter.main;
 
 import ch.anjo.chatter.tomp2p.ChatterPeer;
+import com.google.gson.JsonObject;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
 import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.exceptions.WebsocketNotConnectedException;
 import org.java_websocket.handshake.ServerHandshake;
 
 public class TomP2pService {
@@ -30,7 +32,7 @@ public class TomP2pService {
 
             @Override
             public void onClose(int code, String reason, boolean remote) {
-              System.out.println("closed connection");
+              System.out.println("Closed connection:\n"+reason);
             }
 
             @Override
@@ -38,16 +40,20 @@ public class TomP2pService {
               ex.printStackTrace();
             }
           };
-      webSocketClient.connect();
 
+      webSocketClient.connect();
+      TimeUnit.SECONDS.sleep(2);
       myself.replyToData(webSocketClient);
+
+      JsonObject message = new JsonObject();
+      message.addProperty("type", "PING_MESSAGE");
 
       while (true) {
         // Wait for messages
-        webSocketClient.send("");
-        TimeUnit.SECONDS.sleep(1);
+        webSocketClient.send(message.toString());
+        TimeUnit.SECONDS.sleep(5);
       }
-    } catch (InterruptedException | URISyntaxException e) {
+    } catch ( WebsocketNotConnectedException | InterruptedException | URISyntaxException e) {
       e.printStackTrace();
       System.exit(1);
     }
