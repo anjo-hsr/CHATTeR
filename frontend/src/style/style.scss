@@ -20,7 +20,7 @@ body {
 }
 
 .siteHeader {
-  height: $headerHeight;
+  height: $headerHeight !important;
   padding: 0 !important;
   margin-bottom: 1em;
   & > .headerButton {
