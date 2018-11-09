@@ -26,5 +26,7 @@ node/**
 package-lock.json
 
 #SCSS
-*.css
-*.css.map
+style.css
+style.css.map
+burgerMenu.css
+burgerMenu.css.map
