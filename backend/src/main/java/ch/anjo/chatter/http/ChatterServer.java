@@ -3,14 +3,12 @@ package ch.anjo.chatter.http;
 import ch.anjo.chatter.lib.ChatterPeer;
 import ch.anjo.chatter.lib.Validator;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import ch.anjo.chatter.http.services.*;
 
 public class ChatterServer {
 
-  public static void main(String[] args)
-      throws IOException, NoSuchAlgorithmException, URISyntaxException, InterruptedException {
+  public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
     if (!Validator.isArgsLengthOk(args)) {
       System.err.println(
           "Wrong parameters given. " + "Please use at mimimum: [mode] [username] [etherAddress]");

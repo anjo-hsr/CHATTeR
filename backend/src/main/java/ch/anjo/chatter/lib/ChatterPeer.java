@@ -85,8 +85,8 @@ public class ChatterPeer {
 
   public void replyToData() {
     myself.objectDataReply(
-        (sender, request) -> {
-          ChatterMessage message = (ChatterMessage) request;
+        (sender, inboundMessage) -> {
+          ChatterMessage message = (ChatterMessage) inboundMessage;
 
           if (messageHistory.indexOf(message) == -1) {
             messageHistory.add(message);
