@@ -37,12 +37,7 @@ const checkIfAlreadyInStore = (store, chatId, message) => {
 };
 
 const equalMessages = (leftSide, rightSide) => {
-  return (
-    leftSide.date === rightSide.date &&
-    leftSide.author === rightSide.author &&
-    leftSide.message === rightSide.message &&
-    leftSide.isMe === rightSide.isMe
-  );
+  return leftSide.messageId === rightSide.messageId;
 };
 
 const addMessage = (array, newElement) => {

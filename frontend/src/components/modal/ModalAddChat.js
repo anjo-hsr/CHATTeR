@@ -31,12 +31,6 @@ export default class ModalAddAddress extends React.Component {
     return check;
   };
 
-  getRandomId = () => {
-    const MIN_VALUE = 100;
-    const MAX_VALUE = 100000;
-    return Math.floor(Math.random() * (MAX_VALUE - MIN_VALUE + 1)) + MIN_VALUE;
-  };
-
   close = event => {
     event.preventDefault();
     this.setState({open: false});
@@ -63,7 +57,6 @@ export default class ModalAddAddress extends React.Component {
             onSubmit={() => {
               if (this.checkPeers()) {
                 this.props.addChat({
-                  chatId: this.getRandomId().toString(),
                   name: this.state.name,
                   peers: this.state.selectedPeers.map(peers => peers.label).concat(this.props.self)
                 });

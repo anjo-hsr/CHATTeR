@@ -1,4 +1,5 @@
 import {actionTypes as types} from './actions';
+import shajs from 'sha.js';
 
 export default {
   addChat({chatId, chatObject}) {

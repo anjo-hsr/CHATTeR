@@ -1,9 +1,14 @@
 import {connect} from 'react-redux';
 import ModalAddChatComponent from '../../components/modal/ModalAddChat';
 import {actionChats, actionState} from '../../redux/actions/actions';
+import shajs from 'sha.js';
 
 const mapDispatchToProps = dispatch => ({
-  addChat: ({chatId, peers, name}) => {
+  addChat: ({peers, name}) => {
+    const chatId = shajs('sha256')
+      .update(new Date() + Math.random())
+      .digest('hex');
+    console.log(chatId);
     dispatch(actionChats.addChat({chatId, chatObject: {name, peers}}));
     dispatch(actionState.selectChat(chatId));
   }
