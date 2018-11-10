@@ -20,11 +20,11 @@ public class ChatterUser implements Serializable {
   private Set<String> friends;
   private boolean isOnline;
 
-  public ChatterUser(Parameters parameters) {
+  ChatterUser(Parameters parameters) {
     this(parameters, new HashSet<>());
   }
 
-  public ChatterUser(Parameters parameters, HashSet<String> friends) {
+  ChatterUser(Parameters parameters, HashSet<String> friends) {
     this.username = parameters.getUsername();
     this.etherAddress = parameters.getEtherAddress();
     this.port = parameters.getListeningPort();
@@ -40,6 +40,10 @@ public class ChatterUser implements Serializable {
     }
   }
 
+  public String getUsername() {
+    return username;
+  }
+
   public Set<String> getFriends() {
     return friends;
   }
@@ -48,23 +52,27 @@ public class ChatterUser implements Serializable {
     return isOnline;
   }
 
-  public HashCode getHash(String hashString) {
+  private HashCode getSha1Hash(String hashString) {
     return Hashing.sha1().hashBytes(hashString.getBytes());
   }
 
-  public Number160 usernameToByteHash() {
-    return new Number160(getHash(username).asBytes());
+  public Number160 getHash() {
+    return new Number160(getSha1Hash(username).asBytes());
   }
 
-  public void addFriend(String username) {
+  public Number160 getHash(String otherUsername) {
+    return new Number160(getSha1Hash(otherUsername).asBytes());
+  }
+
+  void addFriend(String username) {
     friends.add(username);
   }
 
-  public void addFriends(Set<String> newFriends) {
+  void addFriends(Set<String> newFriends) {
     friends.addAll(newFriends);
   }
 
-  public void setOnlineState(boolean onlineState){
+  void setOnlineState(boolean onlineState) {
     isOnline = onlineState;
   }
 }

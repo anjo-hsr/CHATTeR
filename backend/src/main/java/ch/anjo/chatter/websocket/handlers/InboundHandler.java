@@ -1,5 +1,6 @@
 package ch.anjo.chatter.websocket.handlers;
 
+import ch.anjo.chatter.helpers.MessageTypes;
 import ch.anjo.chatter.websocket.handlers.handlerClasses.Handler;
 import ch.anjo.chatter.websocket.templates.Message;
 import ch.anjo.chatter.websocket.templates.message.MessageInformation;
@@ -19,30 +20,27 @@ public class InboundHandler {
 
   public static void handleMessageTypes(Handler handler, WsSession session, String jsonMessage, Message message) {
     switch (message.type) {
-      case "ADD_MESSAGE":
+      case MessageTypes.ADD_MESSAGE:
         saveMessage(handler, message.chatId, message.messageInformation);
         OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
         break;
-      case "SET_USERNAME":
+      case MessageTypes.SET_USERNAME:
         setUsername(handler, message);
         break;
-      case "ADD_CHAT":
-      case "CHANGE_CHAT":
+      case MessageTypes.ADD_CHAT:
+      case MessageTypes.CHANGE_CHAT:
         handler.getChatHandler().saveChat(message);
         OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
         break;
-      case "DELETE_CHAT":
+      case MessageTypes.DELETE_CHAT:
         handler.getChatHandler().deleteChat(message.chatId);
         OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
         break;
-      case "SELECT_CHAT":
+      case MessageTypes.SELECT_CHAT:
         OutboundHandler.sendChatMessages(handler, message.chatId);
         break;
-      case "PING_MESSAGE":
-        JsonObject responseMessage = new JsonObject();
-        responseMessage.addProperty("type", "PONG_MESSAGE");
-        session.send(responseMessage.toString());
-        break;
+      case MessageTypes.GET_CHAT_PEERS:
+        OutboundHandler.sendChatPeers(handler, session, message.id, message.chatId);
       default:
         return;
     }
@@ -54,7 +52,7 @@ public class InboundHandler {
     handler.getSessionHandler().printSession();
   }
 
-  public static void saveMessage(Handler handler, String chatId, MessageInformation message) {
+  private static void saveMessage(Handler handler, String chatId, MessageInformation message) {
     JsonObject messageInformation = createMessageInformation(message);
     handler.saveMessage(chatId, messageInformation.toString());
   }

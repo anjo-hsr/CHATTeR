@@ -11,7 +11,8 @@ public class Validator {
   public Validator(Parameters parameters) {
     this.parameters = parameters;
   }
-  public Validator(ClientParameters parameters) {
+
+  public void setParameters(Parameters parameters) {
     this.parameters = parameters;
   }
 
@@ -74,5 +75,9 @@ public class Validator {
   public static boolean isArgsLengthOk(String[] args) {
     // The first three parameters are mandatory
     return args.length >= 3;
+  }
+
+  public Parameters getParameters() {
+    return parameters;
   }
 }

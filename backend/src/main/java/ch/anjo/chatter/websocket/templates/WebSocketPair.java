@@ -20,7 +20,7 @@ public class WebSocketPair {
   }
 
   public List<WsSession> getSessions() {
-    return Arrays.asList(frontendSession, backendSession);
+    return List.of(frontendSession, backendSession);
   }
 
   public WsSession getFrontendSession() {

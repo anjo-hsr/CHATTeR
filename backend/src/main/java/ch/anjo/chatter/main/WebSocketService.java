@@ -1,5 +1,6 @@
 package ch.anjo.chatter.main;
 
+import ch.anjo.chatter.helpers.MessageTypes;
 import ch.anjo.chatter.websocket.handlers.InboundHandler;
 import ch.anjo.chatter.websocket.handlers.OutboundHandler;
 import ch.anjo.chatter.websocket.handlers.handlerClasses.Handler;
@@ -31,19 +32,24 @@ public class WebSocketService extends Thread {
                     handler.getSessionHandler().printSession();
 
                     WsSession frontendSession = handler.getSessionHandler().getFrontendSession();
+                    WsSession backendSession = handler.getSessionHandler().getBackendSession();
+
+                    if(backendSession != null && backendSession.equals(session)){
+                      OutboundHandler.sendUsername(handler);
+                    }
+
                     if (frontendSession != null && frontendSession.equals(session)) {
                       OutboundHandler.sendUsername(handler);
                       OutboundHandler.sendPeers(handler);
                       OutboundHandler.sendChats(handler);
                     }
+
+
                   });
               ws.onMessage(
                   (session, jsonMessage) -> {
                     Gson gson = new Gson();
                     Message message = gson.fromJson(jsonMessage, Message.class);
-                    if(message != null && !message.type.equals("PING_MESSAGE")){
-                      System.out.println(message);
-                    }
                     InboundHandler.handleMessageTypes(handler, session, jsonMessage, message);
                   });
             })

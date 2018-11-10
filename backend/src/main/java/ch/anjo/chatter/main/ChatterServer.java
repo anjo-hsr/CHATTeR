@@ -1,5 +1,6 @@
 package ch.anjo.chatter.main;
 
+import ch.anjo.chatter.helpers.DateGenerator;
 import ch.anjo.chatter.tomp2p.parameters.ClientParameters;
 import ch.anjo.chatter.tomp2p.parameters.Parameters;
 import ch.anjo.chatter.tomp2p.ChatterPeer;
@@ -9,6 +10,8 @@ import java.io.IOException;
 public class ChatterServer {
 
   public static void main(String[] args) throws IOException {
+    System.out.println("System startet on" + DateGenerator.getDate());
+
     if (!Validator.isArgsLengthOk(args)) {
       System.err.println(
           "Wrong parameters given. " + "Please use at mimimum: [mode] [username] [etherAddress]");
@@ -29,9 +32,9 @@ public class ChatterServer {
         myself = new ChatterPeer(parameters);
         break;
       case "client": {
-        parameters = new ClientParameters(args);
+        validator.setParameters(new ClientParameters(args));
         if (validator.areClientParametersCorrect()) {
-          myself = new ChatterPeer((ClientParameters) parameters);
+          myself = new ChatterPeer((ClientParameters) validator.getParameters());
         } else {
           terminate();
         }

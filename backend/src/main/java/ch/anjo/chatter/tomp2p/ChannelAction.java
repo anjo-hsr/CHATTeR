@@ -1,10 +1,6 @@
 package ch.anjo.chatter.tomp2p;
 
-import ch.anjo.chatter.websocket.handlers.OutboundHandler;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
@@ -46,7 +42,7 @@ public class ChannelAction {
                               chatterUser.addFriends(((ChatterUser) data.object()).getFriends());
                             }
                             chatterUser.setOnlineState(true);
-                            peerDht.put(chatterUser.usernameToByteHash()).data(new Data(chatterUser)).start();
+                            peerDht.put(chatterUser.getHash()).data(new Data(chatterUser)).start();
                             myself.broadcast(new Number160(new Random().nextInt())).start();
                           }
                         }

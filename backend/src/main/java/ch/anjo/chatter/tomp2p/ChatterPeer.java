@@ -64,12 +64,16 @@ public class ChatterPeer {
 
   private void setFuturePut() throws IOException {
     FuturePut futurePut =
-        peerDht.put(chatterUser.usernameToByteHash()).data(new Data(chatterUser)).start();
+        peerDht.put(chatterUser.getHash()).data(new Data(chatterUser)).start();
     futurePut.awaitUninterruptibly();
   }
 
   public Peer getMyself() {
     return myself;
+  }
+
+  public Number160 getPeerId() {
+    return myself.peerID();
   }
 
   public PeerDHT getPeerDht() {
@@ -101,7 +105,7 @@ public class ChatterPeer {
     if (possibleFriend != null) {
       ChatterUser friend = (ChatterUser) possibleFriend.object();
       chatterUser.addFriend(username);
-      peerDht.put(chatterUser.usernameToByteHash()).data(new Data(chatterUser)).start();
+      peerDht.put(chatterUser.getHash()).data(new Data(chatterUser)).start();
     }
   }
 }

@@ -1,5 +1,6 @@
 package ch.anjo.chatter.websocket.handlers;
 
+import ch.anjo.chatter.helpers.MessageTypes;
 import ch.anjo.chatter.websocket.handlers.handlerClasses.Handler;
 import ch.anjo.chatter.websocket.templates.Peer;
 import ch.anjo.chatter.websocket.templates.chat.ChatInformation;
@@ -18,7 +19,7 @@ import java.util.List;
 
 public class OutboundHandler {
 
-  public OutboundHandler() {
+  OutboundHandler() {
   }
 
   public static void sendChats(Handler handler) {
@@ -28,7 +29,7 @@ public class OutboundHandler {
     }
 
     JsonObject message = new JsonObject();
-    message.addProperty("type", "ADD_CHATS");
+    message.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.ADD_CHATS);
 
     JsonObject chats = new JsonObject();
 
@@ -59,7 +60,7 @@ public class OutboundHandler {
     }
 
     JsonObject message = new JsonObject();
-    message.addProperty("type", "SET_USERNAME");
+    message.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.SET_USERNAME);
     message.addProperty("username", handler.getSessionHandler().getUsername());
 
     frontendSession.send(message.toString());
@@ -76,7 +77,7 @@ public class OutboundHandler {
             });
 
     JsonObject message = new JsonObject();
-    message.addProperty("type", "ADD_PEERS");
+    message.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.ADD_PEERS);
     message.addProperty("peers", jsonPeers.toString());
 
     sendMessage(handler.getSessionHandler().getFrontendSession(), message.toString());
@@ -99,18 +100,18 @@ public class OutboundHandler {
     session.send(messageString);
   }
 
-  public static void sendMessageToSibling(Handler handler, WsSession session, String messageString){
-    if(handler.getSessionHandler().existsSessionSibling()){
+  static void sendMessageToSibling(Handler handler, WsSession session, String messageString) {
+    if (handler.getSessionHandler().existsSessionSibling()) {
       WsSession sessionSibling = handler.getSessionHandler().getSessionSibling(session);
       sessionSibling.send(messageString);
     }
   }
 
-  public static void sendChatMessages(Handler handler, String chatId) {
+  static void sendChatMessages(Handler handler, String chatId) {
     WsSession session = handler.getSessionHandler().getFrontendSession();
     List<String> messages = handler.getChatHandler().getChatMessages(chatId);
     JsonObject response = new JsonObject();
-    response.addProperty("type", "ADD_MESSAGES");
+    response.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.ADD_MESSAGES);
 
     JsonArray jsonMessages = new JsonArray();
     JsonParser jsonParser = new JsonParser();
@@ -125,7 +126,22 @@ public class OutboundHandler {
     session.send(response.toString());
   }
 
-  public String readResource(final String fileName, Charset charset) throws IOException {
+  static void sendChatPeers(Handler handler, WsSession session, String id, String chatId) {
+    List<String> peerList = handler.getChatHandler().getChatInformation(chatId).getPeers();
+
+    JsonObject peerMessage = new JsonObject();
+    peerMessage.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.SEND_CHAT_PEERS);
+    peerMessage.addProperty("id", id);
+    peerMessage.addProperty("chatId", chatId);
+
+    JsonArray peers = new JsonArray();
+    peerList.forEach(peers::add);
+    peerMessage.add("peers", peers);
+
+    session.send(peerMessage.toString());
+  }
+
+  private String readResource(final String fileName, Charset charset) throws IOException {
     return Resources.toString(Resources.getResource(fileName), charset);
   }
 }
