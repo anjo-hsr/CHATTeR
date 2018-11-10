@@ -8,14 +8,12 @@
     "moment": "^2.22.2",
     "prop-types": "^15.6.2",
     "react": "^16.6.0",
-    "react-burger-menu": "^2.5.4",
     "react-custom-scrollbars": "^4.2.1",
     "react-device-detect": "^1.6.1",
     "react-dom": "^16.6.0",
     "react-redux": "^5.1.0",
     "react-scripts": "^2.1.1",
     "react-select": "^2.1.1",
-    "react-sidebar": "^3.0.2",
     "redux": "^4.0.1",
     "redux-devtools-extension": "^2.13.5",
     "redux-logger": "^3.0.6",
@@ -27,10 +25,13 @@
     "sha.js": "^2.4.11"
   },
   "devDependencies": {
+    "cross-env": "^5.2.0",
     "prettier": "^1.14.3"
   },
   "scripts": {
     "start": "react-scripts start",
+    "startRoot": "cross-env PORT=3000 react-scripts start",
+    "startJohn": "cross-env PORT=3001 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
