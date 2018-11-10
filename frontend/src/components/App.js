@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {slide as Menu} from 'react-burger-menu';
 import {isMobile} from 'react-device-detect';
-import {Grid} from 'semantic-ui-react';
+import {Grid, Sidebar} from 'semantic-ui-react';
 
 import {Chats} from '../containers/chat/Chats';
 import {MessageWindow} from '../containers/message/MessageWindow';
 import webSocketHelper from '../helpers/webSocketHelper';
+import viewHelper from '../helpers/viewHelper';
 import {rootSaga} from '../redux/saga/rootSaga';
 import ModalWaitForWebSocket from './modal/ModalWaitForWebSocket';
 
@@ -17,14 +17,16 @@ export default class App extends React.Component {
     this.state = {
       newSocketNeeded: true,
       sidebarOpen: true,
+      iconName: 'bars',
+      visible: false,
       isSocketOpen: true,
       socket: null
     };
-    this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this);
-  }
-
-  onSetSidebarOpen(open) {
-    this.setState({sidebarOpen: open});
+    this.getHeader = viewHelper.getHeader.bind(this);
+    this.getSideBar = viewHelper.getSideBar.bind(this);
+    this.hideSidebar = viewHelper.hideSidebar.bind(this);
+    this.toggleVisibility = viewHelper.toggleVisibility.bind(this);
+    this.getMessageWindow = viewHelper.getMessageWindow.bind(this);
   }
 
   setSocket = () => {
@@ -42,22 +44,30 @@ export default class App extends React.Component {
     this.setSocket();
     return (
       <div>
-        <Grid className="siteGrid">
-          <Grid.Row columns="equal">
+        {Boolean(this.props.username) && (
+          <Grid className="siteGrid" padded>
+            {this.getHeader(true)}
             {isMobile ? (
-              <Menu>
-                <Chats />
-              </Menu>
+              <Grid.Row className="siteContent" columns="equal">
+                <Grid.Column>
+                  <Sidebar.Pushable>
+                    {this.getSideBar()}
+                    <Sidebar.Pusher onClick={this.hideSidebar}>{this.getMessageWindow()}</Sidebar.Pusher>
+                  </Sidebar.Pushable>
+                </Grid.Column>
+              </Grid.Row>
             ) : (
-              <Grid.Column width="5">
-                <Chats />
-              </Grid.Column>
+              <Grid.Row className="siteContent" columns="equal">
+                <Grid.Column width="4">
+                  <Chats />
+                </Grid.Column>
+                <Grid.Column width="1" />
+                {this.getMessageWindow()}
+                <Grid.Column width="1" />
+              </Grid.Row>
             )}
-            <Grid.Column width={isMobile ? 5 : 1} />
-            <Grid.Column className="chatWindow">{Boolean(this.props.selectedChat) && <MessageWindow />}</Grid.Column>
-            <Grid.Column width="1" />
-          </Grid.Row>
-        </Grid>
+          </Grid>
+        )}
       </div>
     );
   }

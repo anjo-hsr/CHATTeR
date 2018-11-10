@@ -11,7 +11,7 @@ import {numbers} from '../../defaults/defaults';
 export default class Chats extends React.Component {
   render() {
     return (
-      <Grid>
+      <Grid className="chatContainer" padded>
         <Grid.Row className="chatOverview">
           <Scrollbars autoHide autoHideTimeout={numbers.autoHideTimeout} autoHideDuration={numbers.autoHideDuration}>
             <Card.Group>
