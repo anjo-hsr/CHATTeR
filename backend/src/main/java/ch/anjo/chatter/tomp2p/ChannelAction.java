@@ -87,9 +87,9 @@ public class ChannelAction {
           , WebSocketMessage.class);
 
       if (webSocketMessage.type.equals(MessageTypes.GET_PEERS)) {
-        ChannelAction.sendBackFriends(chatterPeer, sender, tomP2pMessage);
+        String response = ChannelAction.getFriends(chatterPeer);
         chatterPeer.addFriend(tomP2pMessage.getSender());
-        return null;
+        return ;
       }
 
       webSocketClient.send(tomP2pMessage.getJsonMessage());
@@ -112,15 +112,13 @@ public class ChannelAction {
     });
   }
 
-  public static void sendBackFriends(ChatterPeer chatterPeer, PeerAddress sender, TomP2pMessage message) {
+  public static String getFriends(ChatterPeer chatterPeer) {
     JsonObject responseJson = new JsonObject();
     responseJson.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.ADD_PEERS);
 
     JsonArray peers = new JsonArray();
     chatterPeer.getChatterUser().getFriends().forEach(peers::add);
-    TomP2pMessage response = new TomP2pMessage(chatterPeer.getChatterUser().getUsername(), sender,
-        responseJson.toString());
-    chatterPeer.getDht()
-        .send(chatterPeer.getChatterUser().getHash(message.getSender())).object(response).start();
+
+    return responseJson.toString();
   }
 }

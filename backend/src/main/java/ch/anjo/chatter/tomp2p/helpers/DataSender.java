@@ -1,10 +1,14 @@
 package ch.anjo.chatter.tomp2p.helpers;
 
+import ch.anjo.chatter.helpers.MessageTypes;
+import ch.anjo.chatter.tomp2p.ChannelAction;
 import ch.anjo.chatter.tomp2p.TomP2pMessage;
 import ch.anjo.chatter.tomp2p.ChatterPeer;
 import ch.anjo.chatter.tomp2p.ChatterUser;
+import ch.anjo.chatter.websocket.templates.WebSocketMessage;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.util.Objects;
@@ -69,10 +73,15 @@ public class DataSender {
                       new BaseFutureAdapter<BaseFuture>() {
                         @Override
                         public void operationComplete(BaseFuture baseFuture) throws Exception {
-                          if(future.isSuccess()){
-                            System.out.println("Success");
-                          } else{
-                            System.out.println("Failure");
+                          Data peerResponse = future.data();
+                          if (!peerResponse.isEmpty()) {
+                            Gson gson = new Gson();
+                            WebSocketMessage webSocketMessage = gson.fromJson(tomP2pMessage.getJsonMessage()
+                                , WebSocketMessage.class);
+
+                            if (webSocketMessage.type.equals(MessageTypes.GET_PEERS)) {
+                              chatterPeer.addFriend();
+                            }
                           }
                         }
                       });
