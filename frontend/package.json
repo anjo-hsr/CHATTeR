@@ -37,7 +37,7 @@
     "copy": "cpx \"build/**/\" \"target/classes/META-INF/resources/webjars/frontend/\"",
     "cypress:install": "npm install cypress --no-save",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "cypress:run": "cypress run --browser canary"
   },
   "browserslist": [
     ">0.2%",

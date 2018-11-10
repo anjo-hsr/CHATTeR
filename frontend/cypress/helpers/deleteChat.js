@@ -1,12 +1,4 @@
-import openChatModal from './helperOpenChatModal';
-import fillChatModal from './helperFillChatModal';
-import sendMessage from './helperMessage';
-
-export default function addChat(amountOfPeers, amountOfMessages) {
-  openChatModal();
-
-  const chatName = 'TestChat - ' + Math.random();
-  fillChatModal(chatName, amountOfPeers);
-
-  sendMessage(amountOfMessages);
+export default function deleteChat() {
+  cy.get(':nth-child(1) > .extra > .two > .red').click();
+  cy.wait(1000);
 }

@@ -8,7 +8,6 @@ const mapDispatchToProps = dispatch => ({
     const chatId = shajs('sha256')
       .update(new Date() + Math.random())
       .digest('hex');
-    console.log(chatId);
     dispatch(actionChats.addChat({chatId, chatObject: {name, peers}}));
     dispatch(actionState.selectChat(chatId));
   }

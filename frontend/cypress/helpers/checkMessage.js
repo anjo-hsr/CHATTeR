@@ -1,12 +1,12 @@
-import openChatModal from './openChatModal';
-import fillChatModal from './fillChatModal';
-import sendMessage from './addMessage';
+export default function checkMessages(chatName, messages) {
+  cy.visit('/');
+  cy.contains(':nth-child(1) > .header', chatName);
 
-export default function addChat(amountOfPeers, amountOfMessages) {
-  openChatModal();
+  cy.wait(500);
+  cy.get(':nth-child(1) > .extra > .two > .green').click();
 
-  const chatName = 'TestChat - ' + Math.random();
-  fillChatModal(chatName, amountOfPeers);
-
-  sendMessage(amountOfMessages);
+  cy.wait(500);
+  messages.map(message => {
+    cy.contains('.chatHistory', message);
+  });
 }
