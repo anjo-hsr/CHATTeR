@@ -30,3 +30,7 @@ style.css
 style.css.map
 burgerMenu.css
 burgerMenu.css.map
+
+#cypress
+cypress/support/*
+cypress/videos/*

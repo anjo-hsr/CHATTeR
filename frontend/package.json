@@ -34,7 +34,10 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "copy": "cpx \"build/**/\" \"target/classes/META-INF/resources/webjars/frontend/\""
+    "copy": "cpx \"build/**/\" \"target/classes/META-INF/resources/webjars/frontend/\"",
+    "cypress:install": "npm install cypress --no-save",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "browserslist": [
     ">0.2%",
