@@ -1,6 +1,6 @@
 package ch.anjo.chatter.websocket.handlers.handlerClasses;
 
-import ch.anjo.chatter.websocket.templates.Message;
+import ch.anjo.chatter.websocket.templates.WebSocketMessage;
 import ch.anjo.chatter.websocket.templates.chat.ChatInformation;
 import ch.anjo.chatter.websocket.templates.chat.ChatMessages;
 import java.util.ArrayList;
@@ -37,8 +37,8 @@ public class ChatHandler {
     chatStore.put(chatId, chatInformation);
   }
 
-  public void saveChat(Message message) {
-    chatStore.put(message.chatId, message.chatInformation);
+  public void saveChat(WebSocketMessage webSocketMessage) {
+    chatStore.put(webSocketMessage.chatId, webSocketMessage.chatInformation);
   }
 
   public void deleteChat(String chatId) {

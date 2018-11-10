@@ -1,5 +1,6 @@
 package ch.anjo.chatter.websocket.handlers.handlerClasses;
 
+import ch.anjo.chatter.helpers.DateGenerator;
 import ch.anjo.chatter.websocket.templates.WebSocketPair;
 import io.javalin.websocket.WsSession;
 import java.util.List;
@@ -56,6 +57,6 @@ public class SessionHandler {
   }
 
   public void printSession() {
-    System.out.println(this.username + " at -> " + this.sessions.toString());
+    System.out.println(DateGenerator.getDate() + this.username + " at -> " + this.sessions.toString());
   }
 }

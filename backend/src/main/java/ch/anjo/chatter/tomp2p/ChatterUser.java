@@ -10,6 +10,7 @@ import java.net.InetAddress;
 import java.util.HashSet;
 import java.util.Set;
 import net.tomp2p.peers.Number160;
+import net.tomp2p.peers.PeerAddress;
 
 public class ChatterUser implements Serializable {
 
@@ -20,11 +21,11 @@ public class ChatterUser implements Serializable {
   private Set<String> friends;
   private boolean isOnline;
 
-  ChatterUser(Parameters parameters) {
+  public ChatterUser(Parameters parameters) {
     this(parameters, new HashSet<>());
   }
 
-  ChatterUser(Parameters parameters, HashSet<String> friends) {
+  private ChatterUser(Parameters parameters, Set<String> friends) {
     this.username = parameters.getUsername();
     this.etherAddress = parameters.getEtherAddress();
     this.port = parameters.getListeningPort();
@@ -36,7 +37,7 @@ public class ChatterUser implements Serializable {
       socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
       ipAddress = socket.getLocalAddress().getHostAddress();
     } catch (IOException e) {
-      System.err.println("Problems occurred by getting IP address of default route interface.");
+      System.err.println("Problems occurred by getting IP address of the default route interface.");
     }
   }
 
@@ -69,10 +70,20 @@ public class ChatterUser implements Serializable {
   }
 
   void addFriends(Set<String> newFriends) {
-    friends.addAll(newFriends);
+    if(friends != null){
+      friends.addAll(newFriends);
+    }
   }
 
   void setOnlineState(boolean onlineState) {
     isOnline = onlineState;
+  }
+
+  public PeerAddress getPeerAddress() {
+    try{
+      return new PeerAddress(this.getHash(), this.ipAddress, this.port, this.port);
+    } catch (Exception e){
+      throw new RuntimeException(e);
+    }
   }
 }

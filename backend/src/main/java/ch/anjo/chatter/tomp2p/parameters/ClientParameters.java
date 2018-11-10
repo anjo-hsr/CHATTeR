@@ -1,5 +1,7 @@
 package ch.anjo.chatter.tomp2p.parameters;
 
+import java.util.Arrays;
+
 public class ClientParameters extends Parameters {
 
   private final String rendezvousString;
@@ -7,7 +9,9 @@ public class ClientParameters extends Parameters {
   public ClientParameters(String[] args) {
     super(args);
 
-    this.rendezvousString = args.length >= 6 ? args[5] : "";
+    int index = super.indexOfRendezvousString(args);
+
+    this.rendezvousString = index != -1 ? args[index] : "";
   }
 
   @Override

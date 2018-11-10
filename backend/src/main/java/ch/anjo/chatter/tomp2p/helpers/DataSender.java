@@ -1,14 +1,22 @@
 package ch.anjo.chatter.tomp2p.helpers;
 
-import ch.anjo.chatter.tomp2p.ChatterMessage;
+import ch.anjo.chatter.tomp2p.TomP2pMessage;
 import ch.anjo.chatter.tomp2p.ChatterPeer;
 import ch.anjo.chatter.tomp2p.ChatterUser;
+import com.google.common.hash.HashCode;
+import com.google.common.hash.Hashing;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.util.Objects;
+import net.tomp2p.dht.FutureGet;
 import net.tomp2p.dht.FutureSend;
+import net.tomp2p.dht.PeerDHT;
+import net.tomp2p.futures.BaseFuture;
 import net.tomp2p.futures.BaseFutureAdapter;
+import net.tomp2p.futures.FutureDirect;
+import net.tomp2p.p2p.Peer;
 import net.tomp2p.p2p.RequestP2PConfiguration;
+import net.tomp2p.peers.Number160;
 import net.tomp2p.storage.Data;
 
 public class DataSender {
@@ -40,22 +48,58 @@ public class DataSender {
     sendWithListener(myself, receiver, message, printConfirmation(myself, message));
   }
 
+  public static void sendToAllWithoutConfirmation(ChatterPeer chatterPeer, String outboundMessage) {
+    Peer myself = chatterPeer.getMyself();
+    ChatterUser chatterUser = chatterPeer.getChatterUser();
+    PeerDHT dht = chatterPeer.getDht();
 
-  private static void sendWithListener(ChatterPeer myself, String receiver, String message, BaseFutureAdapter listener) {
+    chatterUser.getFriends().forEach(friend ->
+        dht
+            .get(chatterUser.getHash(friend))
+            .start()
+            .addListener(new BaseFutureAdapter<FutureGet>() {
+              @Override
+              public void operationComplete(FutureGet future) throws Exception {
+                Data data = future.data();
+                if (!data.isEmpty()) {
+                  ChatterUser friend = readUser(data);
+                  TomP2pMessage tomP2pMessage = new TomP2pMessage(chatterUser.getUsername(), friend.getUsername(),
+                      outboundMessage);
+                  myself.sendDirect(friend.getPeerAddress()).object(tomP2pMessage).start().addListener(
+                      new BaseFutureAdapter<BaseFuture>() {
+                        @Override
+                        public void operationComplete(BaseFuture baseFuture) throws Exception {
+                          if(future.isSuccess()){
+                            System.out.println("Success");
+                          } else{
+                            System.out.println("Failure");
+                          }
+                        }
+                      });
+                }
+              }
+            })
+    );
+  }
+
+
+  private static void sendWithListener(ChatterPeer myself, String receiver, String message,
+      BaseFutureAdapter listener) {
     ChatterUser chatterUser = myself.getChatterUser();
     chatterUser.getFriends()
         .stream()
         .filter(friend -> friend.equals(receiver))
-        .map(friend -> myself.getPeerDht().get(chatterUser.getHash(friend)).start().awaitUninterruptibly().data())
+        .map(friend -> myself.getDht().get(chatterUser.getHash(friend)).start().awaitUninterruptibly().data())
         .filter(Objects::nonNull)
         .map(DataSender::readUser)
         .filter(Objects::nonNull)
         .forEach(
             friend -> {
-              ChatterMessage sendingMessage = new ChatterMessage(chatterUser.getUsername(), friend.getUsername(), message);
+              TomP2pMessage tomP2pMessage = new TomP2pMessage(chatterUser.getUsername(), friend.getUsername(),
+                  message);
 
-              myself.getPeerDht().send(friend.getHash())
-                  .object(sendingMessage)
+              myself.getDht().send(friend.getHash())
+                  .object(tomP2pMessage)
                   .requestP2PConfiguration(new RequestP2PConfiguration(1, 5, 0))
                   .start()
                   .addListener(listener);
@@ -68,5 +112,14 @@ public class DataSender {
     } catch (Exception e) {
       return null;
     }
+  }
+
+
+  public static HashCode getSha1Hash(String hashString) {
+    return Hashing.sha1().hashBytes(hashString.getBytes());
+  }
+
+  public static Number160 getHash(String otherUsername) {
+    return new Number160(getSha1Hash(otherUsername).asBytes());
   }
 }

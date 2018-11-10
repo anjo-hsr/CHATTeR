@@ -1,25 +1,33 @@
 package ch.anjo.chatter.main;
 
-import ch.anjo.chatter.helpers.MessageTypes;
 import ch.anjo.chatter.websocket.handlers.InboundHandler;
 import ch.anjo.chatter.websocket.handlers.OutboundHandler;
 import ch.anjo.chatter.websocket.handlers.handlerClasses.Handler;
-import ch.anjo.chatter.websocket.templates.Message;
+import ch.anjo.chatter.websocket.templates.WebSocketMessage;
 import com.google.gson.Gson;
 import io.javalin.Javalin;
 import io.javalin.websocket.WsSession;
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class WebSocketService extends Thread {
 
-  private final int port;
+  private final int webSocketPort;
+  private final int frontendPort;
   private final Handler handler;
+  private boolean browserStarted;
 
-  public WebSocketService(int webSocketPort) {
-    this.port = webSocketPort;
+  public WebSocketService(int webSocketPort, int frontendPort) {
+    this.webSocketPort = webSocketPort;
+    this.frontendPort = frontendPort;
     this.handler = new Handler(null, "");
+    this.browserStarted = false;
   }
 
   public void run() {
+
     Javalin.create()
         .enableStaticFiles("/frontend")
         .enableCorsForOrigin("*")
@@ -28,13 +36,26 @@ public class WebSocketService extends Thread {
             ws -> {
               ws.onConnect(
                   session -> {
+                    String frontendUrl = "http://localhost:" + frontendPort;
+                    if (!browserStarted && frontendPort == webSocketPort) {
+                      try {
+                        Desktop.getDesktop().browse(new URI(frontendUrl));
+                        browserStarted = true;
+                      } catch (URISyntaxException | IOException e) {
+                        e.printStackTrace();
+                        getOpenBrowserMessage(frontendUrl);
+                      }
+                    } else if (handler.getSessionHandler().getBackendSession() == null) {
+                      getOpenBrowserMessage(frontendUrl);
+                    }
+
                     InboundHandler.handleSession(handler, session);
                     handler.getSessionHandler().printSession();
 
                     WsSession frontendSession = handler.getSessionHandler().getFrontendSession();
                     WsSession backendSession = handler.getSessionHandler().getBackendSession();
 
-                    if(backendSession != null && backendSession.equals(session)){
+                    if (backendSession != null && backendSession.equals(session)) {
                       OutboundHandler.sendUsername(handler);
                     }
 
@@ -49,10 +70,14 @@ public class WebSocketService extends Thread {
               ws.onMessage(
                   (session, jsonMessage) -> {
                     Gson gson = new Gson();
-                    Message message = gson.fromJson(jsonMessage, Message.class);
-                    InboundHandler.handleMessageTypes(handler, session, jsonMessage, message);
+                    WebSocketMessage webSocketMessage = gson.fromJson(jsonMessage, WebSocketMessage.class);
+                    InboundHandler.handleMessageTypes(handler, session, jsonMessage, webSocketMessage);
                   });
             })
-        .start(port);
+        .start(webSocketPort);
+  }
+
+  private void getOpenBrowserMessage(String frontendUrl) {
+    System.out.println(" --- Please connect manually to the frontend via : " + frontendUrl + " ---");
   }
 }

@@ -1,5 +1,5 @@
 #!/bin/bash
-# devs will generally run this config file, so this is a fairly safe place to do this.
+# devs will generally start this config file, so this is a fairly safe place to do this.
 
 mvn exec:java -Dskip-tests -Dexec.args="client john 0x3079c583432ff5eb6a6a338d94f868c81db53f7c 5001 8001 root@127.0.0.1:5000" &
 

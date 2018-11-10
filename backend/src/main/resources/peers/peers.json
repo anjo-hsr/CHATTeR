@@ -1,14 +1,11 @@
 [
   {
-    "username": "Pascal",
-    "address": "127.0.0.1:5001"
+    "username": "root"
   },
   {
-    "username": "Jonas",
-    "address": "127.0.0.1:5002"
+    "username": "john"
   },
   {
-    "username": "Tobias",
-    "address": "127.0.0.1:5003"
+    "username": "harold"
   }
 ]

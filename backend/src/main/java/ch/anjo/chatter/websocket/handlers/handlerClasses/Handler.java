@@ -25,7 +25,7 @@ public class Handler {
   }
 
   public void saveMessage(String chatId, String message) {
-    System.out.println("Message saved in :" + chatId + " - " + message);
+    System.out.println("WebSocketMessage saved in :" + chatId + " - " + message);
     chatHandler.saveMessage(chatId, message);
   }
 }

@@ -2,7 +2,7 @@ package ch.anjo.chatter.websocket.handlers;
 
 import ch.anjo.chatter.helpers.MessageTypes;
 import ch.anjo.chatter.websocket.handlers.handlerClasses.Handler;
-import ch.anjo.chatter.websocket.templates.Message;
+import ch.anjo.chatter.websocket.templates.WebSocketMessage;
 import ch.anjo.chatter.websocket.templates.message.MessageInformation;
 import com.google.gson.JsonObject;
 import io.javalin.websocket.WsSession;
@@ -18,36 +18,36 @@ public class InboundHandler {
     }
   }
 
-  public static void handleMessageTypes(Handler handler, WsSession session, String jsonMessage, Message message) {
-    switch (message.type) {
+  public static void handleMessageTypes(Handler handler, WsSession session, String jsonMessage, WebSocketMessage webSocketMessage) {
+    switch (webSocketMessage.type) {
       case MessageTypes.ADD_MESSAGE:
-        saveMessage(handler, message.chatId, message.messageInformation);
+        saveMessage(handler, webSocketMessage.chatId, webSocketMessage.messageInformation);
         OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
         break;
       case MessageTypes.SET_USERNAME:
-        setUsername(handler, message);
+        setUsername(handler, webSocketMessage);
         break;
       case MessageTypes.ADD_CHAT:
       case MessageTypes.CHANGE_CHAT:
-        handler.getChatHandler().saveChat(message);
+        handler.getChatHandler().saveChat(webSocketMessage);
         OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
         break;
       case MessageTypes.DELETE_CHAT:
-        handler.getChatHandler().deleteChat(message.chatId);
+        handler.getChatHandler().deleteChat(webSocketMessage.chatId);
         OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
         break;
       case MessageTypes.SELECT_CHAT:
-        OutboundHandler.sendChatMessages(handler, message.chatId);
+        OutboundHandler.sendChatMessages(handler, webSocketMessage.chatId);
         break;
       case MessageTypes.GET_CHAT_PEERS:
-        OutboundHandler.sendChatPeers(handler, session, message.id, message.chatId);
+        OutboundHandler.sendChatPeers(handler, session, webSocketMessage.id, webSocketMessage.chatId);
       default:
         return;
     }
   }
 
-  private static void setUsername(Handler handler, Message message) {
-    handler.setUsername(message.username);
+  private static void setUsername(Handler handler, WebSocketMessage webSocketMessage) {
+    handler.setUsername(webSocketMessage.username);
     OutboundHandler.sendPeers(handler);
     handler.getSessionHandler().printSession();
   }

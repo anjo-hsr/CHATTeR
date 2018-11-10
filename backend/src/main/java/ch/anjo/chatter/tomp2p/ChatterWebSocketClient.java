@@ -3,7 +3,7 @@ package ch.anjo.chatter.tomp2p;
 import ch.anjo.chatter.helpers.DateGenerator;
 import ch.anjo.chatter.helpers.MessageTypes;
 import ch.anjo.chatter.tomp2p.helpers.DataSender;
-import ch.anjo.chatter.websocket.templates.Message;
+import ch.anjo.chatter.websocket.templates.WebSocketMessage;
 import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -58,74 +58,74 @@ public class ChatterWebSocketClient extends WebSocketClient {
 
   private void handleWebSocketMessages(String jsonMessage) {
     Gson gson = new Gson();
-    Message message = gson.fromJson(jsonMessage, Message.class);
+    WebSocketMessage webSocketMessage = gson.fromJson(jsonMessage, WebSocketMessage.class);
 
-    switch (message.type) {
+    switch (webSocketMessage.type) {
       case MessageTypes.ADD_MESSAGE:
-        sendMessageToPeers(message, jsonMessage);
+        sendMessageToPeers(webSocketMessage, jsonMessage);
         break;
       case MessageTypes.SET_USERNAME:
         break;
       case MessageTypes.ADD_CHAT:
       case MessageTypes.CHANGE_CHAT:
-        requestPeers(message, "");
+        requestPeers(webSocketMessage, "");
         break;
       case MessageTypes.DELETE_CHAT:
         break;
       case MessageTypes.SELECT_CHAT:
         break;
       case MessageTypes.SEND_CHAT_PEERS:
-        updateChatPeerMap(message);
+        updateChatPeerMap(webSocketMessage);
         break;
       default:
         return;
     }
   }
 
-  private void sendMessageToPeers(Message message, String jsonMessage) {
-    if (chatMembers.containsKey(message.chatId)) {
-      Set<String> chatPeers = chatMembers.get(message.chatId);
+  private void sendMessageToPeers(WebSocketMessage webSocketMessage, String jsonMessage) {
+    if (chatMembers.containsKey(webSocketMessage.chatId)) {
+      Set<String> chatPeers = chatMembers.get(webSocketMessage.chatId);
       System.out.println("Direct");
       chatPeers.forEach(peer -> DataSender.sendWithConfirmation(myself, peer, jsonMessage));
       return;
     }
-    String messageId = generateMessageId(message);
+    String messageId = generateMessageId(webSocketMessage);
     messageWaitingRoom.put(messageId, jsonMessage);
 
-    requestPeers(message, messageId);
+    requestPeers(webSocketMessage, messageId);
   }
 
-  private void requestPeers(Message message, String messageId) {
+  private void requestPeers(WebSocketMessage webSocketMessage, String messageId) {
     JsonObject getChatPeers = new JsonObject();
     getChatPeers.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.GET_CHAT_PEERS);
-    getChatPeers.addProperty("chatId", message.chatId);
+    getChatPeers.addProperty("chatId", webSocketMessage.chatId);
     getChatPeers.addProperty("id", messageId);
     this.send(getChatPeers.toString());
   }
 
-  private void updateChatPeerMap(Message message) {
-    String[] peers = message.peers;
+  private void updateChatPeerMap(WebSocketMessage webSocketMessage) {
+    String[] peers = webSocketMessage.peers;
     String[] otherPeers = Arrays.stream(peers).filter(peer -> !peer.equals(username)).toArray(String[]::new);
     HashSet<String> peerSet = new HashSet<>(Set.of(otherPeers));
 
-    chatMembers.put(message.chatId, peerSet);
+    chatMembers.put(webSocketMessage.chatId, peerSet);
 
-    if (message.id.equals("")) {
+    if (webSocketMessage.id.equals("")) {
       System.out.println("Updated peers via Chat update");
     } else {
-      System.out.println("Recieved peers via new message.");
-      sendWaitingMessageToPeers(message);
+      System.out.println("Recieved peers via new WebSocketMessage.");
+      sendWaitingMessageToPeers(webSocketMessage);
     }
   }
 
-  private void sendWaitingMessageToPeers(Message message) {
-    String jsonMessage = messageWaitingRoom.remove(message.id);
+  private void sendWaitingMessageToPeers(WebSocketMessage webSocketMessage) {
+    String jsonMessage = messageWaitingRoom.remove(webSocketMessage.id);
     Gson gson = new Gson();
-    message = gson.fromJson(jsonMessage, Message.class);
-    sendMessageToPeers(message, jsonMessage);
+    webSocketMessage = gson.fromJson(jsonMessage, WebSocketMessage.class);
+    sendMessageToPeers(webSocketMessage, jsonMessage);
   }
 
-  private String generateMessageId(Message message) {
+  private String generateMessageId(WebSocketMessage webSocketMessage) {
     byte[] array = new byte[256]; // length is bounded by 7
     new Random().nextBytes(array);
     return Hashing.sha256().hashBytes(array).toString();

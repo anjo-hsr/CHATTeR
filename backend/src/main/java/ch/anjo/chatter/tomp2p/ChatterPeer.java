@@ -7,23 +7,27 @@ import com.google.common.hash.Hashing;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import net.tomp2p.dht.FuturePut;
+import net.tomp2p.dht.FutureGet;
 import net.tomp2p.dht.PeerBuilderDHT;
 import net.tomp2p.dht.PeerDHT;
 import net.tomp2p.dht.StorageLayer;
 import net.tomp2p.dht.StorageMemory;
+import net.tomp2p.futures.BaseFutureAdapter;
 import net.tomp2p.p2p.Peer;
 import net.tomp2p.p2p.PeerBuilder;
 import net.tomp2p.peers.Number160;
+import net.tomp2p.peers.PeerAddress;
 import net.tomp2p.storage.Data;
 import org.java_websocket.client.WebSocketClient;
 
 public class ChatterPeer {
 
   private final Peer myself;
-  private final PeerDHT peerDht;
+  private final PeerDHT dht;
   private final ChatterUser chatterUser;
-  private List<ChatterMessage> messageHistory = new ArrayList<>();
+  private List<TomP2pMessage> messageHistory = new ArrayList<>();
+  private final String masterName;
+  private PeerAddress masterAddress = null;
 
   public ChatterPeer(Parameters parameters) throws IOException {
     this.myself =
@@ -31,41 +35,34 @@ public class ChatterPeer {
             .ports(parameters.getListeningPort())
             .start();
 
-    this.peerDht =
+    this.dht =
         new PeerBuilderDHT(this.myself).storageLayer(new StorageLayer(new StorageMemory())).start();
     this.chatterUser = new ChatterUser(parameters);
-    setFuturePut();
 
+    dht.put(chatterUser.getHash()).data(new Data(chatterUser)).start();
+
+    this.masterName = parameters.getUsername();
+
+    System.out.println("Master service started:");
+    System.out.println("Master with peerID - " + myself.peerID() + " - at: " + myself.peerAddress());
   }
 
   public ChatterPeer(ClientParameters parameters) throws IOException {
     Validator validator = new Validator(parameters);
-    ChatterAddress chatterAddress = validator.getChatterAddress();
+    ChatterAddress rendezvousChatterAddress = validator.getRendezvousChatterAddress();
 
-    Peer master = new PeerBuilder(byteHash(chatterAddress.getUsername()))
-        .ports(parameters.getListeningPort())
-        .start();
+    this.masterName = rendezvousChatterAddress.getUsername();
+    String masterAddress = validator.getRendezvousChatterAddress().getHost();
+    int masterPort = validator.getRendezvousChatterAddress().getPort();
 
-    this.myself = new PeerBuilder(byteHash(parameters.getUsername()))
-        .masterPeer(master)
-        .ports(chatterAddress.getPort())
-        .start();
+    Peer master = new PeerBuilder(byteHash(this.masterName)).ports(parameters.getListeningPort()).start();
+    this.masterAddress = new PeerAddress(master.peerID(), masterAddress, masterPort, masterPort);
 
-    this.peerDht = new PeerBuilderDHT(this.myself)
-        .storageLayer(new StorageLayer(new StorageMemory()))
-        .start();
+    this.myself = new PeerBuilder(byteHash(parameters.getUsername())).masterPeer(master).start();
+    this.dht = new PeerBuilderDHT(this.myself).storageLayer(new StorageLayer(new StorageMemory())).start();
 
     this.chatterUser = new ChatterUser(parameters);
-
-    setFuturePut();
-
     ChannelAction.createBootStrapBuilder(this, master);
-  }
-
-  private void setFuturePut() throws IOException {
-    FuturePut futurePut =
-        peerDht.put(chatterUser.getHash()).data(new Data(chatterUser)).start();
-    futurePut.awaitUninterruptibly();
   }
 
   public Peer getMyself() {
@@ -76,36 +73,53 @@ public class ChatterPeer {
     return myself.peerID();
   }
 
-  public PeerDHT getPeerDht() {
-    return peerDht;
+  public PeerDHT getDht() {
+    return dht;
   }
 
   public ChatterUser getChatterUser() {
     return chatterUser;
   }
 
-  public List<ChatterMessage> getMessageHistory() {
+  public List<TomP2pMessage> getMessageHistory() {
     return messageHistory;
   }
 
-  private HashCode getHash(String hashString) {
-    return Hashing.sha1().hashBytes(hashString.getBytes());
+  public String getMasterName() {
+    return masterName;
   }
 
-  private Number160 byteHash(String hashString) {
-    return new Number160(getHash(hashString).asBytes());
+  public PeerAddress getMasterAddress() {
+    return masterAddress;
+  }
+
+  private HashCode getHash(String username) {
+    return Hashing.sha1().hashBytes(username.getBytes());
+  }
+
+  private Number160 byteHash(String username) {
+    return new Number160(getHash(username).asBytes());
   }
 
   public void replyToData(WebSocketClient webSocketClient) {
     ChannelAction.replyToData(this, webSocketClient);
   }
 
-  public void addPeer(String username) throws IOException, ClassNotFoundException {
-    Data possibleFriend = peerDht.get(byteHash(username)).start().awaitUninterruptibly().data();
-    if (possibleFriend != null) {
-      ChatterUser friend = (ChatterUser) possibleFriend.object();
-      chatterUser.addFriend(username);
-      peerDht.put(chatterUser.getHash()).data(new Data(chatterUser)).start();
-    }
+  public void addFriend(String username) {
+    dht.get(byteHash(username)).start().addListener(new BaseFutureAdapter<FutureGet>() {
+      @Override
+      public void operationComplete(FutureGet future) throws Exception {
+        if (future.isSuccess()) {
+          Data friendData = future.data();
+          if (!friendData.isEmpty()) {
+            ChatterUser friend = (ChatterUser) friendData.object();
+            System.out.println("Add friend " + username);
+            chatterUser.addFriend(friend.getUsername());
+            dht.put(chatterUser.getHash()).data(new Data(chatterUser)).start();
+          }
+        }
+      }
+    });
+
   }
 }

@@ -1,6 +1,5 @@
 package ch.anjo.chatter.tomp2p;
 
-import ch.anjo.chatter.tomp2p.parameters.ClientParameters;
 import ch.anjo.chatter.tomp2p.parameters.Parameters;
 import org.apache.commons.validator.routines.InetAddressValidator;
 
@@ -44,7 +43,7 @@ public class Validator {
 
   private boolean isRendezvousPointCorrect() {
     ChatterAddress rendezvousAddress;
-    if ((rendezvousAddress = getChatterAddress()) != null) {
+    if ((rendezvousAddress = getRendezvousChatterAddress()) != null) {
       InetAddressValidator ipValidator = new InetAddressValidator();
       return isUsernameCorrect(rendezvousAddress.getUsername())
           && ipValidator.isValid(rendezvousAddress.getHost())
@@ -54,7 +53,7 @@ public class Validator {
     return false;
   }
 
-  public ChatterAddress getChatterAddress() {
+  public ChatterAddress getRendezvousChatterAddress() {
     String rendezvousString = parameters.getRendezvousString();
 
     if (rendezvousString.contains(":") && rendezvousString.contains("@")) {
@@ -69,7 +68,8 @@ public class Validator {
   }
 
   private boolean isPortValid(int port) {
-    return port > 1024 && port < Math.pow(2, 32) - 1;
+    //Minus 3000 because of the 3000 Port higher WebSocketService
+    return port > 1024 && port < Math.pow(2, 32) - 1 - 3000;
   }
 
   public static boolean isArgsLengthOk(String[] args) {
