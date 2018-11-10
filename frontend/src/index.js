@@ -11,7 +11,6 @@ import registerServiceWorker from './registerServiceWorker';
 import reducers from './redux/reducers/reducers';
 
 import './style/style.css';
-import './style/burgerMenu.css';
 import 'semantic-ui-css/semantic.min.css';
 
 const sagaMiddleware = createSagaMiddleware();
