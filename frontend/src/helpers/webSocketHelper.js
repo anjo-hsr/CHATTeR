@@ -30,6 +30,10 @@ export default function webSocketHelper(dispatch) {
         dispatch(actionChats.addChat({chatId: data.chatId, chatObject: data.chatInformation}));
         break;
       }
+      case actionTypes.CHANGE_CHAT: {
+        dispatch(actionChats.changeChat({chatId: data.chatId, chatObject: data.chatInformation}));
+        break;
+      }
       case actionTypes.ADD_CHATS: {
         dispatch(actionChats.addChats(data.chats));
         break;

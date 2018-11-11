@@ -9,7 +9,7 @@ export default {
   getHeader(username) {
     return (
       <Grid.Row columns="equal" verticalAlign="middle" className="siteHeader">
-        {isMobile && (
+        {(isMobile || this.state.isSmallWindow) && (
           <Grid.Column width="3" textAlign="center" className="headerButton">
             <Button color="green" icon={this.state.iconName} onClick={this.toggleVisibility} />
           </Grid.Column>
@@ -35,7 +35,7 @@ export default {
 
   getSideBar() {
     return (
-      <Sidebar animation="overlay" width="thin" visible={this.state.visible}>
+      <Sidebar animation="overlay" width={isMobile ? 'thin' : 'wide'} visible={this.state.visible}>
         <Chats />
       </Sidebar>
     );

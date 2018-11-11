@@ -18,13 +18,18 @@ export default class App extends React.Component {
       iconName: 'bars',
       visible: false,
       isSocketOpen: true,
-      socket: null
+      socket: null,
+      isSmallWindow: false
     };
     this.getHeader = viewHelper.getHeader.bind(this);
     this.getSideBar = viewHelper.getSideBar.bind(this);
     this.hideSidebar = viewHelper.hideSidebar.bind(this);
     this.toggleVisibility = viewHelper.toggleVisibility.bind(this);
     this.getMessageWindow = viewHelper.getMessageWindow.bind(this);
+  }
+
+  componentDidMount() {
+    this.setState({isSmallWindow: window.innerWidth < 900});
   }
 
   setSocket = () => {
@@ -45,7 +50,7 @@ export default class App extends React.Component {
         {Boolean(this.props.username) && (
           <Grid className="siteGrid" padded>
             {this.getHeader(this.props.username)}
-            {isMobile ? (
+            {isMobile || this.state.isSmallWindow ? (
               <Grid.Row className="siteContent" columns="equal">
                 <Grid.Column>
                   <Sidebar.Pushable>
