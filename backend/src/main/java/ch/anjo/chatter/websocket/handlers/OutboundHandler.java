@@ -2,11 +2,8 @@ package ch.anjo.chatter.websocket.handlers;
 
 import ch.anjo.chatter.helpers.MessageTypes;
 import ch.anjo.chatter.websocket.handlers.handlerClasses.Handler;
-import ch.anjo.chatter.websocket.templates.Peer;
 import ch.anjo.chatter.websocket.templates.chat.ChatInformation;
-import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -66,34 +63,8 @@ public class OutboundHandler {
     frontendSession.send(message.toString());
   }
 
-  public static void sendPeers(Handler handler) {
-    Peer[] peers = getPeerArray();
-    JsonArray jsonPeers = new JsonArray();
-
-    Arrays.stream(peers)
-        .forEach(
-            peer -> {
-              jsonPeers.add(peer.username);
-            });
-
-    JsonObject message = new JsonObject();
-    message.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.ADD_PEERS);
-    message.addProperty("peers", jsonPeers.toString());
-
-    sendMessage(handler.getSessionHandler().getFrontendSession(), message.toString());
-  }
-
-  private static Peer[] getPeerArray() {
-    OutboundHandler outboundHandler = new OutboundHandler();
-    String jsonString = null;
-    try {
-      jsonString = outboundHandler.readResource("peers/peers.json", Charsets.UTF_8);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    Gson gson = new Gson();
-    return gson.fromJson(jsonString, Peer[].class);
+  public static void sendPeers(Handler handler, String jsonMessage) {
+    sendMessage(handler.getSessionHandler().getFrontendSession(), jsonMessage);
   }
 
   private static void sendMessage(WsSession session, String messageString) {

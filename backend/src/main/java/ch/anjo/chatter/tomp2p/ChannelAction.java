@@ -33,12 +33,6 @@ public class ChannelAction {
     System.out.println("Start peering with master:");
     System.out.println("Master with peerID - " + master.peerID() + " - at: " + master.peerAddress());
 
-    try {
-      System.out.println(new Data(chatterUser));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
     bootstrapBuilder
         .bootstrapTo(Collections.singletonList(chatterPeer.getMasterAddress()))
         .start()
@@ -87,12 +81,16 @@ public class ChannelAction {
           , WebSocketMessage.class);
 
       if (webSocketMessage.type.equals(MessageTypes.GET_PEERS)) {
-        String response = ChannelAction.getFriends(chatterPeer);
+        ChannelAction.getFriends(chatterPeer);
         chatterPeer.addFriend(tomP2pMessage.getSender());
-        return ;
+        return null;
       }
 
-      webSocketClient.send(tomP2pMessage.getJsonMessage());
+      if (!webSocketMessage.type.equals(MessageTypes.ADD_MESSAGE)) {
+        webSocketClient.send(tomP2pMessage.getJsonMessage());
+        return null;
+      }
+
       if (messageHistory.indexOf(tomP2pMessage) == -1) {
         messageHistory.add(tomP2pMessage);
         // Notary service needed

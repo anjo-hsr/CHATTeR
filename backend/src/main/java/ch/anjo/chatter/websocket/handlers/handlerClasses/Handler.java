@@ -6,10 +6,12 @@ public class Handler {
 
   private ChatHandler chatHandler;
   private SessionHandler sessionHandler;
+  private LoopHandler loopHandler;
 
   public Handler(WsSession session, String username) {
     this.chatHandler = new ChatHandler();
     this.sessionHandler = new SessionHandler(username);
+    this.loopHandler = new LoopHandler();
   }
 
   public ChatHandler getChatHandler() {

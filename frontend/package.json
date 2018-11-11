@@ -33,6 +33,7 @@
     "start:Root": "cross-env PORT=3000 react-scripts start",
     "start:John": "cross-env PORT=3001 react-scripts start",
     "start:Harold": "cross-env PORT=3002 react-scripts start",
+    "start:Lionel": "cross-env PORT=3003 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",

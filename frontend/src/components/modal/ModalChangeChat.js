@@ -2,9 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Button, Form, Grid, Modal} from 'semantic-ui-react';
 
+import CreatableSelect from 'react-select/lib/Creatable';
 import Buttons from './Buttons';
-
-import Select from 'react-select';
 
 export default class ModalChangeChat extends React.Component {
   constructor(props) {
@@ -13,6 +12,7 @@ export default class ModalChangeChat extends React.Component {
     this.state = {
       name: this.props.name,
       selectedPeers: this.props.selectedPeers,
+      isAPeerSelected: true,
       open: false
     };
   }
@@ -23,6 +23,12 @@ export default class ModalChangeChat extends React.Component {
 
   handleSelectChange = selectedPeers => {
     this.setState({selectedPeers});
+  };
+
+  checkPeers = () => {
+    const check = this.state.selectedPeers.length > 0;
+    this.setState({isAPeerSelected: check});
+    return check;
   };
 
   close = event => {
@@ -45,16 +51,18 @@ export default class ModalChangeChat extends React.Component {
           />
         }
       >
-        <Modal.Header content="Add new contact" />
+        <Modal.Header content={`Edit current Chat - ${this.props.name} (${this.props.selectedChat.substr(0, 9)})`} />
         <Modal.Content>
           <Form
             onSubmit={() => {
-              this.props.changeChat({
-                chatId: this.props.selectedChat,
-                name: this.state.name,
-                peers: this.state.selectedPeers.map(peers => peers.label).concat(this.props.self)
-              });
-              this.setState({open: false});
+              if (this.checkPeers()) {
+                this.props.changeChat({
+                  chatId: this.props.selectedChat,
+                  name: this.state.name,
+                  peers: this.state.selectedPeers.map(peers => peers.label).concat(this.props.self)
+                });
+                this.setState({open: false});
+              }
             }}
           >
             <Grid>
@@ -70,7 +78,7 @@ export default class ModalChangeChat extends React.Component {
                     onChange={this.handleTextChange}
                     required
                   />
-                  <Select
+                  <CreatableSelect
                     value={this.state.selectedPeers}
                     onChange={this.handleSelectChange}
                     options={this.props.peers}
@@ -97,6 +105,7 @@ ModalChangeChat.propTypes = {
     })
   ).isRequired,
   selectedChat: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
   selectedPeers: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string.isRequired,

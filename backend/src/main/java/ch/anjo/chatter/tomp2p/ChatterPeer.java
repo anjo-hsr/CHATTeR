@@ -1,11 +1,15 @@
 package ch.anjo.chatter.tomp2p;
 
+import ch.anjo.chatter.helpers.MessageTypes;
 import ch.anjo.chatter.tomp2p.parameters.ClientParameters;
 import ch.anjo.chatter.tomp2p.parameters.Parameters;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import net.tomp2p.dht.FutureGet;
 import net.tomp2p.dht.PeerBuilderDHT;
@@ -113,13 +117,27 @@ public class ChatterPeer {
           Data friendData = future.data();
           if (!friendData.isEmpty()) {
             ChatterUser friend = (ChatterUser) friendData.object();
-            System.out.println("Add friend " + username);
             chatterUser.addFriend(friend.getUsername());
+
             dht.put(chatterUser.getHash()).data(new Data(chatterUser)).start();
           }
         }
       }
     });
 
+  }
+
+  private String generateAddPeers(String friend) {
+    return generateAddPeers(Collections.singletonList(friend));
+  }
+
+  private String generateAddPeers(List<String> friends) {
+    JsonObject addPeer = new JsonObject();
+    addPeer.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.ADD_PEERS);
+    JsonArray peers = new JsonArray();
+    friends.forEach(peers::add);
+
+    addPeer.add("peers", peers);
+    return addPeer.toString();
   }
 }

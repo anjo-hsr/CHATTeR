@@ -13,6 +13,7 @@ public class MessageTypes {
   public static final String ADD_PEERS = "ADD_PEERS";
   public static final String GET_PEERS = "GET_PEERS";
   public static final String GET_CHAT_PEERS = "GET_CHAT_PEERS";
+  public static final String UPDATE_CHAT_PEERS = "UPDATE_CHAT_PEERS";
   public static final String SEND_CHAT_PEERS = "SEND_CHAT_PEERS";
 
   public static final String ADD_CHAT = "ADD_CHAT";

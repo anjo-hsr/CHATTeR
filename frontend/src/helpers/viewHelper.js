@@ -6,7 +6,7 @@ import {Chats} from '../containers/chat/Chats';
 import {MessageWindow} from '../containers/message/MessageWindow';
 
 export default {
-  getHeader() {
+  getHeader(username) {
     return (
       <Grid.Row columns="equal" verticalAlign="middle" className="siteHeader">
         {isMobile && (
@@ -15,7 +15,7 @@ export default {
           </Grid.Column>
         )}
         <Grid.Column textAlign="center" className="headerElement">
-          <Header size="medium" color="green" content="CHATTeR" />
+          <Header size="medium" color="green" content={`CHATTeR - ${username}`} />
         </Grid.Column>
       </Grid.Row>
     );

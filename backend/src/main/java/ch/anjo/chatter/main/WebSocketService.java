@@ -61,7 +61,6 @@ public class WebSocketService extends Thread {
 
                     if (frontendSession != null && frontendSession.equals(session)) {
                       OutboundHandler.sendUsername(handler);
-                      OutboundHandler.sendPeers(handler);
                       OutboundHandler.sendChats(handler);
                     }
 

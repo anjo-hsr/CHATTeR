@@ -46,7 +46,7 @@ export default class App extends React.Component {
       <div>
         {Boolean(this.props.username) && (
           <Grid className="siteGrid" padded>
-            {this.getHeader(true)}
+            {this.getHeader(this.props.username)}
             {isMobile ? (
               <Grid.Row className="siteContent" columns="equal">
                 <Grid.Column>

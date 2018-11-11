@@ -11,6 +11,7 @@ export default function webSocketHelper(dispatch) {
   const onMessage = event => {
     dispatch(actionState.setSocketStateOpen(JSON.stringify({type: actionTypes.SOCKET_OPEN})));
     const data = JSON.parse(event.data);
+    console.log(data);
     switch (data.type) {
       case actionTypes.ADD_MESSAGE: {
         dispatch(
@@ -22,12 +23,11 @@ export default function webSocketHelper(dispatch) {
         break;
       }
       case actionTypes.ADD_MESSAGES: {
-        console.log(data);
         dispatch(actionMessages.addMessages(data));
         break;
       }
       case actionTypes.ADD_CHAT: {
-        dispatch(actionChats.addChat(data.id, data.name, data.peers));
+        dispatch(actionChats.addChat({chatId: data.chatId, chatObject: data.chatInformation}));
         break;
       }
       case actionTypes.ADD_CHATS: {
@@ -35,7 +35,7 @@ export default function webSocketHelper(dispatch) {
         break;
       }
       case actionTypes.ADD_PEERS: {
-        dispatch(actionPeers.addPeers(JSON.parse(data.peers)));
+        dispatch(actionPeers.addPeers(data.peers));
         break;
       }
       case actionTypes.SET_USERNAME: {

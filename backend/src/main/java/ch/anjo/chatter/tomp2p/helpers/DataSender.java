@@ -1,7 +1,6 @@
 package ch.anjo.chatter.tomp2p.helpers;
 
 import ch.anjo.chatter.helpers.MessageTypes;
-import ch.anjo.chatter.tomp2p.ChannelAction;
 import ch.anjo.chatter.tomp2p.TomP2pMessage;
 import ch.anjo.chatter.tomp2p.ChatterPeer;
 import ch.anjo.chatter.tomp2p.ChatterUser;
@@ -48,8 +47,8 @@ public class DataSender {
     sendWithListener(myself, receiver, message, nullConfirmation());
   }
 
-  public static void sendWithConfirmation(ChatterPeer myself, String receiver, String message) {
-    sendWithListener(myself, receiver, message, printConfirmation(myself, message));
+  public static void sendWithConfirmation(ChatterPeer myself, String receiver, String jsonMessage) {
+    sendWithListener(myself, receiver, jsonMessage, printConfirmation(myself, jsonMessage));
   }
 
   public static void sendToAllWithoutConfirmation(ChatterPeer chatterPeer, String outboundMessage) {
@@ -80,7 +79,7 @@ public class DataSender {
                                 , WebSocketMessage.class);
 
                             if (webSocketMessage.type.equals(MessageTypes.GET_PEERS)) {
-                              chatterPeer.addFriend();
+                              chatterPeer.addFriend(friend.getUsername());
                             }
                           }
                         }
@@ -92,7 +91,7 @@ public class DataSender {
   }
 
 
-  private static void sendWithListener(ChatterPeer myself, String receiver, String message,
+  private static void sendWithListener(ChatterPeer myself, String receiver, String jsonMessage,
       BaseFutureAdapter listener) {
     ChatterUser chatterUser = myself.getChatterUser();
     chatterUser.getFriends()
@@ -105,7 +104,7 @@ public class DataSender {
         .forEach(
             friend -> {
               TomP2pMessage tomP2pMessage = new TomP2pMessage(chatterUser.getUsername(), friend.getUsername(),
-                  message);
+                  jsonMessage);
 
               myself.getDht().send(friend.getHash())
                   .object(tomP2pMessage)

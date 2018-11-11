@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Button, Form, Grid, Modal} from 'semantic-ui-react';
 
-import Select from 'react-select';
+import CreatableSelect from 'react-select/lib/Creatable';
 import Buttons from './Buttons';
 
 export default class ModalAddAddress extends React.Component {
@@ -51,7 +51,7 @@ export default class ModalAddAddress extends React.Component {
           />
         }
       >
-        <Modal.Header content="Add new contact" />
+        <Modal.Header content="Add new chat" />
         <Modal.Content>
           <Form
             onSubmit={() => {
@@ -77,7 +77,7 @@ export default class ModalAddAddress extends React.Component {
                     onChange={this.handleTextChange}
                     required
                   />
-                  <Select
+                  <CreatableSelect
                     value={this.state.selectedPeers}
                     onChange={this.handleSelectChange}
                     options={this.props.peers}
