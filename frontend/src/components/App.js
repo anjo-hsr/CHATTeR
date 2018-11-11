@@ -5,11 +5,9 @@ import {isMobile} from 'react-device-detect';
 import {Grid, Sidebar} from 'semantic-ui-react';
 
 import {Chats} from '../containers/chat/Chats';
-import {MessageWindow} from '../containers/message/MessageWindow';
 import webSocketHelper from '../helpers/webSocketHelper';
 import viewHelper from '../helpers/viewHelper';
 import {rootSaga} from '../redux/saga/rootSaga';
-import ModalWaitForWebSocket from './modal/ModalWaitForWebSocket';
 
 export default class App extends React.Component {
   constructor(props) {
