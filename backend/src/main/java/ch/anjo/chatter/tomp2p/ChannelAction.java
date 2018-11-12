@@ -6,6 +6,7 @@ import ch.anjo.chatter.websocket.templates.WebSocketMessage;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
@@ -84,6 +85,13 @@ public class ChannelAction {
         return null;
       }
 
+      if (webSocketMessage.type.equals(MessageTypes.ADD_CHAT)) {
+        Arrays.stream(webSocketMessage.peers).forEach(chatterPeer::addFriend);
+        System.out.println(chatterPeer.getChatterUser().getFriends().toString());
+        webSocketClient.send(tomP2pMessage.getJsonMessage());
+        return null;
+      }
+
       if (!webSocketMessage.type.equals(MessageTypes.ADD_MESSAGE)) {
         webSocketClient.send(tomP2pMessage.getJsonMessage());
         return null;
@@ -96,15 +104,17 @@ public class ChannelAction {
 
       Stream<TomP2pMessage> unverifiedMessages =
           messageHistory.stream().filter(Predicate.not(TomP2pMessage::isVerified));
-      if (unverifiedMessages.count() > 0
-          && tomP2pMessage.getJsonMessage().startsWith("WebSocketMessage recieved: ")) {
+      if (webSocketMessage.type.equals(MessageTypes.CONFIRM_MESSAGE)) {
         String from = tomP2pMessage.getSender();
+        String etherAddress;
         // Send notary --> Approved that message has received
       }
 
-      webSocketClient.send(tomP2pMessage.getJsonMessage());
+      JsonObject response = new JsonObject();
+      response.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.CONFIRM_MESSAGE);
+      response.addProperty("messageId", webSocketMessage.messageInformation.messageId);
 
-      return null;
+      return response.toString();
     });
   }
 

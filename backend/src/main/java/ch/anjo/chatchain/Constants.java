@@ -2,6 +2,7 @@ package blockchain;
 
 public class Constants {
 
+  public static final String INFURA_ADDRESS = "https://mainnet.infura.io/v3/d5bc11e49faf41e6bb4e1bf26ca63604";
   public static final String WALLET_PATH = "src/main/java/ch/anjo/blockchain/wallets";
   public static final String DEFAULT_PASSWORD = "ch.anjo.CHATTeR";
   public static final String WALLET_ERNEST = "UTC--2018-11-07T21-55-57"

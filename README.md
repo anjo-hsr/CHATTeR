@@ -2,21 +2,27 @@
 
 ## Build and run the application:
 
-Start the main DHT:
-```
-mvn clean install 
-```
+1. Build the project:
+    ```
+    mvn clean install
+    ```
+2. Start the main DHT:
+    ```
+    [mode] [username] [etherAddress]                              [optional: bPort]
+    master root       0xc0a71f7eb1a04a867a65022021f962b3a65a40a5  5000
+    ```
+3. Start each other person of interest. The default local Port for TomP2P is :5000. If multiple instances per client 
+would be needed use the optional local Port syntax's to start on different ports:   
+    ```
+    [mode] [username] [etherAddress]                              [optional: bPort] [user@rHost:rPort]    [optional: fPort]   
+    client harold     0x2329edfb5a326f1f6daf6cec37e50e7cc9f9b151  5001              root@127.0.0.1:5000   
+    client john       0x3079c583432ff5eb6a6a338d94f868c81db53f7c  5002              root@127.0.0.1:5000   
+    client lionel     0x72143bae18065e62eec38c6e9051e3357c48cd6d  5003              root@127.0.0.1:5000   
+    ```
+4. Access the frontend by default via [http://localhost:8000](http://localhost:8000/) on the specific host. If no 
+  specific port for the frontend was defined it will be always +3000 Port to the backend listening port.
 
-1. Connect to [Localhost:3000](http://localhost:3000/) and enter the main DHT IP.
-2. Start chatting.
+
+##And now start CHATTeRing by creating new chats.
 
 
-
-# Other links
-- [Lecture website](https://dsl.hsr.ch/lect/)
-- [Setting up Ethereum private block chain](https://medium.com/coinmonks/ethereum-setting-up-a-private-blockchain-67bbb96cf4f1)
-- [Official Java Ethereum protocol implementation](https://github.com/ethereum/ethereumjp)
-- [ETH Wallet App](https://github.com/ethereum/mist/releases)
-- [geth Client](https://geth.ethereum.org/downloads/)
-- [Create Keystore](https://www.myetherwallet.com/)
-- [Ropsten add 1 ETH to account](https://faucet.ropsten.be/)

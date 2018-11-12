@@ -50,6 +50,7 @@ public class InboundHandler {
   }
 
   private static void setUsername(Handler handler, WebSocketMessage webSocketMessage) {
+    System.out.println("-------- Will set username to" + webSocketMessage.username);
     handler.setUsername(webSocketMessage.username);
     handler.getSessionHandler().printSession();
   }
