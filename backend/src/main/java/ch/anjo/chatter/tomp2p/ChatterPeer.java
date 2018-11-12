@@ -124,7 +124,6 @@ public class ChatterPeer {
         }
       }
     });
-
   }
 
   private String generateAddPeers(String friend) {

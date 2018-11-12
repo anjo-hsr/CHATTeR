@@ -10,7 +10,6 @@ import com.google.gson.JsonParser;
 import io.javalin.websocket.WsSession;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -94,6 +93,7 @@ public class OutboundHandler {
 
     response.addProperty("chatId", chatId);
     response.add("messages", jsonMessages);
+
     session.send(response.toString());
   }
 

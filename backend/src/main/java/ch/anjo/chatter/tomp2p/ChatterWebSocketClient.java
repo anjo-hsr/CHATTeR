@@ -163,4 +163,4 @@ public class ChatterWebSocketClient extends WebSocketClient {
     this.send(getChatPeers.toString());
   }
 
-};
+}

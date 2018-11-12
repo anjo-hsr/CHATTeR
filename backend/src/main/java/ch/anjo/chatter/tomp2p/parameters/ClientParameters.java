@@ -1,6 +1,5 @@
 package ch.anjo.chatter.tomp2p.parameters;
 
-import java.util.Arrays;
 
 public class ClientParameters extends Parameters {
 

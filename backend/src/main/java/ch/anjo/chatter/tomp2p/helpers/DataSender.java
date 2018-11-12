@@ -27,7 +27,7 @@ public class DataSender {
   private static BaseFutureAdapter<FutureSend> printConfirmation(ChatterPeer myself, String jsonMessage) {
     return new BaseFutureAdapter<FutureSend>() {
       @Override
-      public void operationComplete(FutureSend future) throws Exception {
+      public void operationComplete(FutureSend future) {
         JsonParser parser = new JsonParser();
         JsonObject message = parser.parse(jsonMessage).getAsJsonObject();
         message.addProperty("received", true);
@@ -38,7 +38,7 @@ public class DataSender {
   private static BaseFutureAdapter<FutureSend> nullConfirmation() {
     return new BaseFutureAdapter<FutureSend>() {
       @Override
-      public void operationComplete(FutureSend futureSend) throws Exception {
+      public void operationComplete(FutureSend futureSend) {
       }
     };
   }
@@ -62,7 +62,7 @@ public class DataSender {
             .start()
             .addListener(new BaseFutureAdapter<FutureGet>() {
               @Override
-              public void operationComplete(FutureGet future) throws Exception {
+              public void operationComplete(FutureGet future) {
                 Data data = future.data();
                 if (!data.isEmpty()) {
                   ChatterUser friend = readUser(data);
@@ -71,7 +71,7 @@ public class DataSender {
                   myself.sendDirect(friend.getPeerAddress()).object(tomP2pMessage).start().addListener(
                       new BaseFutureAdapter<BaseFuture>() {
                         @Override
-                        public void operationComplete(BaseFuture baseFuture) throws Exception {
+                        public void operationComplete(BaseFuture baseFuture) {
                           Data peerResponse = future.data();
                           if (!peerResponse.isEmpty()) {
                             Gson gson = new Gson();

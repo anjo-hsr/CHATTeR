@@ -1,6 +1,5 @@
 package ch.anjo.chatter.main;
 
-import ch.anjo.chatter.tomp2p.ChannelAction;
 import ch.anjo.chatter.tomp2p.ChatterPeer;
 import ch.anjo.chatter.tomp2p.ChatterWebSocketClient;
 import java.net.URISyntaxException;
@@ -13,7 +12,7 @@ public class TomP2pServer {
   private final int webSocketPort;
   private final String username;
 
-  public TomP2pServer(ChatterPeer myself, int webSocketPort, String username) {
+  TomP2pServer(ChatterPeer myself, int webSocketPort, String username) {
     this.myself = myself;
     this.webSocketPort = webSocketPort;
     this.username = username;

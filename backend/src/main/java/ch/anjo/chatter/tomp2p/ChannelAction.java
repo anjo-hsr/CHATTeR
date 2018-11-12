@@ -37,7 +37,7 @@ public class ChannelAction {
         .addListener(
             new BaseFutureAdapter<BaseFuture>() {
               @Override
-              public void operationComplete(BaseFuture baseFuture) throws Exception {
+              public void operationComplete(BaseFuture baseFuture) {
                 dht.get(myself.peerID()).start().addListener(
                     new BaseFutureAdapter<FutureGet>() {
                       @Override
