@@ -35,8 +35,8 @@ Chats.propTypes = {
   keys: PropTypes.arrayOf(PropTypes.string).isRequired,
   chats: PropTypes.objectOf(
     PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      peers: PropTypes.arrayOf(PropTypes.string).isRequired
+      name: PropTypes.string,
+      peers: PropTypes.arrayOf(PropTypes.string)
     }).isRequired
   ).isRequired
 };

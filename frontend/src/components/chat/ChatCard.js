@@ -27,7 +27,12 @@ export default class ChatCard extends React.Component {
         </Card.Content>
         <Card.Content extra>
           <Button.Group vertical={isMobile} widths="5">
-            <Button inverted color="red" content="Remove" onClick={() => this.props.deleteChat(this.props.chatId)} />
+            <Button
+              inverted
+              color="red"
+              content="Remove"
+              onClick={() => this.props.deleteChat(this.props.chatId, this.props.chat, this.props.self)}
+            />
             <Button inverted color="green" content="Chat" onClick={() => this.props.selectChat(this.props.chatId)} />
           </Button.Group>
         </Card.Content>
@@ -38,6 +43,7 @@ export default class ChatCard extends React.Component {
 
 ChatCard.propTypes = {
   chatId: PropTypes.string.isRequired,
+  chat: PropTypes.object.isRequired,
   deleteChat: PropTypes.func.isRequired,
   selectChat: PropTypes.func.isRequired,
   self: PropTypes.string.isRequired

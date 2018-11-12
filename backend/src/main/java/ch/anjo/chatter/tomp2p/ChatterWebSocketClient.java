@@ -67,7 +67,7 @@ public class ChatterWebSocketClient extends WebSocketClient {
 
     switch (webSocketMessage.type) {
       case MessageTypes.ADD_MESSAGE:
-        sendMessageToPeers(webSocketMessage, jsonMessage);
+        sendMessageToPeers(webSocketMessage, jsonMessage.replace("\"isMe\":true","\"isMe\":false"));
         break;
       case MessageTypes.SET_USERNAME:
         break;
@@ -99,8 +99,7 @@ public class ChatterWebSocketClient extends WebSocketClient {
 
     String chatId = webSocketMessage.chatId;
     if (chatMembers.containsKey(chatId)) {
-      System.out.println(String.format("Send message over chat %s (%s) to: %s", webSocketMessage.chatInformation.name,
-          chatId.substring(0, 9), chatMembers.get(chatId)));
+      System.out.println(String.format("Send message over chat (%s) to: %s", chatId.substring(0, 9), chatMembers.get(chatId)));
       Set<String> chatPeers = chatMembers.get(chatId);
       System.out.println("Direct");
       chatPeers.forEach(peer -> DataSender.sendWithConfirmation(myself, peer, jsonMessage));

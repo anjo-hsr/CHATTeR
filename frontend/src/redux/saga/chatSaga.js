@@ -13,9 +13,3 @@ export function* changeChat(socket) {
     socket.send(JSON.stringify(action));
   });
 }
-
-export function* deleteChat(socket) {
-  yield takeEvery(actionTypes.DELETE_CHAT, action => {
-    socket.send(JSON.stringify(action));
-  });
-}

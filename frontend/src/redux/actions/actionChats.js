@@ -23,10 +23,19 @@ export default {
     };
   },
 
-  deleteChat(chatId) {
+  preDeleteChat({chatId, chat, username}) {
+    let name = chat.name;
+    let peers = chat.peers.filter(peer => peer !== username);
+    if (peers.length <= 1) {
+      return {
+        type: types.DELETE_CHAT,
+        chatId
+      };
+    }
     return {
-      type: types.DELETE_CHAT,
-      chatId
+      type: types.CHANGE_CHAT,
+      chatId,
+      chatInformation: {name, peers}
     };
   },
 

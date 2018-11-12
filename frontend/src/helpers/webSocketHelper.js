@@ -16,8 +16,14 @@ export default function webSocketHelper(dispatch) {
       case actionTypes.ADD_MESSAGE: {
         dispatch(
           actionMessages.addMessage({
-            chatId: data.id,
-            message: {date: data.date, author: data.author, message: data.message}
+            chatId: data.chatId,
+            message: {
+              date: data.messageInformation.date,
+              author: data.messageInformation.author,
+              message: data.messageInformation.message,
+              messageId: data.messageInformation.messageId,
+              isMe: data.messageInformation.isMe
+            }
           })
         );
         break;

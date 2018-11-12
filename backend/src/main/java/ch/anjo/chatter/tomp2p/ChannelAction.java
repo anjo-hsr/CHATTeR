@@ -6,7 +6,6 @@ import ch.anjo.chatter.websocket.templates.WebSocketMessage;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
@@ -17,7 +16,6 @@ import net.tomp2p.futures.BaseFuture;
 import net.tomp2p.futures.BaseFutureAdapter;
 import net.tomp2p.p2p.Peer;
 import net.tomp2p.p2p.builder.BootstrapBuilder;
-import net.tomp2p.peers.PeerAddress;
 import net.tomp2p.storage.Data;
 import org.java_websocket.client.WebSocketClient;
 
