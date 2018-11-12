@@ -68,7 +68,7 @@ public class Validator {
   }
 
   private boolean isPortValid(int port) {
-    //Minus 3000 because of the 3000 Port higher WebSocketService
+    // Minus 3000 because of the 3000 Port higher WebSocketService
     return port > 1024 && port < Math.pow(2, 32) - 1 - 3000;
   }
 

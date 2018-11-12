@@ -1,6 +1,5 @@
 package ch.anjo.chatter.tomp2p.parameters;
 
-
 public class ClientParameters extends Parameters {
 
   private final String rendezvousString;

@@ -18,11 +18,11 @@ public class MessageInformation {
       return false;
     }
     MessageInformation that = (MessageInformation) o;
-    return isMe == that.isMe &&
-        Objects.equal(messageId, that.messageId) &&
-        Objects.equal(date, that.date) &&
-        Objects.equal(author, that.author) &&
-        Objects.equal(message, that.message);
+    return isMe == that.isMe
+        && Objects.equal(messageId, that.messageId)
+        && Objects.equal(date, that.date)
+        && Objects.equal(author, that.author)
+        && Objects.equal(message, that.message);
   }
 
   @Override

@@ -63,20 +63,21 @@ public class WebSocketService extends Thread {
                       OutboundHandler.sendUsername(handler);
                       OutboundHandler.sendChats(handler);
                     }
-
-
                   });
               ws.onMessage(
                   (session, jsonMessage) -> {
                     Gson gson = new Gson();
-                    WebSocketMessage webSocketMessage = gson.fromJson(jsonMessage, WebSocketMessage.class);
-                    InboundHandler.handleMessageTypes(handler, session, jsonMessage, webSocketMessage);
+                    WebSocketMessage webSocketMessage =
+                        gson.fromJson(jsonMessage, WebSocketMessage.class);
+                    InboundHandler.handleMessageTypes(
+                        handler, session, jsonMessage, webSocketMessage);
                   });
             })
         .start(webSocketPort);
   }
 
   private void getOpenBrowserMessage(String frontendUrl) {
-    System.out.println(" --- Please connect manually to the frontend via : " + frontendUrl + " ---");
+    System.out.println(
+        " --- Please connect manually to the frontend via : " + frontendUrl + " ---");
   }
 }

@@ -48,7 +48,8 @@ public class ChatterPeer {
     this.masterName = parameters.getUsername();
 
     System.out.println("Master service started:");
-    System.out.println("Master with peerID - " + myself.peerID() + " - at: " + myself.peerAddress());
+    System.out.println(
+        "Master with peerID - " + myself.peerID() + " - at: " + myself.peerAddress());
   }
 
   public ChatterPeer(ClientParameters parameters) throws IOException {
@@ -59,11 +60,13 @@ public class ChatterPeer {
     String masterAddress = validator.getRendezvousChatterAddress().getHost();
     int masterPort = validator.getRendezvousChatterAddress().getPort();
 
-    Peer master = new PeerBuilder(byteHash(this.masterName)).ports(parameters.getListeningPort()).start();
+    Peer master =
+        new PeerBuilder(byteHash(this.masterName)).ports(parameters.getListeningPort()).start();
     this.masterAddress = new PeerAddress(master.peerID(), masterAddress, masterPort, masterPort);
 
     this.myself = new PeerBuilder(byteHash(parameters.getUsername())).masterPeer(master).start();
-    this.dht = new PeerBuilderDHT(this.myself).storageLayer(new StorageLayer(new StorageMemory())).start();
+    this.dht =
+        new PeerBuilderDHT(this.myself).storageLayer(new StorageLayer(new StorageMemory())).start();
 
     this.chatterUser = new ChatterUser(parameters);
     ChannelAction.createBootStrapBuilder(this, master);
@@ -110,20 +113,23 @@ public class ChatterPeer {
   }
 
   public void addFriend(String username) {
-    dht.get(byteHash(username)).start().addListener(new BaseFutureAdapter<FutureGet>() {
-      @Override
-      public void operationComplete(FutureGet future) throws Exception {
-        if (future.isSuccess()) {
-          Data friendData = future.data();
-          if (!friendData.isEmpty()) {
-            ChatterUser friend = (ChatterUser) friendData.object();
-            chatterUser.addFriend(friend.getUsername());
+    dht.get(byteHash(username))
+        .start()
+        .addListener(
+            new BaseFutureAdapter<FutureGet>() {
+              @Override
+              public void operationComplete(FutureGet future) throws Exception {
+                if (future.isSuccess()) {
+                  Data friendData = future.data();
+                  if (!friendData.isEmpty()) {
+                    ChatterUser friend = (ChatterUser) friendData.object();
+                    chatterUser.addFriend(friend.getUsername());
 
-            dht.put(chatterUser.getHash()).data(new Data(chatterUser)).start();
-          }
-        }
-      }
-    });
+                    dht.put(chatterUser.getHash()).data(new Data(chatterUser)).start();
+                  }
+                }
+              }
+            });
   }
 
   private String generateAddPeers(String friend) {

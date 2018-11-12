@@ -1,10 +1,10 @@
 package ch.anjo.chatter.main;
 
 import ch.anjo.chatter.helpers.DateGenerator;
-import ch.anjo.chatter.tomp2p.parameters.ClientParameters;
-import ch.anjo.chatter.tomp2p.parameters.Parameters;
 import ch.anjo.chatter.tomp2p.ChatterPeer;
 import ch.anjo.chatter.tomp2p.Validator;
+import ch.anjo.chatter.tomp2p.parameters.ClientParameters;
+import ch.anjo.chatter.tomp2p.parameters.Parameters;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -31,15 +31,16 @@ public class ChatterServer {
       case "master":
         chatterPeer = new ChatterPeer(parameters);
         break;
-      case "client": {
-        validator.setParameters(new ClientParameters(args));
-        if (validator.areClientParametersCorrect()) {
-          chatterPeer = new ChatterPeer((ClientParameters) validator.getParameters());
-        } else {
-          terminate();
+      case "client":
+        {
+          validator.setParameters(new ClientParameters(args));
+          if (validator.areClientParametersCorrect()) {
+            chatterPeer = new ChatterPeer((ClientParameters) validator.getParameters());
+          } else {
+            terminate();
+          }
+          break;
         }
-        break;
-      }
       default:
         terminate();
     }
@@ -48,10 +49,12 @@ public class ChatterServer {
   }
 
   private static void startServices(Parameters parameters, ChatterPeer myself) {
-    Thread webSocketServer = new WebSocketService(parameters.getWebSocketPort(), parameters.getFrontendPort());
+    Thread webSocketServer =
+        new WebSocketService(parameters.getWebSocketPort(), parameters.getFrontendPort());
     webSocketServer.start();
 
-    TomP2pServer tomP2pServer = new TomP2pServer(myself, parameters.getWebSocketPort(), parameters.getUsername());
+    TomP2pServer tomP2pServer =
+        new TomP2pServer(myself, parameters.getWebSocketPort(), parameters.getUsername());
     tomP2pServer.start();
   }
 
@@ -73,6 +76,6 @@ public class ChatterServer {
         .addShutdownHook(
             new Thread(() -> System.out.println("Adios"))
             // new Thread(me::disconnect)
-        );
+            );
   }
 }

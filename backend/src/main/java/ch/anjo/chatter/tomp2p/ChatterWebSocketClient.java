@@ -30,7 +30,8 @@ public class ChatterWebSocketClient extends WebSocketClient {
   private final Map<String, String> messageWaitingRoom;
   private LoopHandler loopHandler;
 
-  public ChatterWebSocketClient(int webSocketPort, String username, ChatterPeer myself) throws URISyntaxException {
+  public ChatterWebSocketClient(int webSocketPort, String username, ChatterPeer myself)
+      throws URISyntaxException {
     super(new URI("ws://localhost:" + webSocketPort + "/chat?wsType=backend&username=" + username));
 
     this.myself = myself;
@@ -60,14 +61,14 @@ public class ChatterWebSocketClient extends WebSocketClient {
     ex.printStackTrace();
   }
 
-
   private void handleWebSocketMessages(String jsonMessage) {
     Gson gson = new Gson();
     WebSocketMessage webSocketMessage = gson.fromJson(jsonMessage, WebSocketMessage.class);
 
     switch (webSocketMessage.type) {
       case MessageTypes.ADD_MESSAGE:
-        sendMessageToPeers(webSocketMessage, jsonMessage.replace("\"isMe\":true","\"isMe\":false"));
+        sendMessageToPeers(
+            webSocketMessage, jsonMessage.replace("\"isMe\":true", "\"isMe\":false"));
         break;
       case MessageTypes.SET_USERNAME:
         break;
@@ -99,7 +100,10 @@ public class ChatterWebSocketClient extends WebSocketClient {
 
     String chatId = webSocketMessage.chatId;
     if (chatMembers.containsKey(chatId)) {
-      System.out.println(String.format("Send message over chat (%s) to: %s", chatId.substring(0, 9), chatMembers.get(chatId)));
+      System.out.println(
+          String.format(
+              "Send message over chat (%s) to: %s",
+              chatId.substring(0, 9), chatMembers.get(chatId)));
       Set<String> chatPeers = chatMembers.get(chatId);
       System.out.println("Direct");
       chatPeers.forEach(peer -> DataSender.sendWithConfirmation(myself, peer, jsonMessage));
@@ -122,7 +126,8 @@ public class ChatterWebSocketClient extends WebSocketClient {
 
   private void updateChatPeerMap(WebSocketMessage webSocketMessage) {
     String[] peers = webSocketMessage.peers;
-    String[] otherPeers = Arrays.stream(peers).filter(peer -> !peer.equals(username)).toArray(String[]::new);
+    String[] otherPeers =
+        Arrays.stream(peers).filter(peer -> !peer.equals(username)).toArray(String[]::new);
     HashSet<String> peerSet = new HashSet<>(Set.of(otherPeers));
 
     chatMembers.put(webSocketMessage.chatId, peerSet);
@@ -149,10 +154,13 @@ public class ChatterWebSocketClient extends WebSocketClient {
   }
 
   private void bootStrapNewPeers(List<String> peers) {
-    peers.stream().filter(peer -> {
-      Set<String> friends = myself.getChatterUser().getFriends();
-      return !friends.contains(peer);
-    })
+    peers
+        .stream()
+        .filter(
+            peer -> {
+              Set<String> friends = myself.getChatterUser().getFriends();
+              return !friends.contains(peer);
+            })
         .forEach(myself::addFriend);
 
     JsonObject getChatPeers = new JsonObject();
@@ -162,5 +170,4 @@ public class ChatterWebSocketClient extends WebSocketClient {
     getChatPeers.add("peers", chatPeers);
     this.send(getChatPeers.toString());
   }
-
 }

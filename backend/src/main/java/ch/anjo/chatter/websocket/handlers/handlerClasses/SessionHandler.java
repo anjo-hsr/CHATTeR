@@ -57,6 +57,7 @@ public class SessionHandler {
   }
 
   public void printSession() {
-    System.out.println(DateGenerator.getDate() + this.username + " at -> " + this.sessions.toString());
+    System.out.println(
+        DateGenerator.getDate() + this.username + " at -> " + this.sessions.toString());
   }
 }

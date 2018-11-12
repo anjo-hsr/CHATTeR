@@ -70,7 +70,7 @@ public class ChatterUser implements Serializable {
   }
 
   void addFriends(Set<String> newFriends) {
-    if(friends != null){
+    if (friends != null) {
       friends.addAll(newFriends);
     }
   }
@@ -80,9 +80,9 @@ public class ChatterUser implements Serializable {
   }
 
   public PeerAddress getPeerAddress() {
-    try{
+    try {
       return new PeerAddress(this.getHash(), this.ipAddress, this.port, this.port);
-    } catch (Exception e){
+    } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }

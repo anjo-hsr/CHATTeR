@@ -20,5 +20,4 @@ public class MessageTypes {
   public static final String CHANGE_CHAT = "CHANGE_CHAT";
   public static final String DELETE_CHAT = "DELETE_CHAT";
   public static final String SELECT_CHAT = "SELECT_CHAT";
-
 }

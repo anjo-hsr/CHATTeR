@@ -29,14 +29,19 @@ public class LoopHandler {
     return didALoopOccurred;
   }
 
-
   private void cleanUpMessages() {
     Date currentDate = new Date();
 
-    Set<WebSocketMessage> deleteSet = lastMessages.keySet().stream().filter(webSocketMessage -> {
-      Date messageDate = lastMessages.get(webSocketMessage);
-      return currentDate.getMinutes() - messageDate.getMinutes() > 2;
-    }).collect(Collectors.toSet());
+    Set<WebSocketMessage> deleteSet =
+        lastMessages
+            .keySet()
+            .stream()
+            .filter(
+                webSocketMessage -> {
+                  Date messageDate = lastMessages.get(webSocketMessage);
+                  return currentDate.getMinutes() - messageDate.getMinutes() > 2;
+                })
+            .collect(Collectors.toSet());
 
     deleteSet.forEach(lastMessages::remove);
   }

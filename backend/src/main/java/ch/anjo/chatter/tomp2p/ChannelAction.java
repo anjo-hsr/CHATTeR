@@ -30,7 +30,8 @@ public class ChannelAction {
     BootstrapBuilder bootstrapBuilder = myself.bootstrap();
 
     System.out.println("Start peering with master:");
-    System.out.println("Master with peerID - " + master.peerID() + " - at: " + master.peerAddress());
+    System.out.println(
+        "Master with peerID - " + master.peerID() + " - at: " + master.peerAddress());
 
     bootstrapBuilder
         .bootstrapTo(Collections.singletonList(chatterPeer.getMasterAddress()))
@@ -39,25 +40,27 @@ public class ChannelAction {
             new BaseFutureAdapter<BaseFuture>() {
               @Override
               public void operationComplete(BaseFuture baseFuture) {
-                dht.get(myself.peerID()).start().addListener(
-                    new BaseFutureAdapter<FutureGet>() {
-                      @Override
-                      public void operationComplete(FutureGet future) throws Exception {
-                        Data data = future.data();
-                        if (data != null) {
-                          System.out.println("Friends received" + ((ChatterUser) data.object()).getFriends());
-                          chatterUser.addFriends(((ChatterUser) data.object()).getFriends());
-                        }
-                        chatterUser.setOnlineState(true);
-                        dht.put(chatterUser.getHash()).data(new Data(chatterUser)).start();
-                        System.out.println("Connected to " + chatterPeer.getMasterName());
-                        DataSender.sendToAllWithoutConfirmation(chatterPeer, generateGetPeerMessage());
-                      }
-                    }
-                );
+                dht.get(myself.peerID())
+                    .start()
+                    .addListener(
+                        new BaseFutureAdapter<FutureGet>() {
+                          @Override
+                          public void operationComplete(FutureGet future) throws Exception {
+                            Data data = future.data();
+                            if (data != null) {
+                              System.out.println(
+                                  "Friends received" + ((ChatterUser) data.object()).getFriends());
+                              chatterUser.addFriends(((ChatterUser) data.object()).getFriends());
+                            }
+                            chatterUser.setOnlineState(true);
+                            dht.put(chatterUser.getHash()).data(new Data(chatterUser)).start();
+                            System.out.println("Connected to " + chatterPeer.getMasterName());
+                            DataSender.sendToAllWithoutConfirmation(
+                                chatterPeer, generateGetPeerMessage());
+                          }
+                        });
               }
-            }
-        );
+            });
 
     return bootstrapBuilder;
   }
@@ -72,50 +75,55 @@ public class ChannelAction {
   public static void replyToData(ChatterPeer chatterPeer, WebSocketClient webSocketClient) {
     Peer myself = chatterPeer.getMyself();
     List<TomP2pMessage> messageHistory = chatterPeer.getMessageHistory();
-    myself.objectDataReply((sender, request) -> {
-      TomP2pMessage tomP2pMessage = (TomP2pMessage) request;
+    myself.objectDataReply(
+        (sender, request) -> {
+          TomP2pMessage tomP2pMessage = (TomP2pMessage) request;
 
-      Gson gson = new Gson();
-      WebSocketMessage webSocketMessage = gson.fromJson(tomP2pMessage.getJsonMessage()
-          , WebSocketMessage.class);
+          Gson gson = new Gson();
+          WebSocketMessage webSocketMessage =
+              gson.fromJson(tomP2pMessage.getJsonMessage(), WebSocketMessage.class);
 
-      if (webSocketMessage.type.equals(MessageTypes.GET_PEERS)) {
-        ChannelAction.getFriends(chatterPeer);
-        chatterPeer.addFriend(tomP2pMessage.getSender());
-        return null;
-      }
+          if (webSocketMessage.type.equals(MessageTypes.GET_PEERS)) {
+            if (!tomP2pMessage.getSender().equals(chatterPeer.getChatterUser().getUsername())) {
+              ChannelAction.getFriends(chatterPeer);
+              chatterPeer.addFriend(tomP2pMessage.getSender());
+              return null;
+            }
+          }
 
-      if (webSocketMessage.type.equals(MessageTypes.ADD_CHAT)) {
-        Arrays.stream(webSocketMessage.peers).forEach(chatterPeer::addFriend);
-        System.out.println(chatterPeer.getChatterUser().getFriends().toString());
-        webSocketClient.send(tomP2pMessage.getJsonMessage());
-        return null;
-      }
+          if (webSocketMessage.type.equals(MessageTypes.ADD_CHAT)) {
+            webSocketMessage.chatInformation.peers.forEach(chatterPeer::addFriend);
+            System.out.println(chatterPeer.getChatterUser().getFriends().toString());
+            webSocketClient.send(tomP2pMessage.getJsonMessage());
+            return null;
+          }
 
-      if (!webSocketMessage.type.equals(MessageTypes.ADD_MESSAGE)) {
-        webSocketClient.send(tomP2pMessage.getJsonMessage());
-        return null;
-      }
+          if (!webSocketMessage.type.equals(MessageTypes.ADD_MESSAGE)) {
+            webSocketClient.send(tomP2pMessage.getJsonMessage());
+            return null;
+          }
 
-      if (messageHistory.indexOf(tomP2pMessage) == -1) {
-        messageHistory.add(tomP2pMessage);
-        // Notary service needed
-      }
+          if (messageHistory.stream().anyMatch(tomP2pMessage::equals)) {
+            messageHistory.add(tomP2pMessage);
+            // Notary service needed
+          }
 
-      Stream<TomP2pMessage> unverifiedMessages =
-          messageHistory.stream().filter(Predicate.not(TomP2pMessage::isVerified));
-      if (webSocketMessage.type.equals(MessageTypes.CONFIRM_MESSAGE)) {
-        String from = tomP2pMessage.getSender();
-        String etherAddress;
-        // Send notary --> Approved that message has received
-      }
+          Stream<TomP2pMessage> unverifiedMessages =
+              messageHistory.stream().filter(Predicate.not(TomP2pMessage::isVerified));
+          if (webSocketMessage.type.equals(MessageTypes.CONFIRM_MESSAGE)) {
+            String from = tomP2pMessage.getSender();
+            String etherAddress;
+            // Send notary --> Approved that message has received
+          }
 
-      JsonObject response = new JsonObject();
-      response.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.CONFIRM_MESSAGE);
-      response.addProperty("messageId", webSocketMessage.messageInformation.messageId);
+          JsonObject response = new JsonObject();
+          response.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.CONFIRM_MESSAGE);
+          response.addProperty("messageId", webSocketMessage.messageInformation.messageId);
 
-      return response.toString();
-    });
+          webSocketClient.send(tomP2pMessage.getJsonMessage());
+
+          return response.toString();
+        });
   }
 
   public static String getFriends(ChatterPeer chatterPeer) {

@@ -15,8 +15,7 @@ import java.util.List;
 
 public class OutboundHandler {
 
-  OutboundHandler() {
-  }
+  OutboundHandler() {}
 
   public static void sendChats(Handler handler) {
     WsSession frontendSession = handler.getSessionHandler().getFrontendSession();

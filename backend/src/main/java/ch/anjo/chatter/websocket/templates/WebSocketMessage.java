@@ -24,19 +24,20 @@ public class WebSocketMessage {
       return false;
     }
     WebSocketMessage that = (WebSocketMessage) o;
-    return confirmed == that.confirmed &&
-        Objects.equal(type, that.type) &&
-        Objects.equal(id, that.id) &&
-        Objects.equal(message, that.message) &&
-        Objects.equal(username, that.username) &&
-        Objects.equal(chatId, that.chatId) &&
-        Objects.equal(peers, that.peers) &&
-        Objects.equal(messageInformation, that.messageInformation) &&
-        Objects.equal(chatInformation, that.chatInformation);
+    return confirmed == that.confirmed
+        && Objects.equal(type, that.type)
+        && Objects.equal(id, that.id)
+        && Objects.equal(message, that.message)
+        && Objects.equal(username, that.username)
+        && Objects.equal(chatId, that.chatId)
+        && Objects.equal(peers, that.peers)
+        && Objects.equal(messageInformation, that.messageInformation)
+        && Objects.equal(chatInformation, that.chatInformation);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(type, id, message, username, chatId, peers, messageInformation, chatInformation, confirmed);
+    return Objects.hashCode(
+        type, id, message, username, chatId, peers, messageInformation, chatInformation, confirmed);
   }
 }

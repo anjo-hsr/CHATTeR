@@ -23,7 +23,8 @@ public class TomP2pServer {
       // Wait till WebSocketServer in other thread was started.
       TimeUnit.SECONDS.sleep(10);
 
-      ChatterWebSocketClient webSocketClient = new ChatterWebSocketClient(webSocketPort, username, myself);
+      ChatterWebSocketClient webSocketClient =
+          new ChatterWebSocketClient(webSocketPort, username, myself);
       webSocketClient.setConnectionLostTimeout(60);
       myself.replyToData(webSocketClient);
       myself.addFriend(myself.getMasterName());
@@ -33,6 +34,4 @@ public class TomP2pServer {
       System.exit(1);
     }
   }
-
-
 }

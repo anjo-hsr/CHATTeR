@@ -1,7 +1,6 @@
 package ch.anjo.chatter.websocket.templates;
 
 import io.javalin.websocket.WsSession;
-import java.util.Arrays;
 import java.util.List;
 
 public class WebSocketPair {

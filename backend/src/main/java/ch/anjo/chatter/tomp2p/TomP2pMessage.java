@@ -1,5 +1,6 @@
 package ch.anjo.chatter.tomp2p;
 
+import com.google.common.base.Objects;
 import java.io.Serializable;
 import net.tomp2p.peers.PeerAddress;
 
@@ -14,14 +15,6 @@ public class TomP2pMessage implements Serializable {
     this.sender = sender;
     this.receiver = receiver;
     this.receiverAddress = null;
-    this.jsonMessage = jsonMessage;
-    this.verified = false;
-  }
-
-  public TomP2pMessage(String sender, PeerAddress receiverAddress, String jsonMessage) {
-    this.sender = sender;
-    this.receiver = "";
-    this.receiverAddress = receiverAddress;
     this.jsonMessage = jsonMessage;
     this.verified = false;
   }
@@ -48,5 +41,27 @@ public class TomP2pMessage implements Serializable {
 
   public void verify() {
     verified = true;
+  }
+
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    TomP2pMessage that = (TomP2pMessage) o;
+    return verified == that.verified &&
+        Objects.equal(sender, that.sender) &&
+        Objects.equal(receiver, that.receiver) &&
+        Objects.equal(receiverAddress, that.receiverAddress) &&
+        Objects.equal(jsonMessage, that.jsonMessage);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(sender, receiver, receiverAddress, jsonMessage, verified);
   }
 }
