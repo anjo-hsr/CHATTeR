@@ -9,7 +9,7 @@ export default {
       messageInformation: {
         ...message,
         messageId: shajs('sha256')
-          .update(message.sender + message.date + message.message + Math.random())
+          .update(chatId + message.sender + message.date + message.message)
           .digest('hex')
       }
     };

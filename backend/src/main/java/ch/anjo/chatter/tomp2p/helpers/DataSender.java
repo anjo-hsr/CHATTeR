@@ -35,17 +35,6 @@ public class DataSender {
     };
   }
 
-  private static BaseFutureAdapter<FutureSend> nullConfirmation() {
-    return new BaseFutureAdapter<FutureSend>() {
-      @Override
-      public void operationComplete(FutureSend futureSend) {}
-    };
-  }
-
-  public static void sendWithoutConfirmation(ChatterPeer myself, String receiver, String message) {
-    sendWithListener(myself, receiver, message, nullConfirmation());
-  }
-
   public static void sendWithConfirmation(ChatterPeer myself, String receiver, String jsonMessage) {
     sendWithListener(myself, receiver, jsonMessage, printConfirmation(myself, jsonMessage));
   }
@@ -59,7 +48,7 @@ public class DataSender {
         .getFriends()
         .forEach(
             friend ->
-                dht.get(chatterUser.getHash(friend))
+                dht.get(ChatterUser.getHash(friend))
                     .start()
                     .addListener(
                         new BaseFutureAdapter<FutureGet>() {
@@ -71,7 +60,7 @@ public class DataSender {
                               TomP2pMessage tomP2pMessage =
                                   new TomP2pMessage(
                                       chatterUser.getUsername(),
-                                      friend.getUsername(),
+                                      Objects.requireNonNull(friend).getUsername(),
                                       outboundMessage);
                               myself
                                   .sendDirect(friend.getPeerAddress())
@@ -112,7 +101,7 @@ public class DataSender {
             friend ->
                 myself
                     .getDht()
-                    .get(chatterUser.getHash(friend))
+                    .get(ChatterUser.getHash(friend))
                     .start()
                     .awaitUninterruptibly()
                     .data())

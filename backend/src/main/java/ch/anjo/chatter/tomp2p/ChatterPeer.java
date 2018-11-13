@@ -22,7 +22,6 @@ import net.tomp2p.p2p.PeerBuilder;
 import net.tomp2p.peers.Number160;
 import net.tomp2p.peers.PeerAddress;
 import net.tomp2p.storage.Data;
-import org.java_websocket.client.WebSocketClient;
 
 public class ChatterPeer {
 
@@ -108,10 +107,6 @@ public class ChatterPeer {
     return new Number160(getHash(username).asBytes());
   }
 
-  public void replyToData(WebSocketClient webSocketClient) {
-    ChannelAction.replyToData(this, webSocketClient);
-  }
-
   public void addFriend(String username) {
     dht.get(byteHash(username))
         .start()
@@ -144,5 +139,29 @@ public class ChatterPeer {
 
     addPeer.add("peers", peers);
     return addPeer.toString();
+  }
+
+  public void newNumberArrived() {
+    System.out.println("Phone booth is ringing...");
+    System.out.println(chatterUser.getUsername() + ":We have a new number, I'll be right back.");
+    chatterUser.setOnlineState(false);
+
+    try {
+      dht.put(chatterUser.getHash()).data(new Data(chatterUser)).start();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    myself.announceShutdown().start().awaitUninterruptibly();
+    myself.shutdown().awaitUninterruptibly();
+    dht.shutdown().awaitUninterruptibly();
+  }
+
+  public static ChatterUser readUser(Data data) {
+    try {
+      return (ChatterUser) data.object();
+    } catch (Exception e) {
+      return null;
+    }
   }
 }

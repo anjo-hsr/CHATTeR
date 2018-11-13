@@ -3,7 +3,7 @@ package ch.anjo.chatter.tomp2p;
 import ch.anjo.chatter.helpers.DateGenerator;
 import ch.anjo.chatter.helpers.MessageTypes;
 import ch.anjo.chatter.tomp2p.helpers.DataSender;
-import ch.anjo.chatter.websocket.handlers.handlerClasses.LoopHandler;
+import ch.anjo.chatter.tomp2p.helpers.LoopHandler;
 import ch.anjo.chatter.websocket.templates.WebSocketMessage;
 import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
@@ -17,16 +17,18 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
+import org.jetbrains.annotations.NotNull;
 
 public class ChatterWebSocketClient extends WebSocketClient {
 
   private final ChatterPeer myself;
   private final String username;
-  private Map<String, Set<String>> chatMembers;
+  private Map<String, Set<ChatterUser>> chatMembers;
   private final Map<String, String> messageWaitingRoom;
   private LoopHandler loopHandler;
 
@@ -84,9 +86,44 @@ public class ChatterWebSocketClient extends WebSocketClient {
       case MessageTypes.SEND_CHAT_PEERS:
         updateChatPeerMap(webSocketMessage);
         break;
+      case MessageTypes.GET_PEERS:
+        sendPeers(webSocketMessage);
+        break;
+      case MessageTypes.APPROVE_CHAT:
+        bootStrapNewPeers(webSocketMessage.chatInformation.peers);
       default:
-        return;
     }
+  }
+
+  private void sendPeers(WebSocketMessage webSocketMessage) {
+    Set<String> friends = myself.getChatterUser().getFriends();
+    friends.stream()
+        .map(friend -> myself.getDht().get(ChatterUser.getHash(friend))
+            .start()
+            .awaitUninterruptibly()
+            .data())
+        .filter(Objects::nonNull)
+        .map(ChatterPeer::readUser)
+        .filter(Objects::nonNull)
+        .forEach(friend -> {
+              send(generateAddPeer(friend));
+            }
+        );
+  }
+
+  @NotNull
+  private String generateAddPeer(ChatterUser friend) {
+    JsonObject response = new JsonObject();
+    response.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.ADD_PEERS);
+
+    JsonArray peers = new JsonArray();
+
+    JsonObject peer = new JsonObject();
+    peer.addProperty("name", friend.getUsername());
+    peer.addProperty("isOnline", friend.isOnline());
+    peers.add(peer);
+    response.add("peers", peers);
+    return response.toString();
   }
 
   private void sendNewChat(WebSocketMessage webSocketMessage, String jsonMessage) {
@@ -104,9 +141,9 @@ public class ChatterWebSocketClient extends WebSocketClient {
           String.format(
               "Send message over chat (%s) to: %s",
               chatId.substring(0, 9), chatMembers.get(chatId)));
-      Set<String> chatPeers = chatMembers.get(chatId);
+      Set<ChatterUser> chatPeers = chatMembers.get(chatId);
       System.out.println("Direct");
-      chatPeers.forEach(peer -> DataSender.sendWithConfirmation(myself, peer, jsonMessage));
+      chatPeers.forEach(peer -> DataSender.sendWithConfirmation(myself, peer.getUsername(), jsonMessage));
       loopHandler.setNewMessage(webSocketMessage);
       return;
     }
@@ -125,10 +162,10 @@ public class ChatterWebSocketClient extends WebSocketClient {
   }
 
   private void updateChatPeerMap(WebSocketMessage webSocketMessage) {
-    String[] peers = webSocketMessage.peers;
-    String[] otherPeers =
-        Arrays.stream(peers).filter(peer -> !peer.equals(username)).toArray(String[]::new);
-    HashSet<String> peerSet = new HashSet<>(Set.of(otherPeers));
+    ChatterUser[] peers = webSocketMessage.peers;
+    ChatterUser[] otherPeers =
+        Arrays.stream(peers).filter(peer -> !peer.getUsername().equals(username)).toArray(ChatterUser[]::new);
+    HashSet<ChatterUser> peerSet = new HashSet<>(Set.of(otherPeers));
 
     chatMembers.put(webSocketMessage.chatId, peerSet);
 
@@ -163,10 +200,15 @@ public class ChatterWebSocketClient extends WebSocketClient {
             })
         .forEach(myself::addFriend);
 
+
     JsonObject getChatPeers = new JsonObject();
     getChatPeers.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.UPDATE_CHAT_PEERS);
     JsonArray chatPeers = new JsonArray();
-    myself.getChatterUser().getFriends().forEach(chatPeers::add);
+    myself.getChatterUser().getFriends().forEach(friend -> {
+      JsonObject chatPeer = new JsonObject();
+      chatPeer.addProperty("name", friend);
+      chatPeers.add(chatPeer);
+    });
     getChatPeers.add("peers", chatPeers);
     this.send(getChatPeers.toString());
   }

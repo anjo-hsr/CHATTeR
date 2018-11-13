@@ -58,7 +58,7 @@ export default class ModalAddAddress extends React.Component {
               if (this.checkPeers()) {
                 this.props.addChat({
                   name: this.state.name,
-                  peers: this.state.selectedPeers.map(peers => peers.label).concat(this.props.self)
+                  peers: this.state.selectedPeers.map(peer => peer.label).concat(this.props.self)
                 });
                 this.setState({open: false, name: '', selectedPeers: []});
               }

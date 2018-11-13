@@ -1,5 +1,6 @@
 package ch.anjo.chatter.main;
 
+import ch.anjo.chatter.tomp2p.ChannelAction;
 import ch.anjo.chatter.tomp2p.ChatterPeer;
 import ch.anjo.chatter.tomp2p.ChatterWebSocketClient;
 import java.net.URISyntaxException;
@@ -26,7 +27,7 @@ public class TomP2pServer {
       ChatterWebSocketClient webSocketClient =
           new ChatterWebSocketClient(webSocketPort, username, myself);
       webSocketClient.setConnectionLostTimeout(60);
-      myself.replyToData(webSocketClient);
+      ChannelAction.replyToData(myself, webSocketClient);
       myself.addFriend(myself.getMasterName());
       webSocketClient.run();
     } catch (WebsocketNotConnectedException | InterruptedException | URISyntaxException e) {

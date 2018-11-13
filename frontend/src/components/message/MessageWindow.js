@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import {Scrollbars} from 'react-custom-scrollbars';
-import {Grid, Header, Image} from 'semantic-ui-react';
+import {Button, Grid, Header, Image} from 'semantic-ui-react';
 
+import PeerStates from '../../components/view/PeerStates';
 import {ModalChangeChat} from '../../containers/modal/ModalChangeChat';
 import {MessageHistory} from '../../containers/message/MessageHistory';
 import {MessageInput} from '../../containers/message/MessageInput';
@@ -26,6 +27,20 @@ export default class MessageWindow extends React.Component {
           <Grid.Column width="2" verticalAlign="middle">
             <ModalChangeChat />
           </Grid.Column>
+          <Grid.Column width="2" verticalAlign="middle">
+            <PeerStates chatPeers={this.props.chatPeers} />
+          </Grid.Column>
+          {!this.props.chatApproved && (
+            <Grid.Column width="2" verticalAlign="middle">
+              <Button
+                icon="sign in alternate"
+                color="green"
+                size="large"
+                inverted
+                onClick={() => this.props.approveChat(this.props.selectedChat)}
+              />
+            </Grid.Column>
+          )}
         </Grid.Row>
         <Grid.Row className="messageHistory" columns="equal">
           <Grid.Column>
@@ -45,6 +60,8 @@ export default class MessageWindow extends React.Component {
 }
 
 MessageWindow.propTypes = {
+  approveChat: PropTypes.func.isRequired,
+  chatApproved: PropTypes.bool.isRequired,
   selectedChat: PropTypes.string.isRequired,
   chatName: PropTypes.string.isRequired,
   chatPeers: PropTypes.array.isRequired,

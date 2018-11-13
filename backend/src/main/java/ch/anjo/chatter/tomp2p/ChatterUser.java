@@ -3,6 +3,7 @@ package ch.anjo.chatter.tomp2p;
 import ch.anjo.chatter.tomp2p.parameters.Parameters;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
+import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.DatagramSocket;
@@ -21,7 +22,7 @@ public class ChatterUser implements Serializable {
   private Set<String> friends;
   private boolean isOnline;
 
-  public ChatterUser(Parameters parameters) {
+  ChatterUser(Parameters parameters) {
     this(parameters, new HashSet<>());
   }
 
@@ -49,7 +50,7 @@ public class ChatterUser implements Serializable {
     return friends;
   }
 
-  public boolean isOnline() {
+  boolean isOnline() {
     return isOnline;
   }
 
@@ -61,18 +62,12 @@ public class ChatterUser implements Serializable {
     return new Number160(getSha1Hash(username).asBytes());
   }
 
-  public Number160 getHash(String otherUsername) {
-    return new Number160(getSha1Hash(otherUsername).asBytes());
+  public static Number160 getHash(String otherUsername) {
+    return new Number160(Hashing.sha1().hashBytes(otherUsername.getBytes()).asBytes());
   }
 
   void addFriend(String username) {
     friends.add(username);
-  }
-
-  void addFriends(Set<String> newFriends) {
-    if (friends != null) {
-      friends.addAll(newFriends);
-    }
   }
 
   void setOnlineState(boolean onlineState) {
@@ -85,5 +80,12 @@ public class ChatterUser implements Serializable {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  public JsonObject getInformation(){
+    JsonObject response = new JsonObject();
+    response.addProperty("name", username);
+    response.addProperty("isOnline", isOnline);
+    return response;
   }
 }

@@ -31,16 +31,15 @@ public class ChatterServer {
       case "master":
         chatterPeer = new ChatterPeer(parameters);
         break;
-      case "client":
-        {
-          validator.setParameters(new ClientParameters(args));
-          if (validator.areClientParametersCorrect()) {
-            chatterPeer = new ChatterPeer((ClientParameters) validator.getParameters());
-          } else {
-            terminate();
-          }
-          break;
+      case "client": {
+        validator.setParameters(new ClientParameters(args));
+        if (validator.areClientParametersCorrect()) {
+          chatterPeer = new ChatterPeer((ClientParameters) validator.getParameters());
+        } else {
+          terminate();
         }
+        break;
+      }
       default:
         terminate();
     }
@@ -71,11 +70,7 @@ public class ChatterServer {
     System.exit(1);
   }
 
-  private static void logout() {
-    Runtime.getRuntime()
-        .addShutdownHook(
-            new Thread(() -> System.out.println("Adios"))
-            // new Thread(me::disconnect)
-            );
+  private static void newNumberArrived(ChatterPeer myself) {
+    new Thread(myself::newNumberArrived).start();
   }
 }

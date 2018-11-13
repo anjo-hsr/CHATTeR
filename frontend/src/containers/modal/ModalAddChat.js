@@ -1,7 +1,8 @@
 import {connect} from 'react-redux';
-import ModalAddChatComponent from '../../components/modal/ModalAddChat';
 import {actionChats, actionState} from '../../redux/actions/actions';
 import shajs from 'sha.js';
+
+import ModalAddChatComponent from '../../components/modal/ModalAddChat';
 
 const mapDispatchToProps = dispatch => ({
   addChat: ({peers, name}) => {
@@ -13,12 +14,16 @@ const mapDispatchToProps = dispatch => ({
   }
 });
 
+const getSelectObjects = (peers, excludedPeer) => {
+  return peers.filter(peer => peer.name !== excludedPeer).map(peer => {
+    return {...peer, label: peer.name, value: peer.name};
+  });
+};
+
 export const ModalAddChat = connect(
   reduxStore => {
     return {
-      peers: reduxStore.peers.map(peer => {
-        return {value: peer.toLowerCase(), label: peer};
-      }),
+      peers: getSelectObjects(reduxStore.peers, reduxStore.state.username),
       self: reduxStore.state.username
     };
   },

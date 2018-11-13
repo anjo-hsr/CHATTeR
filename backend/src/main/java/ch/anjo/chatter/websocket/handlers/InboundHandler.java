@@ -22,8 +22,10 @@ public class InboundHandler {
       Handler handler, WsSession session, String jsonMessage, WebSocketMessage webSocketMessage) {
     switch (webSocketMessage.type) {
       case MessageTypes.ADD_MESSAGE:
-        saveMessage(handler, webSocketMessage.chatId, webSocketMessage.messageInformation);
-        OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
+        if (!handler.getMessages(webSocketMessage.chatId).contains(webSocketMessage.messageInformation)) {
+          saveMessage(handler, webSocketMessage.chatId, webSocketMessage.messageInformation);
+          OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
+        }
         break;
       case MessageTypes.SET_USERNAME:
         setUsername(handler, webSocketMessage);
@@ -43,9 +45,14 @@ public class InboundHandler {
       case MessageTypes.GET_CHAT_PEERS:
         OutboundHandler.sendChatPeers(
             handler, session, webSocketMessage.id, webSocketMessage.chatId);
+      case MessageTypes.ADD_PEERS:
       case MessageTypes.UPDATE_CHAT_PEERS:
         OutboundHandler.sendPeers(
             handler, jsonMessage.replace(MessageTypes.UPDATE_CHAT_PEERS, MessageTypes.ADD_PEERS));
+      case MessageTypes.GET_PEERS:
+        OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
+      case MessageTypes.APPROVE_CHAT:
+        OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
       default:
         return;
     }

@@ -20,7 +20,7 @@ export default {
     };
   },
 
-  setSocketStateOpen() {
+  setSocketStateOpen(state) {
     return {
       type: types.SOCKET_OPEN
     };

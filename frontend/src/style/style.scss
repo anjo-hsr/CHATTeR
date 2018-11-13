@@ -44,6 +44,25 @@ body {
   padding: 0 !important;
 }
 
+.popup.transition.visible {
+  max-width: 60%;
+  margin-left: 10vw;
+  & .peerInformation {
+    width: 100% !important;
+    margin: 0 0.5rem 0 0.5rem !important;
+    padding: 0 !important;
+    & .peerCard {
+      min-width: 200px !important;
+    }
+  }
+}
+
+.ui.two.button {
+  .ui.inverted.button {
+    text-align: center !important;
+  }
+}
+
 .chatAvatar {
   width: $chatAvatarSize;
   height: $chatAvatarSize;
@@ -169,11 +188,14 @@ body {
   }
 }
 
-.ui.overlay.left.thin.visible.sidebar{
+.ui.overlay.left.thin.visible.sidebar {
   background: rgba($CHATTeR-color, 0.1);
 }
 
 @media only screen and (min-width: 720px) {
+  .popup.transition.visible {
+    margin-left: 30vw;
+  }
   .ui.cards {
     margin: 0 auto 0 0.5rem !important;
     width: 90% !important;

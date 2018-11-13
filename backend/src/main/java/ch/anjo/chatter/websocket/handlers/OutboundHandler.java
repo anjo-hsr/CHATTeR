@@ -15,7 +15,8 @@ import java.util.List;
 
 public class OutboundHandler {
 
-  OutboundHandler() {}
+  OutboundHandler() {
+  }
 
   public static void sendChats(Handler handler) {
     WsSession frontendSession = handler.getSessionHandler().getFrontendSession();
@@ -69,7 +70,7 @@ public class OutboundHandler {
     session.send(messageString);
   }
 
-  static void sendMessageToSibling(Handler handler, WsSession session, String messageString) {
+  public static void sendMessageToSibling(Handler handler, WsSession session, String messageString) {
     if (handler.getSessionHandler().existsSessionSibling()) {
       WsSession sessionSibling = handler.getSessionHandler().getSessionSibling(session);
       sessionSibling.send(messageString);
@@ -104,11 +105,24 @@ public class OutboundHandler {
     peerMessage.addProperty("id", id);
     peerMessage.addProperty("chatId", chatId);
 
-    JsonArray peers = new JsonArray();
-    peerList.forEach(peers::add);
-    peerMessage.add("peers", peers);
+    JsonArray chatPeers = new JsonArray();
+    peerList.forEach(friend -> {
+      JsonObject chatPeer = new JsonObject();
+      chatPeer.addProperty("name", friend);
+      chatPeers.add(chatPeer);
+    });
+    peerMessage.add("peers", chatPeers);
 
     session.send(peerMessage.toString());
+  }
+
+  public static String createGetPeer() {
+    JsonObject getPeer = new JsonObject();
+    getPeer.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.GET_PEERS);
+    JsonArray peers = new JsonArray();
+    getPeer.add("peers", peers);
+
+    return getPeer.toString();
   }
 
   private String readResource(final String fileName, Charset charset) throws IOException {

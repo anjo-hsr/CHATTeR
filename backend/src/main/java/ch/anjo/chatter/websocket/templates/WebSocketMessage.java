@@ -1,5 +1,7 @@
 package ch.anjo.chatter.websocket.templates;
 
+import ch.anjo.chatter.tomp2p.ChatterPeer;
+import ch.anjo.chatter.tomp2p.ChatterUser;
 import ch.anjo.chatter.websocket.templates.chat.ChatInformation;
 import ch.anjo.chatter.websocket.templates.message.MessageInformation;
 import com.google.common.base.Objects;
@@ -10,7 +12,7 @@ public class WebSocketMessage {
   public String message;
   public String username;
   public String chatId;
-  public String[] peers;
+  public ChatterUser[] peers;
   public MessageInformation messageInformation;
   public ChatInformation chatInformation;
   public boolean confirmed;

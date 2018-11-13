@@ -62,11 +62,13 @@ public class WebSocketService extends Thread {
                     if (frontendSession != null && frontendSession.equals(session)) {
                       OutboundHandler.sendUsername(handler);
                       OutboundHandler.sendChats(handler);
+                      OutboundHandler.sendMessageToSibling(handler, session, OutboundHandler.createGetPeer());
                     }
                   });
               ws.onMessage(
                   (session, jsonMessage) -> {
                     Gson gson = new Gson();
+                    System.out.println(jsonMessage);
                     WebSocketMessage webSocketMessage =
                         gson.fromJson(jsonMessage, WebSocketMessage.class);
                     InboundHandler.handleMessageTypes(

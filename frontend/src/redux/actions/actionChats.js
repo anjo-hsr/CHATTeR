@@ -1,31 +1,40 @@
 import {actionTypes as types} from './actions';
 
 export default {
-  addChat({chatId, chatObject}) {
+  addChat({chatId, chatObject, approved}) {
     return {
       type: types.ADD_CHAT,
       chatId,
       chatInformation: {
-        name: chatObject.name || chatObject.peers.toString(),
-        peers: chatObject.peers
+        name: chatObject.name || chatObject.peers.map(peer => peer.name).toString(),
+        peers: chatObject.peers,
+        approved: approved || false
       }
     };
   },
 
-  changeChat({chatId, chatObject}) {
+  changeChat({chatId, chatObject, approved}) {
     return {
       type: types.CHANGE_CHAT,
       chatId,
       chatInformation: {
-        name: chatObject.name || chatObject.peers.toString(),
-        peers: chatObject.peers
+        name: chatObject.name || chatObject.peers.map(peer => peer.name).toString(),
+        peers: chatObject.peers,
+        approved: approved || false
       }
+    };
+  },
+
+  approveChat(chatId) {
+    return {
+      type: types.APPROVE_CHAT,
+      chatId
     };
   },
 
   preDeleteChat({chatId, chat, username}) {
     let name = chat.name;
-    let peers = chat.peers.filter(peer => peer !== username);
+    let peers = chat.peers.filter(peer => peer.name !== username);
     if (peers.length <= 1) {
       return {
         type: types.DELETE_CHAT,

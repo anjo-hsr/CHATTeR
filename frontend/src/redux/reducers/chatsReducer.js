@@ -7,6 +7,10 @@ export default function reducer(reduxStore = {}, action) {
       return Object.assign({}, reduxStore, {[action.chatId]: action.chatInformation});
     }
 
+    case actionTypes.APPROVE_CHAT: {
+      return approveChat(reduxStore, action.chatId);
+    }
+
     case actionTypes.DELETE_CHAT: {
       return removeChat(reduxStore, action.chatId);
     }
@@ -20,12 +24,20 @@ export default function reducer(reduxStore = {}, action) {
   }
 }
 
+const approveChat = (originalState, id) => {
+  let store = {...originalState};
+  if (store[id] !== undefined) {
+    console.log(store[id]);
+    store[id].approved = true;
+  }
+
+  return store;
+};
+
 const removeChat = (originalState, id) => {
   let store = {...originalState};
-  return Object.keys(store).reduce((newStore, key) => {
-    if (key !== id) {
-      newStore[key] = store[key];
-    }
-    return newStore;
-  }, {});
+
+  if (store[id] !== undefined) {
+    delete store[id];
+  }
 };

@@ -37,12 +37,12 @@ export default class ModalChangeChat extends React.Component {
   };
 
   render() {
+    console.log(this.props.peers);
     return (
       <Modal
         open={this.state.open}
         trigger={
           <Button
-            className="addAddress"
             inverted
             icon="edit outline"
             size="large"
@@ -59,7 +59,7 @@ export default class ModalChangeChat extends React.Component {
                 this.props.changeChat({
                   chatId: this.props.selectedChat,
                   name: this.state.name,
-                  peers: this.state.selectedPeers.map(peers => peers.label).concat(this.props.self)
+                  peers: this.state.selectedPeers.map(peer => peer.label).concat(this.props.self)
                 });
                 this.setState({open: false});
               }
@@ -100,6 +100,8 @@ ModalChangeChat.propTypes = {
   changeChat: PropTypes.func.isRequired,
   peers: PropTypes.arrayOf(
     PropTypes.shape({
+      isOnline: PropTypes.bool.isRequired,
+      name: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
       value: PropTypes.string.isRequired
     })

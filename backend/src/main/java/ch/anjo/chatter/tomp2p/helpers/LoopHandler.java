@@ -1,4 +1,4 @@
-package ch.anjo.chatter.websocket.handlers.handlerClasses;
+package ch.anjo.chatter.tomp2p.helpers;
 
 import ch.anjo.chatter.websocket.templates.WebSocketMessage;
 import java.util.Date;
