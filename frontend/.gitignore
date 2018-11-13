@@ -26,10 +26,7 @@ node/**
 package-lock.json
 
 #SCSS
-style.css
 style.css.map
-burgerMenu.css
-burgerMenu.css.map
 
 #cypress
 cypress/support/*
