@@ -6,6 +6,7 @@ import ch.anjo.chatter.tomp2p.helpers.DataSender;
 import ch.anjo.chatter.tomp2p.helpers.LoopHandler;
 import ch.anjo.chatter.websocket.templates.PeerInformation;
 import ch.anjo.chatter.websocket.templates.WebSocketMessage;
+import com.google.common.collect.Sets;
 import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -78,6 +79,9 @@ public class ChatterWebSocketClient extends WebSocketClient {
         break;
       case MessageTypes.ADD_CHAT:
       case MessageTypes.CHANGE_CHAT:
+        Set<PeerInformation> peers = webSocketMessage.chatInformation.peers.stream().map(PeerInformation::new)
+            .collect(Collectors.toSet());
+        chatMembers.put(webSocketMessage.chatId, Sets.newHashSet(peers));
         bootStrapNewPeers(webSocketMessage.chatInformation.peers);
         sendNewChat(webSocketMessage, jsonMessage);
         break;

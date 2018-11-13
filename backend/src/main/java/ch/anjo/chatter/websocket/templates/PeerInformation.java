@@ -4,6 +4,11 @@ public class PeerInformation {
   public String name;
   public boolean isOnline;
 
+  public PeerInformation(String name) {
+    this.name = name;
+    this.isOnline = false;
+  }
+
   public String getName() {
     return name;
   }

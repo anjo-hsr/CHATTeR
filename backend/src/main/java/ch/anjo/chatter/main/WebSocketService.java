@@ -36,6 +36,7 @@ public class WebSocketService extends Thread {
             ws -> {
               ws.onConnect(
                   session -> {
+                    session.setIdleTimeout(600000);
                     String frontendUrl = "http://localhost:" + frontendPort;
                     if (!browserStarted && frontendPort == webSocketPort) {
                       try {
