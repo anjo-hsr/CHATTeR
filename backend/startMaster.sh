@@ -1,7 +1,7 @@
 #!/bin/bash
 # devs will generally start this config file, so this is a fairly safe place to do this.
 
-mvn exec:java -Dskip-tests -Dexec.args="master root 0xc0a71f7eb1a04a867a65022021f962b3a65a40a5" &
+mvn exec:java -Dskip-tests -Dexec.args="master root 0xc0a71f7eb1a04a867a65022021f962b3a65a40a5 5000" &
 
 while true
 do
