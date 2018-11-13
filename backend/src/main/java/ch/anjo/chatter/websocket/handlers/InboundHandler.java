@@ -22,7 +22,9 @@ public class InboundHandler {
       Handler handler, WsSession session, String jsonMessage, WebSocketMessage webSocketMessage) {
     switch (webSocketMessage.type) {
       case MessageTypes.ADD_MESSAGE:
-        if (!handler.getMessages(webSocketMessage.chatId).contains(webSocketMessage.messageInformation)) {
+        if (!handler
+            .getMessages(webSocketMessage.chatId)
+            .contains(webSocketMessage.messageInformation)) {
           saveMessage(handler, webSocketMessage.chatId, webSocketMessage.messageInformation);
           OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
         }

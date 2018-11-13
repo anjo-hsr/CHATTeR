@@ -53,8 +53,13 @@ public class ChannelAction {
                               System.out.println(
                                   "Friends received" + ((ChatterUser) data.object()).getFriends());
 
-                              ((ChatterUser) data.object()).getFriends().stream()
-                                  .filter(friend -> !friend.equals(chatterPeer.getChatterUser().getUsername()))
+                              ((ChatterUser) data.object())
+                                  .getFriends()
+                                  .stream()
+                                  .filter(
+                                      friend ->
+                                          !friend.equals(
+                                              chatterPeer.getChatterUser().getUsername()))
                                   .forEach(chatterUser::addFriend);
                             }
                             chatterUser.setOnlineState(true);
@@ -86,20 +91,22 @@ public class ChannelAction {
               gson.fromJson(tomP2pMessage.getJsonMessage(), WebSocketMessage.class);
 
           switch (webSocketMessage.type) {
-            case MessageTypes.GET_PEERS: {
-              if (!tomP2pMessage.getSender().equals(chatterPeer.getChatterUser().getUsername())) {
-                String responseJson = ChannelAction.getFriends(chatterPeer);
-                chatterPeer.addFriend(tomP2pMessage.getSender());
+            case MessageTypes.GET_PEERS:
+              {
+                if (!tomP2pMessage.getSender().equals(chatterPeer.getChatterUser().getUsername())) {
+                  String responseJson = ChannelAction.getFriends(chatterPeer);
+                  chatterPeer.addFriend(tomP2pMessage.getSender());
 
-                return responseJson;
+                  return responseJson;
+                }
+                break;
               }
-              break;
-            }
             case MessageTypes.ADD_CHAT:
-            case MessageTypes.CHANGE_CHAT: {
-              webSocketClient.send(tomP2pMessage.getJsonMessage());
-              return null;
-            }
+            case MessageTypes.CHANGE_CHAT:
+              {
+                webSocketClient.send(tomP2pMessage.getJsonMessage());
+                return null;
+              }
             default:
               if (!webSocketMessage.type.equals(MessageTypes.ADD_MESSAGE)) {
                 webSocketClient.send(tomP2pMessage.getJsonMessage());
@@ -107,9 +114,13 @@ public class ChannelAction {
               }
           }
 
-          if (messageHistory.stream().anyMatch(message ->
-              webSocketMessage.messageInformation.author.equals(chatterPeer.getChatterUser().getUsername()) ||
-                  message.getJsonMessage().equals(tomP2pMessage.getJsonMessage()))) {
+          if (messageHistory
+              .stream()
+              .anyMatch(
+                  message ->
+                      webSocketMessage.messageInformation.author.equals(
+                              chatterPeer.getChatterUser().getUsername())
+                          || message.getJsonMessage().equals(tomP2pMessage.getJsonMessage()))) {
             return null;
           } else {
             messageHistory.add(tomP2pMessage);
@@ -129,7 +140,9 @@ public class ChannelAction {
         });
   }
 
-  private static Object getConfirmMessage(WebSocketClient webSocketClient, TomP2pMessage tomP2pMessage,
+  private static Object getConfirmMessage(
+      WebSocketClient webSocketClient,
+      TomP2pMessage tomP2pMessage,
       WebSocketMessage webSocketMessage) {
     JsonObject response = new JsonObject();
     response.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.CONFIRM_MESSAGE);
@@ -147,15 +160,22 @@ public class ChannelAction {
     JsonArray peers = new JsonArray();
     Set<String> friends = chatterPeer.getChatterUser().getFriends();
 
-    Set<JsonObject> peerSet = friends.stream()
-        .map(friend -> chatterPeer.getDht().get(ChatterUser.getHash(friend))
-            .start()
-            .awaitUninterruptibly()
-            .data())
-        .filter(Objects::nonNull)
-        .map(ChatterPeer::readUser)
-        .filter(Objects::nonNull)
-        .map(ChatterUser::getInformation).collect(Collectors.toSet());
+    Set<JsonObject> peerSet =
+        friends
+            .stream()
+            .map(
+                friend ->
+                    chatterPeer
+                        .getDht()
+                        .get(ChatterUser.getHash(friend))
+                        .start()
+                        .awaitUninterruptibly()
+                        .data())
+            .filter(Objects::nonNull)
+            .map(ChatterPeer::readUser)
+            .filter(Objects::nonNull)
+            .map(ChatterUser::getInformation)
+            .collect(Collectors.toSet());
 
     peerSet.forEach(peers::add);
     responseJson.add("peers", peers);

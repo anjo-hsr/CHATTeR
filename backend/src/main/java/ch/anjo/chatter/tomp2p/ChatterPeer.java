@@ -123,14 +123,13 @@ public class ChatterPeer {
 
                       dht.put(chatterUser.getHash()).data(new Data(chatterUser)).start();
                     }
-                  } catch (IOException | ClassNotFoundException e){
-                    //e.printStackTrace();
+                  } catch (IOException | ClassNotFoundException e) {
+                    // e.printStackTrace();
                     System.out.println("Problem by detecting new friends.");
                   }
                 }
               }
-            }
-        );
+            });
   }
 
   private String generateAddPeers(String friend) {

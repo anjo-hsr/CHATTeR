@@ -106,7 +106,9 @@ public class DataSender {
                     .start()
                     .awaitUninterruptibly()
                     .data())
-        .filter(Objects::nonNull).collect(Collectors.toSet()).stream()
+        .filter(Objects::nonNull)
+        .collect(Collectors.toSet())
+        .stream()
         .map(DataSender::readUser)
         .filter(Objects::nonNull)
         .forEach(

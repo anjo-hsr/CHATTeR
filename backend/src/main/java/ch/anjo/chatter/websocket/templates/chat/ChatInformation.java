@@ -21,7 +21,6 @@ public class ChatInformation {
     return approved;
   }
 
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -31,9 +30,9 @@ public class ChatInformation {
       return false;
     }
     ChatInformation that = (ChatInformation) o;
-    return approved == that.approved &&
-        Objects.equal(name, that.name) &&
-        Objects.equal(peers, that.peers);
+    return approved == that.approved
+        && Objects.equal(name, that.name)
+        && Objects.equal(peers, that.peers);
   }
 
   @Override

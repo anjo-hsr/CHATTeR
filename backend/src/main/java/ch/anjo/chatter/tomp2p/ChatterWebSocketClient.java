@@ -99,18 +99,23 @@ public class ChatterWebSocketClient extends WebSocketClient {
 
   private void sendPeers(WebSocketMessage webSocketMessage) {
     Set<String> friends = myself.getChatterUser().getFriends();
-    friends.stream()
-        .map(friend -> myself.getDht().get(ChatterUser.getHash(friend))
-            .start()
-            .awaitUninterruptibly()
-            .data())
+    friends
+        .stream()
+        .map(
+            friend ->
+                myself
+                    .getDht()
+                    .get(ChatterUser.getHash(friend))
+                    .start()
+                    .awaitUninterruptibly()
+                    .data())
         .filter(Objects::nonNull)
         .map(ChatterPeer::readUser)
         .filter(Objects::nonNull)
-        .forEach(friend -> {
+        .forEach(
+            friend -> {
               send(generateAddPeer(friend));
-            }
-        );
+            });
   }
 
   @NotNull
@@ -145,7 +150,8 @@ public class ChatterWebSocketClient extends WebSocketClient {
               chatId.substring(0, 9), chatMembers.get(chatId).toString()));
       Set<PeerInformation> chatPeers = chatMembers.get(chatId);
       System.out.println("Direct");
-      chatPeers.forEach(peer -> DataSender.sendWithConfirmation(myself, peer.getUsername(), jsonMessage));
+      chatPeers.forEach(
+          peer -> DataSender.sendWithConfirmation(myself, peer.getUsername(), jsonMessage));
       loopHandler.setNewMessage(webSocketMessage);
       return;
     }
@@ -166,7 +172,9 @@ public class ChatterWebSocketClient extends WebSocketClient {
   private void updateChatPeerMap(WebSocketMessage webSocketMessage) {
     PeerInformation[] peers = webSocketMessage.peers;
     PeerInformation[] otherPeers =
-        Arrays.stream(peers).filter(peer -> !peer.getUsername().equals(username)).toArray(PeerInformation[]::new);
+        Arrays.stream(peers)
+            .filter(peer -> !peer.getUsername().equals(username))
+            .toArray(PeerInformation[]::new);
     HashSet<PeerInformation> peerSet = new HashSet<>(Set.of(otherPeers));
 
     chatMembers.put(webSocketMessage.chatId, peerSet);
@@ -193,7 +201,8 @@ public class ChatterWebSocketClient extends WebSocketClient {
   }
 
   private void bootStrapNewPeers(String chatId) {
-    Set<String> peers = chatMembers.get(chatId).stream().map(member -> member.name).collect(Collectors.toSet());
+    Set<String> peers =
+        chatMembers.get(chatId).stream().map(member -> member.name).collect(Collectors.toSet());
     bootStrapNewPeers(List.copyOf(peers));
   }
 
@@ -210,11 +219,15 @@ public class ChatterWebSocketClient extends WebSocketClient {
     JsonObject getChatPeers = new JsonObject();
     getChatPeers.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.UPDATE_CHAT_PEERS);
     JsonArray chatPeers = new JsonArray();
-    myself.getChatterUser().getFriends().forEach(friend -> {
-      JsonObject chatPeer = new JsonObject();
-      chatPeer.addProperty("name", friend);
-      chatPeers.add(chatPeer);
-    });
+    myself
+        .getChatterUser()
+        .getFriends()
+        .forEach(
+            friend -> {
+              JsonObject chatPeer = new JsonObject();
+              chatPeer.addProperty("name", friend);
+              chatPeers.add(chatPeer);
+            });
     getChatPeers.add("peers", chatPeers);
     this.send(getChatPeers.toString());
   }

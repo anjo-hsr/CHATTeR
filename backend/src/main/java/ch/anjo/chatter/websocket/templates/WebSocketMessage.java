@@ -1,7 +1,5 @@
 package ch.anjo.chatter.websocket.templates;
 
-import ch.anjo.chatter.tomp2p.ChatterPeer;
-import ch.anjo.chatter.tomp2p.ChatterUser;
 import ch.anjo.chatter.websocket.templates.chat.ChatInformation;
 import ch.anjo.chatter.websocket.templates.message.MessageInformation;
 import com.google.common.base.Objects;

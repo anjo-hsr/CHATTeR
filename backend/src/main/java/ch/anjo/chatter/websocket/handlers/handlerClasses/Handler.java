@@ -30,7 +30,7 @@ public class Handler {
     chatHandler.saveMessage(chatId, message);
   }
 
-  public List<String> getMessages(String chatid){
+  public List<String> getMessages(String chatid) {
     return chatHandler.getChatMessages(chatid);
   }
 }

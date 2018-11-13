@@ -43,7 +43,6 @@ public class TomP2pMessage implements Serializable {
     verified = true;
   }
 
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -53,11 +52,11 @@ public class TomP2pMessage implements Serializable {
       return false;
     }
     TomP2pMessage that = (TomP2pMessage) o;
-    return verified == that.verified &&
-        Objects.equal(sender, that.sender) &&
-        Objects.equal(receiver, that.receiver) &&
-        Objects.equal(receiverAddress, that.receiverAddress) &&
-        Objects.equal(jsonMessage, that.jsonMessage);
+    return verified == that.verified
+        && Objects.equal(sender, that.sender)
+        && Objects.equal(receiver, that.receiver)
+        && Objects.equal(receiverAddress, that.receiverAddress)
+        && Objects.equal(jsonMessage, that.jsonMessage);
   }
 
   @Override

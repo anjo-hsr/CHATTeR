@@ -31,15 +31,16 @@ public class ChatterServer {
       case "master":
         chatterPeer = new ChatterPeer(parameters);
         break;
-      case "client": {
-        validator.setParameters(new ClientParameters(args));
-        if (validator.areClientParametersCorrect()) {
-          chatterPeer = new ChatterPeer((ClientParameters) validator.getParameters());
-        } else {
-          terminate();
+      case "client":
+        {
+          validator.setParameters(new ClientParameters(args));
+          if (validator.areClientParametersCorrect()) {
+            chatterPeer = new ChatterPeer((ClientParameters) validator.getParameters());
+          } else {
+            terminate();
+          }
+          break;
         }
-        break;
-      }
       default:
         terminate();
     }

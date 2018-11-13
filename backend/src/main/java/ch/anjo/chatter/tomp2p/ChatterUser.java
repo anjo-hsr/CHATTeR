@@ -82,7 +82,7 @@ public class ChatterUser implements Serializable {
     }
   }
 
-  public JsonObject getInformation(){
+  public JsonObject getInformation() {
     JsonObject response = new JsonObject();
     response.addProperty("name", username);
     response.addProperty("isOnline", isOnline);

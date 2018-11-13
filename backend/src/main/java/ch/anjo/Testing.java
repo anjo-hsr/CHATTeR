@@ -1,21 +1,17 @@
 package ch.anjo;
 
 import java.io.IOException;
-
 import net.tomp2p.futures.FutureBootstrap;
 import net.tomp2p.p2p.Peer;
 
-/**
- * See http://tomp2p.net/doc/quick/ for more information
- */
+/** See http://tomp2p.net/doc/quick/ for more information */
 public class Testing {
   private static final int PORT = 4001;
 
   /**
    * Starts the boostrap example.
    *
-   * @param args
-   *            No arguments needed
+   * @param args No arguments needed
    * @throws IOException
    * @throws InterruptedException
    * @throws Exception
@@ -29,15 +25,23 @@ public class Testing {
         System.out.println("peer[" + i + "]: " + peers[i].peerAddress());
       }
 
-      FutureBootstrap futureBootstrap1 = peers[1].bootstrap().peerAddress(peers[0].peerAddress()).start();
+      FutureBootstrap futureBootstrap1 =
+          peers[1].bootstrap().peerAddress(peers[0].peerAddress()).start();
       futureBootstrap1.awaitUninterruptibly();
-      System.out.println("peer[0] knows: " + peers[0].peerBean().peerMap().all() + " unverified: "
-          + peers[0].peerBean().peerMap().allOverflow());
+      System.out.println(
+          "peer[0] knows: "
+              + peers[0].peerBean().peerMap().all()
+              + " unverified: "
+              + peers[0].peerBean().peerMap().allOverflow());
       System.out.println("wait for maintenance ping");
       Thread.sleep(2000);
-      System.out.println("peer[0] knows: " + peers[0].peerBean().peerMap().all() + " unverified: "
-          + peers[0].peerBean().peerMap().allOverflow());
-      FutureBootstrap futureBootstrap2 = peers[2].bootstrap().peerAddress(peers[0].peerAddress()).start();
+      System.out.println(
+          "peer[0] knows: "
+              + peers[0].peerBean().peerMap().all()
+              + " unverified: "
+              + peers[0].peerBean().peerMap().allOverflow());
+      FutureBootstrap futureBootstrap2 =
+          peers[2].bootstrap().peerAddress(peers[0].peerAddress()).start();
       futureBootstrap2.awaitUninterruptibly();
       // list all the peers C knows by now:
       System.out.println("peer[2] knows: " + peers[2].peerBean().peerMap().all());

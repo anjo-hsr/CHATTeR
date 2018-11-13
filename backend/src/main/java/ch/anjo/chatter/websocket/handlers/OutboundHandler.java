@@ -15,8 +15,7 @@ import java.util.List;
 
 public class OutboundHandler {
 
-  OutboundHandler() {
-  }
+  OutboundHandler() {}
 
   public static void sendChats(Handler handler) {
     WsSession frontendSession = handler.getSessionHandler().getFrontendSession();
@@ -70,7 +69,8 @@ public class OutboundHandler {
     session.send(messageString);
   }
 
-  public static void sendMessageToSibling(Handler handler, WsSession session, String messageString) {
+  public static void sendMessageToSibling(
+      Handler handler, WsSession session, String messageString) {
     if (handler.getSessionHandler().existsSessionSibling()) {
       WsSession sessionSibling = handler.getSessionHandler().getSessionSibling(session);
       sessionSibling.send(messageString);
@@ -106,11 +106,12 @@ public class OutboundHandler {
     peerMessage.addProperty("chatId", chatId);
 
     JsonArray chatPeers = new JsonArray();
-    peerList.forEach(friend -> {
-      JsonObject chatPeer = new JsonObject();
-      chatPeer.addProperty("name", friend);
-      chatPeers.add(chatPeer);
-    });
+    peerList.forEach(
+        friend -> {
+          JsonObject chatPeer = new JsonObject();
+          chatPeer.addProperty("name", friend);
+          chatPeers.add(chatPeer);
+        });
     peerMessage.add("peers", chatPeers);
 
     session.send(peerMessage.toString());
