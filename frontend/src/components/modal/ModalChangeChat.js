@@ -99,7 +99,7 @@ ModalChangeChat.propTypes = {
   changeChat: PropTypes.func.isRequired,
   peers: PropTypes.arrayOf(
     PropTypes.shape({
-      isOnline: PropTypes.bool.isRequired,
+      isOnline: PropTypes.bool,
       name: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
       value: PropTypes.string.isRequired

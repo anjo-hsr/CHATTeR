@@ -117,7 +117,7 @@ public class ChatterPeer {
                 if (future.isSuccess()) {
                   Data friendData = future.data();
                   try {
-                    if (!friendData.isEmpty()) {
+                    if (friendData != null) {
                       ChatterUser friend = (ChatterUser) friendData.object();
                       chatterUser.addFriend(friend.getUsername());
 

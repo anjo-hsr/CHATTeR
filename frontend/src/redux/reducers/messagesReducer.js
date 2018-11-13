@@ -20,6 +20,7 @@ export default function reducer(reduxStore = {}, action) {
 const concatMessages = (originalStore, chatId, message) => {
   let store = {...originalStore};
   let chatArray = store[chatId];
+  console.log(chatArray, store);
   if (Boolean(chatArray)) {
     if (!checkIfAlreadyInStore(store, chatId, message)) {
       store[chatId] = addMessage(chatArray, message);
@@ -32,12 +33,8 @@ const concatMessages = (originalStore, chatId, message) => {
 
 const checkIfAlreadyInStore = (store, chatId, message) => {
   return store[chatId].some(element => {
-    return equalMessages(element, message);
+    return element.messageId === message.messageId;
   });
-};
-
-const equalMessages = (leftSide, rightSide) => {
-  return leftSide.messageId === rightSide.messageId;
 };
 
 const addMessage = (array, newElement) => {
