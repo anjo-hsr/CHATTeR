@@ -1,5 +1,10 @@
 # CHATTeR
 
+## Requirements
+
+- Java 11
+- A modern browser - so no IE 8 :(
+
 ## Build and run the application:
 
 1. Build the project:
@@ -11,7 +16,7 @@
     [mode] [username] [etherAddress]                              [optional: bPort]
     master root       0xc0a71f7eb1a04a867a65022021f962b3a65a40a5  5000
     ```
-3. Start each other _Person of Interest_ if needed. The default local Port for TomP2P is :5000. If multiple instances 
+3. Start each other _Person of Interest_. The default local Port for TomP2P is :5000. If multiple instances
 per client would be needed use the optional local Port syntax's to start on different ports:   
     ```
     [mode] [username] [etherAddress]                              [optional: bPort] [user@rHost:rPort]    [optional: fPort]   
@@ -23,6 +28,5 @@ per client would be needed use the optional local Port syntax's to start on diff
   specific port for the frontend was defined it will be always +3000 Port to the backend listening port.
 
 
-##And now start CHATTeRing by creating new chats.
-
-
+## And now start CHATTeRing by creating new chats.
+-- paste here some cool gifs --
