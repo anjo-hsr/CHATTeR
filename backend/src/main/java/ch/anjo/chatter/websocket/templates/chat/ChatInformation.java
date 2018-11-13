@@ -7,6 +7,7 @@ public class ChatInformation {
 
   public String name;
   public List<String> peers;
+  public boolean approved;
 
   public String getName() {
     return name;
@@ -15,6 +16,11 @@ public class ChatInformation {
   public List<String> getPeers() {
     return peers;
   }
+
+  public boolean isApproved() {
+    return approved;
+  }
+
 
   @Override
   public boolean equals(Object o) {
@@ -25,11 +31,13 @@ public class ChatInformation {
       return false;
     }
     ChatInformation that = (ChatInformation) o;
-    return Objects.equal(name, that.name) && Objects.equal(peers, that.peers);
+    return approved == that.approved &&
+        Objects.equal(name, that.name) &&
+        Objects.equal(peers, that.peers);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(name, peers);
+    return Objects.hashCode(name, peers, approved);
   }
 }

@@ -4,6 +4,7 @@ import ch.anjo.chatter.helpers.DateGenerator;
 import ch.anjo.chatter.helpers.MessageTypes;
 import ch.anjo.chatter.tomp2p.helpers.DataSender;
 import ch.anjo.chatter.tomp2p.helpers.LoopHandler;
+import ch.anjo.chatter.websocket.templates.PeerInformation;
 import ch.anjo.chatter.websocket.templates.WebSocketMessage;
 import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
@@ -20,6 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +30,7 @@ public class ChatterWebSocketClient extends WebSocketClient {
 
   private final ChatterPeer myself;
   private final String username;
-  private Map<String, Set<ChatterUser>> chatMembers;
+  private Map<String, Set<PeerInformation>> chatMembers;
   private final Map<String, String> messageWaitingRoom;
   private LoopHandler loopHandler;
 
@@ -90,7 +92,7 @@ public class ChatterWebSocketClient extends WebSocketClient {
         sendPeers(webSocketMessage);
         break;
       case MessageTypes.APPROVE_CHAT:
-        bootStrapNewPeers(webSocketMessage.chatInformation.peers);
+        bootStrapNewPeers(webSocketMessage.chatId);
       default:
     }
   }
@@ -140,8 +142,8 @@ public class ChatterWebSocketClient extends WebSocketClient {
       System.out.println(
           String.format(
               "Send message over chat (%s) to: %s",
-              chatId.substring(0, 9), chatMembers.get(chatId)));
-      Set<ChatterUser> chatPeers = chatMembers.get(chatId);
+              chatId.substring(0, 9), chatMembers.get(chatId).toString()));
+      Set<PeerInformation> chatPeers = chatMembers.get(chatId);
       System.out.println("Direct");
       chatPeers.forEach(peer -> DataSender.sendWithConfirmation(myself, peer.getUsername(), jsonMessage));
       loopHandler.setNewMessage(webSocketMessage);
@@ -162,10 +164,10 @@ public class ChatterWebSocketClient extends WebSocketClient {
   }
 
   private void updateChatPeerMap(WebSocketMessage webSocketMessage) {
-    ChatterUser[] peers = webSocketMessage.peers;
-    ChatterUser[] otherPeers =
-        Arrays.stream(peers).filter(peer -> !peer.getUsername().equals(username)).toArray(ChatterUser[]::new);
-    HashSet<ChatterUser> peerSet = new HashSet<>(Set.of(otherPeers));
+    PeerInformation[] peers = webSocketMessage.peers;
+    PeerInformation[] otherPeers =
+        Arrays.stream(peers).filter(peer -> !peer.getUsername().equals(username)).toArray(PeerInformation[]::new);
+    HashSet<PeerInformation> peerSet = new HashSet<>(Set.of(otherPeers));
 
     chatMembers.put(webSocketMessage.chatId, peerSet);
 
@@ -190,6 +192,11 @@ public class ChatterWebSocketClient extends WebSocketClient {
     return Hashing.sha256().hashBytes(array).toString();
   }
 
+  private void bootStrapNewPeers(String chatId) {
+    Set<String> peers = chatMembers.get(chatId).stream().map(member -> member.name).collect(Collectors.toSet());
+    bootStrapNewPeers(List.copyOf(peers));
+  }
+
   private void bootStrapNewPeers(List<String> peers) {
     peers
         .stream()
@@ -199,7 +206,6 @@ public class ChatterWebSocketClient extends WebSocketClient {
               return !friends.contains(peer);
             })
         .forEach(myself::addFriend);
-
 
     JsonObject getChatPeers = new JsonObject();
     getChatPeers.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.UPDATE_CHAT_PEERS);

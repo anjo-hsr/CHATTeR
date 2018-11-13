@@ -140,7 +140,7 @@ public class ChannelAction {
     return response.toString();
   }
 
-  static String getFriends(ChatterPeer chatterPeer) {
+  private static String getFriends(ChatterPeer chatterPeer) {
     JsonObject responseJson = new JsonObject();
     responseJson.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.ADD_PEERS);
 

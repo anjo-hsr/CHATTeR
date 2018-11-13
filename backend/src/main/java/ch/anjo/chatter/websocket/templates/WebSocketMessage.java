@@ -12,7 +12,7 @@ public class WebSocketMessage {
   public String message;
   public String username;
   public String chatId;
-  public ChatterUser[] peers;
+  public PeerInformation[] peers;
   public MessageInformation messageInformation;
   public ChatInformation chatInformation;
   public boolean confirmed;

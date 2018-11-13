@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import net.tomp2p.dht.FutureGet;
 import net.tomp2p.dht.FutureSend;
 import net.tomp2p.dht.PeerDHT;
@@ -105,7 +106,7 @@ public class DataSender {
                     .start()
                     .awaitUninterruptibly()
                     .data())
-        .filter(Objects::nonNull)
+        .filter(Objects::nonNull).collect(Collectors.toSet()).stream()
         .map(DataSender::readUser)
         .filter(Objects::nonNull)
         .forEach(

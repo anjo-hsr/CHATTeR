@@ -30,7 +30,7 @@ export default class MessageWindow extends React.Component {
           <Grid.Column width="2" verticalAlign="middle">
             <PeerStates chatPeers={this.props.chatPeers} />
           </Grid.Column>
-          {!this.props.chatApproved && (
+          {this.props.chatApproved && (
             <Grid.Column width="2" verticalAlign="middle">
               <Button
                 icon="sign in alternate"
@@ -60,8 +60,8 @@ export default class MessageWindow extends React.Component {
 }
 
 MessageWindow.propTypes = {
-  approveChat: PropTypes.func.isRequired,
-  chatApproved: PropTypes.bool.isRequired,
+  approveChat: PropTypes.func,
+  chatApproved: PropTypes.bool,
   selectedChat: PropTypes.string.isRequired,
   chatName: PropTypes.string.isRequired,
   chatPeers: PropTypes.array.isRequired,

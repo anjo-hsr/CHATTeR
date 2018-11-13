@@ -113,18 +113,24 @@ public class ChatterPeer {
         .addListener(
             new BaseFutureAdapter<FutureGet>() {
               @Override
-              public void operationComplete(FutureGet future) throws Exception {
+              public void operationComplete(FutureGet future) {
                 if (future.isSuccess()) {
                   Data friendData = future.data();
-                  if (!friendData.isEmpty()) {
-                    ChatterUser friend = (ChatterUser) friendData.object();
-                    chatterUser.addFriend(friend.getUsername());
+                  try {
+                    if (!friendData.isEmpty()) {
+                      ChatterUser friend = (ChatterUser) friendData.object();
+                      chatterUser.addFriend(friend.getUsername());
 
-                    dht.put(chatterUser.getHash()).data(new Data(chatterUser)).start();
+                      dht.put(chatterUser.getHash()).data(new Data(chatterUser)).start();
+                    }
+                  } catch (IOException | ClassNotFoundException e){
+                    //e.printStackTrace();
+                    System.out.println("Problem by detecting new friends.");
                   }
                 }
               }
-            });
+            }
+        );
   }
 
   private String generateAddPeers(String friend) {

@@ -27,7 +27,6 @@ export default function reducer(reduxStore = {}, action) {
 const approveChat = (originalState, id) => {
   let store = {...originalState};
   if (store[id] !== undefined) {
-    console.log(store[id]);
     store[id].approved = true;
   }
 

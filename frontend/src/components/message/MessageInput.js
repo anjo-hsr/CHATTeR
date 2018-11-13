@@ -40,6 +40,7 @@ export default class MessageInput extends React.Component {
                 type="text"
                 value={this.state.message}
                 onChange={this.handleChange}
+                disabled={this.props.approved}
                 required
               />
             </Grid.Column>
@@ -54,6 +55,7 @@ export default class MessageInput extends React.Component {
 }
 
 MessageInput.propTypes = {
+  approved: PropTypes.bool,
   chatId: PropTypes.string.isRequired,
   addMessage: PropTypes.func.isRequired
 };

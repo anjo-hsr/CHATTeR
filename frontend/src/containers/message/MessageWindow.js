@@ -1,7 +1,20 @@
 import {connect} from 'react-redux';
+import {actionChats} from '../../redux/actions/actions';
 
 import MessageWindowComponent from '../../components/message/MessageWindow';
-import {actionChats} from '../../redux/actions/actions';
+
+const getChatPeers = (chatPeers, peers, username) => {
+  let mappedPeers = chatPeers.filter(chatPeer => chatPeer !== username).map(chatPeer => {
+    return {name: chatPeer};
+  });
+  mappedPeers = mappedPeers.map(chatPeer => {
+    let matchedPeer = peers.find(peer => peer.name === chatPeer);
+    const isOnline = Boolean(matchedPeer) ? matchedPeer.isOnline : false;
+    return {...chatPeer, isOnline};
+  });
+
+  return mappedPeers;
+};
 
 const mapDispatchToProps = dispatch => ({
   approveChat: chatId => {
@@ -16,7 +29,7 @@ export const MessageWindow = connect(
       selectedChat: reduxStore.state.selectedChat,
       isGroup: chat.peers.length > 2,
       chatName: chat.name,
-      chatPeers: chat.peers.filter(peer => peer !== reduxStore.state.username),
+      chatPeers: getChatPeers(chat.peers, reduxStore.peers, reduxStore.state.username),
       chatApproved: chat.approved
     };
   },

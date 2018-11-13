@@ -12,8 +12,6 @@ export default function reducer(reduxStore = [], action) {
 }
 
 const mergeArrays = (originalStore, peers) => {
-  const uniquePeers = peers.filter(
-    peer => !originalStore.some(element => element.name === peer.name && element.isOnline === peer.isOnline)
-  );
+  const uniquePeers = peers.filter(peer => !originalStore.some(element => element.name === peer.name));
   return originalStore.concat(uniquePeers);
 };

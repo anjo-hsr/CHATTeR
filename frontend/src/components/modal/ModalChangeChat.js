@@ -37,7 +37,6 @@ export default class ModalChangeChat extends React.Component {
   };
 
   render() {
-    console.log(this.props.peers);
     return (
       <Modal
         open={this.state.open}

@@ -11,6 +11,7 @@ const mapDispatchToProps = dispatch => ({
       .digest('hex');
     dispatch(actionChats.addChat({chatId, chatObject: {name, peers}}));
     dispatch(actionState.selectChat(chatId));
+    dispatch(actionChats.approveChat(chatId));
   }
 });
 
