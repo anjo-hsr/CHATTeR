@@ -1,7 +1,7 @@
 let defaultWsOptions = {
   protocol: 'ws',
   server: window.location.hostname,
-  port: 8000
+  port: window.location.port
 };
 
 if (process.env.NODE_ENV === 'development') {

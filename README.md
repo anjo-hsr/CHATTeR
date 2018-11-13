@@ -34,3 +34,6 @@ per client would be needed use the optional local Port syntax's to start on diff
 
 ## And now start CHATTeRing by creating new chats.
 -- paste here some cool gifs --
+
+
+Current bug under Windows: mvn cannot be closed without being terminated over task manager.
