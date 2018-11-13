@@ -13,7 +13,7 @@
     ```
 2. Start the main DHT with the following arguments:
     ```
-    mvn clean install exec:java -Dexec.args="____"
+    mvn exec:java -Dexec.args="        "
     
     [mode] [username] [etherAddress]                              [optional: bPort]
     master root       0xc0a71f7eb1a04a867a65022021f962b3a65a40a5  5000
@@ -21,7 +21,7 @@
 3. Start each other _Person of Interest_. The default local Port for TomP2P is :5000. If multiple instances
 per client would be needed use the optional local Port syntax's to start on different ports. Use therefore these parameters:   
     ```
-    mvn clean install exec:java -Dexec.args="____"
+    mvn exec:java -Dexec.args="      "
     
     [mode] [username] [etherAddress]                              [optional: bPort] [user@rHost:rPort]    [optional: fPort]   
     client harold     0x2329edfb5a326f1f6daf6cec37e50e7cc9f9b151  5001              root@127.0.0.1:5000   
