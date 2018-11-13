@@ -47,16 +47,19 @@ public class InboundHandler {
       case MessageTypes.GET_CHAT_PEERS:
         OutboundHandler.sendChatPeers(
             handler, session, webSocketMessage.id, webSocketMessage.chatId);
+        break;
       case MessageTypes.ADD_PEERS:
       case MessageTypes.UPDATE_CHAT_PEERS:
         OutboundHandler.sendPeers(
             handler, jsonMessage.replace(MessageTypes.UPDATE_CHAT_PEERS, MessageTypes.ADD_PEERS));
+        break;
       case MessageTypes.GET_PEERS:
         OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
+        break;
       case MessageTypes.APPROVE_CHAT:
         OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
+        break;
       default:
-        return;
     }
   }
 
