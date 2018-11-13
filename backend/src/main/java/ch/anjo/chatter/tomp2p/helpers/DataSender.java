@@ -10,6 +10,7 @@ import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import net.tomp2p.dht.FutureGet;
@@ -94,7 +95,30 @@ public class DataSender {
   private static void sendWithListener(
       ChatterPeer myself, String receiver, String jsonMessage, BaseFutureAdapter listener) {
     ChatterUser chatterUser = myself.getChatterUser();
-    chatterUser
+
+    //Very ugly code, currently struggling with a ConcurrentModificationException Exception when using the stream
+    for (String friend : chatterUser.getFriends()) {
+      Data friendData = myself.getDht().get(ChatterUser.getHash(friend)).start().awaitUninterruptibly().data();
+      if (friendData == null) {
+        break;
+      }
+      ChatterUser friendUser = DataSender.readUser(friendData);
+      if (friendUser == null) {
+        break;
+      }
+      TomP2pMessage tomP2pMessage =
+          new TomP2pMessage(chatterUser.getUsername(), friendUser.getUsername(), jsonMessage);
+
+      myself
+          .getDht()
+          .send(friendUser.getHash())
+          .object(tomP2pMessage)
+          .requestP2PConfiguration(new RequestP2PConfiguration(1, 5, 0))
+          .start()
+          .addListener(listener);
+    }
+
+    /*chatterUser
         .getFriends()
         .stream()
         .filter(friend -> friend.equals(receiver))
@@ -107,8 +131,6 @@ public class DataSender {
                     .awaitUninterruptibly()
                     .data())
         .filter(Objects::nonNull)
-        .collect(Collectors.toSet())
-        .stream()
         .map(DataSender::readUser)
         .filter(Objects::nonNull)
         .forEach(
@@ -123,7 +145,7 @@ public class DataSender {
                   .requestP2PConfiguration(new RequestP2PConfiguration(1, 5, 0))
                   .start()
                   .addListener(listener);
-            });
+            });*/
   }
 
   private static ChatterUser readUser(Data data) {
