@@ -1,4 +1,4 @@
-# CHATTeR
+# <img width="200" src="images/CHATTeR.png">
 
 ## Requirements
 
