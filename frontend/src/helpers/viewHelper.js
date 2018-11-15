@@ -1,9 +1,11 @@
 import React from 'react';
 
-import {Button, Grid, Header, Sidebar} from 'semantic-ui-react';
+import {Button, Grid, Header, Image, Sidebar} from 'semantic-ui-react';
 import {isMobile} from 'react-device-detect';
 import {Chats} from '../containers/chat/Chats';
 import {MessageWindow} from '../containers/message/MessageWindow';
+
+import CHATTeR from '../media/CHATTeR.png';
 
 export default {
   getHeader(username) {
@@ -15,7 +17,18 @@ export default {
           </Grid.Column>
         )}
         <Grid.Column textAlign="center" className="headerElement">
-          <Header size="medium" color="green" content={`CHATTeR - ${username}`} />
+          <Grid>
+            <Grid.Row columns="equal" verticalAlign="middle">
+              <Grid.Column width="1" />
+              <Grid.Column textAlign="right">
+                <Header className="username" size="medium" color="green" content={`${username}`} />
+              </Grid.Column>
+              <Grid.Column>
+                <Image className="chatterImage" src={CHATTeR} floated="left" />
+              </Grid.Column>
+              <Grid.Column width="1" />
+            </Grid.Row>
+          </Grid>
         </Grid.Column>
       </Grid.Row>
     );

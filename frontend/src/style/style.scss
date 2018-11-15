@@ -28,6 +28,14 @@ body {
   }
 }
 
+.chatterImage {
+  height: $headerHeight !important;
+}
+
+.username{
+  font-size: 4em !important;
+}
+
 .siteContent {
   height: 95vh - $headerHeight;
   padding: 0 !important;

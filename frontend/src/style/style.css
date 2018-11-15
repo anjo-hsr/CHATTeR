@@ -15,6 +15,12 @@ body {
   .siteHeader > .headerButton {
     padding: 0 !important; }
 
+.chatterImage {
+  height: 5vh !important; }
+
+.username {
+  font-size: 4em !important; }
+
 .siteContent {
   height: 90vh;
   padding: 0 !important; }
