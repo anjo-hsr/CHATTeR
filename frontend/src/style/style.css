@@ -9,27 +9,28 @@ body {
   height: 97vh !important; }
 
 .siteHeader {
-  height: 5vh !important;
-  padding: 0 !important;
-  margin-bottom: 1em; }
+  height: 4vh !important;
+  padding: 0 !important; }
   .siteHeader > .headerButton {
     padding: 0 !important; }
 
 .chatterImage {
-  height: 5vh !important; }
+  min-height: 1vh !important;
+  max-height: 4vh !important; }
 
 .username {
-  font-size: 4em !important; }
+  font-size: 3em !important;
+  font-weight: lighter !important; }
 
 .siteContent {
-  height: 90vh;
+  height: 91vh;
   padding: 0 !important; }
 
 .chatContainer {
   height: 70vh !important; }
 
 .chatOverview {
-  height: 70vh !important;
+  height: 71vh !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
   padding: 0 !important; }

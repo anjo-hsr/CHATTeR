@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Button, Grid, Header, Image, Sidebar} from 'semantic-ui-react';
+import {Button, Container, Grid, Header, Image, Sidebar} from 'semantic-ui-react';
 import {isMobile} from 'react-device-detect';
 import {Chats} from '../containers/chat/Chats';
 import {MessageWindow} from '../containers/message/MessageWindow';
@@ -16,20 +16,16 @@ export default {
             <Button color="green" icon={this.state.iconName} onClick={this.toggleVisibility} />
           </Grid.Column>
         )}
-        <Grid.Column textAlign="center" className="headerElement">
-          <Grid>
-            <Grid.Row columns="equal" verticalAlign="middle">
-              <Grid.Column width="1" />
-              <Grid.Column textAlign="right">
-                <Header className="username" size="medium" color="green" content={`${username}`} />
-              </Grid.Column>
-              <Grid.Column>
-                <Image className="chatterImage" src={CHATTeR} floated="left" />
-              </Grid.Column>
-              <Grid.Column width="1" />
-            </Grid.Row>
-          </Grid>
+        <Grid.Column>
+          <Container textAlign="center">
+            <Image className="chatterImage" src={CHATTeR} />
+          </Container>
         </Grid.Column>
+        <Grid.Column width="1" />
+        <Grid.Column width="3" textAlign="left">
+          <Header className="username" size="medium" color="green" content={`${username}`} />
+        </Grid.Column>
+        <Grid.Column width="1" />
       </Grid.Row>
     );
   },

@@ -1,6 +1,6 @@
 $bodyXMarginSize: 1vw;
 $bodyYMarginSize: 1.5vh;
-$headerHeight: 5vh;
+$headerHeight: 4vh;
 $chatAvatarSize: 3rem;
 $deleteButtonSize: 2rem;
 $CHATTeR-color: #20c028;
@@ -22,18 +22,19 @@ body {
 .siteHeader {
   height: $headerHeight !important;
   padding: 0 !important;
-  margin-bottom: 1em;
   & > .headerButton {
     padding: 0 !important;
   }
 }
 
 .chatterImage {
-  height: $headerHeight !important;
+  min-height: $headerHeight - 3vh !important;
+  max-height: $headerHeight !important;
 }
 
 .username{
-  font-size: 4em !important;
+  font-size: 3em !important;
+  font-weight: lighter !important;
 }
 
 .siteContent {
