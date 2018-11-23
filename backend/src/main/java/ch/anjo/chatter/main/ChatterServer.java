@@ -50,7 +50,7 @@ public class ChatterServer {
 
   private static void startServices(Parameters parameters, ChatterPeer myself) {
     Thread webSocketServer =
-        new WebSocketService(parameters.getWebSocketPort(), parameters.getFrontendPort());
+        new WebSocketService(parameters.getWebSocketPort(), parameters.getFrontendPort(), parameters.getUsername());
     webSocketServer.start();
 
     TomP2pServer tomP2pServer =

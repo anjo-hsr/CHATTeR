@@ -37,7 +37,7 @@ public class ChatterWebSocketClient extends WebSocketClient {
 
   public ChatterWebSocketClient(int webSocketPort, String username, ChatterPeer myself)
       throws URISyntaxException {
-    super(new URI("ws://localhost:" + webSocketPort + "/chat?wsType=backend&username=" + username));
+    super(new URI("ws://localhost:" + webSocketPort + "/chat?wsType=backend"));
 
     this.myself = myself;
     this.username = username;
@@ -79,7 +79,9 @@ public class ChatterWebSocketClient extends WebSocketClient {
         break;
       case MessageTypes.ADD_CHAT:
       case MessageTypes.CHANGE_CHAT:
-        Set<PeerInformation> peers = webSocketMessage.chatInformation.peers.stream().map(PeerInformation::new)
+        Set<PeerInformation> peers = webSocketMessage.chatInformation.peers.stream()
+            .map(PeerInformation::new)
+            .filter(peer -> !myself.getChatterUser().getUsername().equals(peer.name))
             .collect(Collectors.toSet());
         chatMembers.put(webSocketMessage.chatId, Sets.newHashSet(peers));
         bootStrapNewPeers(webSocketMessage.chatInformation.peers);

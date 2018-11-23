@@ -21,10 +21,6 @@ public class Handler {
     return sessionHandler;
   }
 
-  public void setUsername(String username) {
-    sessionHandler.setUsername(username);
-  }
-
   public void saveMessage(String chatId, String message) {
     System.out.println("WebSocketMessage saved in :" + chatId + " - " + message);
     chatHandler.saveMessage(chatId, message);

@@ -8,17 +8,11 @@ import java.util.List;
 public class SessionHandler {
 
   private WebSocketPair sessions;
-  private String username;
+  private final String username;
 
   public SessionHandler(String username) {
     this.sessions = new WebSocketPair();
     this.username = username;
-  }
-
-  public void setUsername(String username) {
-    if (username != null) {
-      this.username = username;
-    }
   }
 
   public void replaceSession(WsSession session, String type) {

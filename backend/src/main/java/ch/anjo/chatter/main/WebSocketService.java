@@ -19,10 +19,10 @@ public class WebSocketService extends Thread {
   private final Handler handler;
   private boolean browserStarted;
 
-  public WebSocketService(int webSocketPort, int frontendPort) {
+  public WebSocketService(int webSocketPort, int frontendPort, String username) {
     this.webSocketPort = webSocketPort;
     this.frontendPort = frontendPort;
-    this.handler = new Handler(null, "");
+    this.handler = new Handler(null, username);
     this.browserStarted = false;
   }
 

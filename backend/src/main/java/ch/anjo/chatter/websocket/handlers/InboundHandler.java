@@ -10,11 +10,9 @@ import io.javalin.websocket.WsSession;
 public class InboundHandler {
 
   public static void handleSession(Handler handler, WsSession session) {
-    String username = session.queryParam("username");
     String wsType = session.queryParam("wsType");
     if (wsType != null) {
       handler.getSessionHandler().replaceSession(session, wsType);
-      handler.getSessionHandler().setUsername(username);
     }
   }
 
@@ -28,9 +26,6 @@ public class InboundHandler {
           saveMessage(handler, webSocketMessage.chatId, webSocketMessage.messageInformation);
           OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
         }
-        break;
-      case MessageTypes.SET_USERNAME:
-        setUsername(handler, webSocketMessage);
         break;
       case MessageTypes.ADD_CHAT:
       case MessageTypes.CHANGE_CHAT:
@@ -61,12 +56,6 @@ public class InboundHandler {
         break;
       default:
     }
-  }
-
-  private static void setUsername(Handler handler, WebSocketMessage webSocketMessage) {
-    System.out.println("-------- Will set username to" + webSocketMessage.username);
-    handler.setUsername(webSocketMessage.username);
-    handler.getSessionHandler().printSession();
   }
 
   private static void saveMessage(Handler handler, String chatId, MessageInformation message) {
