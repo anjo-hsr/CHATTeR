@@ -23,6 +23,6 @@ public class PeerInformation {
 
   @Override
   public String toString() {
-    return String.format("%s - %s", name, isOnline);
+    return String.format("%s (%s)", name, isOnline);
   }
 }
