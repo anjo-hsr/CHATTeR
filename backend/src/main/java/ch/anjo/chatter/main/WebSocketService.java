@@ -29,7 +29,7 @@ public class WebSocketService extends Thread {
   public void run() {
 
     Javalin.create()
-        .enableStaticFiles("/frontend")
+        .enableStaticFiles("./frontend")
         .enableCorsForOrigin("*")
         .ws(
             "/chat",
