@@ -33,7 +33,11 @@ export default class ModalAddAddress extends React.Component {
 
   close = event => {
     event.preventDefault();
-    this.setState({open: false});
+    this.setState({
+      name: '',
+      selectedPeers: [],
+      open: false
+    });
   };
 
   render() {
