@@ -8,6 +8,8 @@ import {Chats} from '../containers/chat/Chats';
 import webSocketHelper from '../helpers/webSocketHelper';
 import viewHelper from '../helpers/viewHelper';
 import {rootSaga} from '../redux/saga/rootSaga';
+import ModalWaitForWebSocket from './modal/ModalWaitForWebSocket';
+import {numbers} from '../defaults/defaults';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -17,9 +19,9 @@ export default class App extends React.Component {
       sidebarOpen: true,
       iconName: 'bars',
       visible: false,
-      isSocketOpen: true,
       socket: null,
-      isSmallWindow: false
+      isSmallWindow: false,
+      refreshIntervalId: null
     };
     this.getHeader = viewHelper.getHeader.bind(this);
     this.getSideBar = viewHelper.getSideBar.bind(this);
@@ -29,11 +31,16 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({isSmallWindow: window.innerWidth < 900});
+    this.setSocket();
+    let refreshIntervalId = setInterval(() => {
+      console.log('Retry connection to webSocket');
+      this.setSocket();
+    }, numbers.reloadTimer);
+    this.setState({refreshIntervalId, isSmallWindow: window.innerWidth < 900});
   }
 
   setSocket = () => {
-    if (this.props.isSocketOpen === undefined && this.state.newSocketNeeded) {
+    if (!Boolean(this.props.username)) {
       const socket = webSocketHelper(this.props.dispatch);
       this.props.sagaMiddleware.run(rootSaga, socket);
       this.props.setSocketStateOpen();
@@ -44,11 +51,11 @@ export default class App extends React.Component {
   };
 
   render() {
-    this.setSocket();
     return (
       <div>
-        {Boolean(this.props.username) && (
+        {Boolean(this.props.username) ? (
           <Grid className="siteGrid" padded>
+            {clearInterval(this.state.refreshIntervalId)}
             {this.getHeader(this.props.username)}
             {isMobile || this.state.isSmallWindow ? (
               <Grid.Row className="siteContent" columns="equal">
@@ -70,6 +77,10 @@ export default class App extends React.Component {
               </Grid.Row>
             )}
           </Grid>
+        ) : (
+          <div>
+            <ModalWaitForWebSocket />
+          </div>
         )}
       </div>
     );

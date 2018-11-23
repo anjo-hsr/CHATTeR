@@ -9,7 +9,10 @@ export default class ModalWaitForWebSocket extends React.Component {
         <Modal.Content>
           <Container className="loadingModal">
             <Dimmer active inverted>
-              <Loader size="massive" content="Please check the connection or restart CHATTeR" />
+              <Loader
+                size="massive"
+                content="Please check the connection to the backend or restart CHATTeR completly"
+              />
             </Dimmer>
           </Container>
         </Modal.Content>
