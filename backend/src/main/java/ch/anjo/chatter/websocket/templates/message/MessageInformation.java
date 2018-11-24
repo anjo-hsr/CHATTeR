@@ -7,7 +7,6 @@ public class MessageInformation {
   public String date;
   public String author;
   public String message;
-  public boolean isMe;
 
   @Override
   public boolean equals(Object o) {
@@ -18,8 +17,7 @@ public class MessageInformation {
       return false;
     }
     MessageInformation that = (MessageInformation) o;
-    return isMe == that.isMe
-        && Objects.equal(messageId, that.messageId)
+    return Objects.equal(messageId, that.messageId)
         && Objects.equal(date, that.date)
         && Objects.equal(author, that.author)
         && Objects.equal(message, that.message);
@@ -27,6 +25,6 @@ public class MessageInformation {
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(messageId, date, author, message, isMe);
+    return Objects.hashCode(messageId, date, author, message);
   }
 }

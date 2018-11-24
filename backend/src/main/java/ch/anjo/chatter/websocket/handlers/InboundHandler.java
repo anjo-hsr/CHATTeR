@@ -68,7 +68,6 @@ public class InboundHandler {
     messageInformation.addProperty("date", message.date);
     messageInformation.addProperty("author", message.author);
     messageInformation.addProperty("message", message.message);
-    messageInformation.addProperty("isMe", message.isMe);
     return messageInformation;
   }
 }

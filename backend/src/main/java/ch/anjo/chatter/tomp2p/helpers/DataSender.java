@@ -10,9 +10,7 @@ import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import java.util.Iterator;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import net.tomp2p.dht.FutureGet;
 import net.tomp2p.dht.FutureSend;
 import net.tomp2p.dht.PeerDHT;
@@ -96,56 +94,24 @@ public class DataSender {
       ChatterPeer myself, String receiver, String jsonMessage, BaseFutureAdapter listener) {
     ChatterUser chatterUser = myself.getChatterUser();
 
-    //Very ugly code, currently struggling with a ConcurrentModificationException Exception when using the stream
-    for (String friend : chatterUser.getFriends()) {
-      Data friendData = myself.getDht().get(ChatterUser.getHash(friend)).start().awaitUninterruptibly().data();
-      if (friendData == null) {
-        break;
-      }
-      ChatterUser friendUser = DataSender.readUser(friendData);
-      if (friendUser == null) {
-        break;
-      }
-      TomP2pMessage tomP2pMessage =
-          new TomP2pMessage(chatterUser.getUsername(), friendUser.getUsername(), jsonMessage);
-
-      myself
-          .getDht()
-          .send(friendUser.getHash())
-          .object(tomP2pMessage)
-          .requestP2PConfiguration(new RequestP2PConfiguration(1, 5, 0))
-          .start()
-          .addListener(listener);
+    Data friendData = myself.getDht().get(ChatterUser.getHash(receiver)).start().awaitUninterruptibly().data();
+    if (friendData == null) {
+      return;
     }
+    ChatterUser friendUser = DataSender.readUser(friendData);
+    if (friendUser == null) {
+      return;
+    }
+    TomP2pMessage tomP2pMessage =
+        new TomP2pMessage(chatterUser.getUsername(), friendUser.getUsername(), jsonMessage);
 
-    /*chatterUser
-        .getFriends()
-        .stream()
-        .filter(friend -> friend.equals(receiver))
-        .map(
-            friend ->
-                myself
-                    .getDht()
-                    .get(ChatterUser.getHash(friend))
-                    .start()
-                    .awaitUninterruptibly()
-                    .data())
-        .filter(Objects::nonNull)
-        .map(DataSender::readUser)
-        .filter(Objects::nonNull)
-        .forEach(
-            friend -> {
-              TomP2pMessage tomP2pMessage =
-                  new TomP2pMessage(chatterUser.getUsername(), friend.getUsername(), jsonMessage);
-
-              myself
-                  .getDht()
-                  .send(friend.getHash())
-                  .object(tomP2pMessage)
-                  .requestP2PConfiguration(new RequestP2PConfiguration(1, 5, 0))
-                  .start()
-                  .addListener(listener);
-            });*/
+    myself
+        .getDht()
+        .send(friendUser.getHash())
+        .object(tomP2pMessage)
+        .requestP2PConfiguration(new RequestP2PConfiguration(1, 5, 0))
+        .start()
+        .addListener(listener);
   }
 
   private static ChatterUser readUser(Data data) {
