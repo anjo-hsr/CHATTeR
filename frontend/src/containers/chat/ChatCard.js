@@ -5,6 +5,7 @@ import ChatCardComponent from '../../components/chat/ChatCard';
 
 const mapStateToProps = dispatch => ({
   selectChat: chatId => {
+    dispatch(actionState.hideSidebar());
     dispatch(actionState.selectChat(chatId));
   },
   deleteChat: (chatId, chat, self) => {

@@ -1,6 +1,7 @@
 $bodyXMarginSize: 1vw;
 $bodyYMarginSize: 1.5vh;
-$headerHeight: 4vh;
+$mobileHeaderHeight: 10vh;
+$headerHeight: 5vh;
 $chatAvatarSize: 3rem;
 $deleteButtonSize: 2rem;
 $CHATTeR-color: #20c028;
@@ -21,7 +22,7 @@ body {
 }
 
 .siteHeader {
-  height: $headerHeight !important;
+  height: $mobileHeaderHeight !important;
   padding: 0 !important;
 
   & > .headerButton {
@@ -30,9 +31,10 @@ body {
 }
 
 .chatterImage {
-  min-height: $headerHeight - 3vh !important;
-  max-height: $headerHeight !important;
-}
+    vertical-align: middle;
+    width: 100% !important;
+    height: auto !important;
+  }
 
 .username {
   font-size: 3em !important;
@@ -40,7 +42,7 @@ body {
 }
 
 .siteContent {
-  height: 95vh - $headerHeight;
+  height: 95vh - $mobileHeaderHeight;
   padding: 0 !important;
 }
 
@@ -49,7 +51,7 @@ body {
 }
 
 .chatOverview {
-  height: 75vh - $headerHeight !important;
+  height: 75vh - $mobileHeaderHeight !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
   padding: 0 !important;
@@ -99,7 +101,8 @@ body {
 .ui.card {
   background: $defaultBackgroundColor;
   margin: 0.5rem 0.2rem 0.5rem 0.2rem !important;
-  &.selectedChat{
+
+  &.selectedChat {
     background: $selectedCardBackgroundColor
   }
 
@@ -165,6 +168,10 @@ body {
   padding-top: 0 !important;
 }
 
+.background {
+  filter: blur(1px) opacity(20%) !important
+}
+
 .messageHistory {
   height: 72vh !important;
 
@@ -220,9 +227,31 @@ body {
 }
 
 @media only screen and (min-width: 720px) {
+  .siteHeader {
+    height: $headerHeight !important;
+  }
+
+  .chatterImageContainer {
+    height: 100% !important;
+
+    & > .chatterImage {
+      width: auto !important;
+      height: 100% !important;
+    }
+  }
+
+  .siteContent {
+    height: 95vh - $headerHeight;
+  }
+
+  .chatOverview {
+    height: 75vh - $headerHeight !important;
+  }
+
   .popup.transition.visible {
     margin-left: 30vw;
   }
+
   .ui.cards {
     margin: 0 auto 0 0.5rem !important;
     width: 90% !important;

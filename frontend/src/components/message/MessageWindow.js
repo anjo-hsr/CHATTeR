@@ -16,7 +16,7 @@ import AnonymousGroup from '../../media/anonymousGroup.png';
 export default class MessageWindow extends React.Component {
   render() {
     return (
-      <Grid>
+      <Grid className={this.props.isSidebarOpen ? 'background' : ''}>
         <Grid.Row columns="equal" className="messageInformation">
           <Grid.Column width="2" verticalAlign="middle">
             <Image src={this.props.isGroup ? AnonymousGroup : Anonymous} />
@@ -71,5 +71,6 @@ MessageWindow.propTypes = {
       author: PropTypes.string.isRequired,
       message: PropTypes.string.isRequired
     })
-  )
+  ),
+  isSidebarOpen: PropTypes.bool.isRequired
 };

@@ -16,9 +16,6 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       newSocketNeeded: true,
-      sidebarOpen: true,
-      iconName: 'bars',
-      visible: false,
       socket: null,
       isSmallWindow: false,
       refreshIntervalId: null
@@ -92,6 +89,9 @@ App.propTypes = {
   isSocketOpen: PropTypes.bool,
   setSocketStateOpen: PropTypes.func.isRequired,
   sagaMiddleware: PropTypes.func.isRequired,
-  username: PropTypes.string,
-  selectedChat: PropTypes.string
+  username: PropTypes.string.isRequired,
+  selectedChat: PropTypes.string,
+  sidebarIcon: PropTypes.string.isRequired,
+  isSidebarOpen: PropTypes.bool.isRequired,
+  toggleSidebar: PropTypes.func.isRequired
 };

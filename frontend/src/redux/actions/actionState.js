@@ -1,11 +1,20 @@
 import {actionTypes as types} from './actions';
 
 export default {
-  toggleMenu() {
+  toggleSidebar() {
     return {
-      type: types.TOGGLE_MENU
+      type: types.TOGGLE_SIDEBAR,
+      hide: undefined
     };
   },
+
+  hideSidebar() {
+    return {
+      type: types.TOGGLE_SIDEBAR,
+      hide: true
+    };
+  },
+
   selectChat(chatId) {
     return {
       type: types.SELECT_CHAT,

@@ -1,9 +1,16 @@
 import {actionTypes} from '../actions/actions';
 
-export default function reducer(reduxStore = {}, action) {
+export default function reducer(reduxStore = {sidebarIcon: 'bars', isSidebarOpen: false, username: ''}, action) {
   switch (action.type) {
-    case actionTypes.TOGGLE_MENU: {
-      return {...reduxStore, isMenuOpen: !reduxStore.isMenuOpen || false};
+    case actionTypes.TOGGLE_SIDEBAR: {
+      let iconNames = new Map([[false, 'bars'], [true, 'close']]);
+
+      let isSidebarOpen = !reduxStore.isSidebarOpen;
+      if (Boolean(action.hide)) {
+        isSidebarOpen = false;
+      }
+
+      return {...reduxStore, isSidebarOpen, sidebarIcon: iconNames.get(isSidebarOpen)};
     }
 
     case actionTypes.SELECT_CHAT: {

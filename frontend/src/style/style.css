@@ -9,28 +9,29 @@ body {
   height: 97vh !important; }
 
 .siteHeader {
-  height: 4vh !important;
+  height: 10vh !important;
   padding: 0 !important; }
   .siteHeader > .headerButton {
     padding: 0 !important; }
 
 .chatterImage {
-  min-height: 1vh !important;
-  max-height: 4vh !important; }
+  vertical-align: middle;
+  width: 100% !important;
+  height: auto !important; }
 
 .username {
   font-size: 3em !important;
   font-weight: lighter !important; }
 
 .siteContent {
-  height: 91vh;
+  height: 85vh;
   padding: 0 !important; }
 
 .chatContainer {
   height: 70vh !important; }
 
 .chatOverview {
-  height: 71vh !important;
+  height: 65vh !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
   padding: 0 !important; }
@@ -110,6 +111,9 @@ body {
   height: 10vh !important;
   padding-top: 0 !important; }
 
+.background {
+  filter: blur(1px) opacity(20%) !important; }
+
 .messageHistory {
   height: 72vh !important; }
   .messageHistory > .column {
@@ -151,6 +155,21 @@ body {
   background: rgba(32, 192, 40, 0.1); }
 
 @media only screen and (min-width: 720px) {
+  .siteHeader {
+    height: 5vh !important; }
+
+  .chatterImageContainer {
+    height: 100% !important; }
+    .chatterImageContainer > .chatterImage {
+      width: auto !important;
+      height: 100% !important; }
+
+  .siteContent {
+    height: 90vh; }
+
+  .chatOverview {
+    height: 70vh !important; }
+
   .popup.transition.visible {
     margin-left: 30vw; }
 

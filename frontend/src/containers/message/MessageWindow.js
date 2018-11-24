@@ -30,7 +30,8 @@ export const MessageWindow = connect(
       isGroup: chat.peers.length > 2,
       chatName: chat.name,
       chatPeers: getChatPeers(chat.peers, reduxStore.peers, reduxStore.state.username),
-      chatApproved: chat.approved
+      chatApproved: chat.approved,
+      isSidebarOpen: reduxStore.state.isSidebarOpen
     };
   },
   mapDispatchToProps
