@@ -70,13 +70,15 @@ public class ChatterWebSocketClient extends WebSocketClient {
     WebSocketMessage webSocketMessage = gson.fromJson(jsonMessage, WebSocketMessage.class);
 
     switch (webSocketMessage.type) {
-      case MessageTypes.ADD_MESSAGE:
+      case MessageTypes.ADD_MESSAGE: {
         sendMessageToPeers(webSocketMessage, jsonMessage);
         break;
-      case MessageTypes.SET_USERNAME:
+      }
+      case MessageTypes.SET_USERNAME: {
         break;
+      }
       case MessageTypes.ADD_CHAT:
-      case MessageTypes.CHANGE_CHAT:
+      case MessageTypes.CHANGE_CHAT: {
         Set<PeerInformation> peers = webSocketMessage.chatInformation.peers.stream()
             .map(PeerInformation::new)
             .filter(peer -> !myself.getChatterUser().getUsername().equals(peer.name))
@@ -85,18 +87,25 @@ public class ChatterWebSocketClient extends WebSocketClient {
         bootStrapNewPeers(peers);
         sendNewChat(webSocketMessage, jsonMessage);
         break;
-      case MessageTypes.DELETE_CHAT:
+      }
+      case MessageTypes.DELETE_CHAT: {
         break;
-      case MessageTypes.SELECT_CHAT:
+      }
+      case MessageTypes.SELECT_CHAT: {
         break;
-      case MessageTypes.SEND_CHAT_PEERS:
+      }
+      case MessageTypes.SEND_CHAT_PEERS: {
         updateChatPeerMap(webSocketMessage);
         break;
-      case MessageTypes.GET_PEERS:
+      }
+      case MessageTypes.GET_PEERS: {
         sendPeers(webSocketMessage);
         break;
-      case MessageTypes.APPROVE_CHAT:
+      }
+      case MessageTypes.APPROVE_CHAT: {
         bootStrapNewPeers(webSocketMessage.chatId);
+        break;
+      }
       default:
     }
   }

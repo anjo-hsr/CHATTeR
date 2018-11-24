@@ -17,12 +17,14 @@ public class SessionHandler {
 
   public void replaceSession(WsSession session, String type) {
     switch (type) {
-      case "frontend":
+      case "frontend": {
         this.sessions.setFrontendSession(session);
         break;
-      case "backend":
+      }
+      case "backend": {
         this.sessions.setBackendSession(session);
         break;
+      }
     }
   }
 

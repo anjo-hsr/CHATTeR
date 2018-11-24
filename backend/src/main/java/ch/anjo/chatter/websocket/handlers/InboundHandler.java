@@ -19,7 +19,7 @@ public class InboundHandler {
   public static void handleMessageTypes(
       Handler handler, WsSession session, String jsonMessage, WebSocketMessage webSocketMessage) {
     switch (webSocketMessage.type) {
-      case MessageTypes.ADD_MESSAGE:
+      case MessageTypes.ADD_MESSAGE: {
         if (!handler
             .getMessages(webSocketMessage.chatId)
             .contains(webSocketMessage.messageInformation)) {
@@ -27,33 +27,41 @@ public class InboundHandler {
           OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
         }
         break;
+      }
       case MessageTypes.ADD_CHAT:
-      case MessageTypes.CHANGE_CHAT:
+      case MessageTypes.CHANGE_CHAT: {
         handler.getChatHandler().saveChat(webSocketMessage);
         OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
         break;
-      case MessageTypes.DELETE_CHAT:
+      }
+      case MessageTypes.DELETE_CHAT: {
         handler.getChatHandler().deleteChat(webSocketMessage.chatId);
         OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
         break;
-      case MessageTypes.SELECT_CHAT:
+      }
+      case MessageTypes.SELECT_CHAT: {
         OutboundHandler.sendChatMessages(handler, webSocketMessage.chatId);
         break;
-      case MessageTypes.GET_CHAT_PEERS:
+      }
+      case MessageTypes.GET_CHAT_PEERS: {
         OutboundHandler.sendChatPeers(
             handler, session, webSocketMessage.id, webSocketMessage.chatId);
         break;
+      }
       case MessageTypes.ADD_PEERS:
-      case MessageTypes.UPDATE_CHAT_PEERS:
+      case MessageTypes.UPDATE_CHAT_PEERS: {
         OutboundHandler.sendPeers(
             handler, jsonMessage.replace(MessageTypes.UPDATE_CHAT_PEERS, MessageTypes.ADD_PEERS));
         break;
-      case MessageTypes.GET_PEERS:
+      }
+      case MessageTypes.GET_PEERS: {
         OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
         break;
-      case MessageTypes.APPROVE_CHAT:
+      }
+      case MessageTypes.APPROVE_CHAT: {
         OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
         break;
+      }
       default:
     }
   }

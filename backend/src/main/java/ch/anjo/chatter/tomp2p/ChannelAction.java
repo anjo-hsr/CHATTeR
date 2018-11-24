@@ -91,27 +91,26 @@ public class ChannelAction {
               gson.fromJson(tomP2pMessage.getJsonMessage(), WebSocketMessage.class);
 
           switch (webSocketMessage.type) {
-            case MessageTypes.GET_PEERS:
-              {
-                if (!tomP2pMessage.getSender().equals(chatterPeer.getChatterUser().getUsername())) {
-                  String responseJson = ChannelAction.getFriends(chatterPeer);
-                  chatterPeer.addFriend(tomP2pMessage.getSender());
+            case MessageTypes.GET_PEERS: {
+              if (!tomP2pMessage.getSender().equals(chatterPeer.getChatterUser().getUsername())) {
+                String responseJson = ChannelAction.getFriends(chatterPeer);
+                chatterPeer.addFriend(tomP2pMessage.getSender());
 
-                  return responseJson;
-                }
-                break;
+                return responseJson;
               }
+              break;
+            }
             case MessageTypes.ADD_CHAT:
-            case MessageTypes.CHANGE_CHAT:
-              {
-                webSocketClient.send(tomP2pMessage.getJsonMessage());
-                return null;
-              }
-            default:
+            case MessageTypes.CHANGE_CHAT: {
+              webSocketClient.send(tomP2pMessage.getJsonMessage());
+              return null;
+            }
+            default: {
               if (!webSocketMessage.type.equals(MessageTypes.ADD_MESSAGE)) {
                 webSocketClient.send(tomP2pMessage.getJsonMessage());
                 return null;
               }
+            }
           }
 
           if (messageHistory
@@ -119,7 +118,7 @@ public class ChannelAction {
               .anyMatch(
                   message ->
                       webSocketMessage.messageInformation.author.equals(
-                              chatterPeer.getChatterUser().getUsername())
+                          chatterPeer.getChatterUser().getUsername())
                           || message.getJsonMessage().equals(tomP2pMessage.getJsonMessage()))) {
             return null;
           } else {
