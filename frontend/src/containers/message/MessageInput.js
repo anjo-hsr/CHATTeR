@@ -4,7 +4,7 @@ import {actionMessages} from '../../redux/actions/actions';
 
 const mapDispatchToProps = dispatch => ({
   addMessage: (chatId, message) => {
-    message = {...message, isMe: true};
+    message = {...message};
     dispatch(actionMessages.addMessage({chatId, message}));
   }
 });

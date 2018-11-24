@@ -21,8 +21,7 @@ export default function webSocketHelper(dispatch) {
               date: data.messageInformation.date,
               author: data.messageInformation.author,
               message: data.messageInformation.message,
-              messageId: data.messageInformation.messageId,
-              isMe: data.messageInformation.isMe
+              messageId: data.messageInformation.messageId
             }
           })
         );
