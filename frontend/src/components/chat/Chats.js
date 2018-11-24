@@ -16,7 +16,18 @@ export default class Chats extends React.Component {
           <Scrollbars autoHide autoHideTimeout={numbers.autoHideTimeout} autoHideDuration={numbers.autoHideDuration}>
             <Card.Group>
               {this.props.keys.map(chatId => {
-                return <ChatCard key={chatId} chatId={chatId} chat={this.props.chats[chatId]} />;
+                return (
+                  <div>
+                    {console.log(this.props.selectedChat)}
+                    {console.log(chatId)}
+                    <ChatCard
+                      key={chatId}
+                      chatId={chatId}
+                      selected={this.props.selectedChat === chatId}
+                      chat={this.props.chats[chatId]}
+                    />
+                  </div>
+                );
               })}
             </Card.Group>
           </Scrollbars>
@@ -38,5 +49,6 @@ Chats.propTypes = {
       name: PropTypes.string,
       peers: PropTypes.arrayOf(PropTypes.string)
     }).isRequired
-  ).isRequired
+  ).isRequired,
+  selectedChat: PropTypes.string
 };

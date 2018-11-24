@@ -5,6 +5,7 @@ $chatAvatarSize: 3rem;
 $deleteButtonSize: 2rem;
 $CHATTeR-color: #20c028;
 $defaultBackgroundColor: rgba($CHATTeR-color, 0.03) !important;
+$selectedCardBackgroundColor: rgba($CHATTeR-color, 0.15) !important;
 
 body {
   padding: $bodyYMarginSize $bodyXMarginSize $bodyYMarginSize $bodyXMarginSize !important;
@@ -98,6 +99,9 @@ body {
 .ui.card {
   background: $defaultBackgroundColor;
   margin: 0.5rem 0.2rem 0.5rem 0.2rem !important;
+  &.selectedChat{
+    background: $selectedCardBackgroundColor
+  }
 
   & > .content:first-child {
     height: 5rem !important;

@@ -17,7 +17,7 @@ export default class ChatCard extends React.Component {
 
   render() {
     return (
-      <Card fluid={!isMobile}>
+      <Card className={this.props.selected ? 'selectedChat' : ''} fluid={!isMobile}>
         <Card.Content>
           <Card.Header content={this.props.chat.name || this.props.chat.peers[0]} />
           <Card.Description content={this.getChatMembers()} />
@@ -33,7 +33,14 @@ export default class ChatCard extends React.Component {
               content="Remove"
               onClick={() => this.props.deleteChat(this.props.chatId, this.props.chat, this.props.self)}
             />
-            <Button inverted color="green" content="Chat" onClick={() => this.props.selectChat(this.props.chatId)} />
+            <Button
+              inverted
+              color="green"
+              content="Chat"
+              onClick={() => {
+                this.props.selectChat(this.props.chatId);
+              }}
+            />
           </Button.Group>
         </Card.Content>
       </Card>

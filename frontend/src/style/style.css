@@ -65,6 +65,8 @@ body {
 .ui.card {
   background: rgba(32, 192, 40, 0.03) !important;
   margin: 0.5rem 0.2rem 0.5rem 0.2rem !important; }
+  .ui.card.selectedChat {
+    background: rgba(32, 192, 40, 0.15) !important; }
   .ui.card > .content:first-child {
     height: 5rem !important;
     font-size: 1.1rem !important;
