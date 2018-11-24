@@ -73,6 +73,7 @@ public class InboundHandler {
 
   private static JsonObject createMessageInformation(MessageInformation message) {
     JsonObject messageInformation = new JsonObject();
+    messageInformation.addProperty("messageId", message.messageId);
     messageInformation.addProperty("date", message.date);
     messageInformation.addProperty("author", message.author);
     messageInformation.addProperty("message", message.message);
