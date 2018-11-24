@@ -51,6 +51,7 @@ export default function webSocketHelper(dispatch) {
       case actionTypes.SET_USERNAME: {
         dispatch(actionState.setUsername(data.username));
         socket.username = data.username;
+        window.document.title = `CHATTeR - ${data.username}`;
         break;
       }
       default: {
