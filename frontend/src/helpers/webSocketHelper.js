@@ -50,6 +50,7 @@ export default function webSocketHelper(dispatch) {
       }
       case actionTypes.SET_USERNAME: {
         dispatch(actionState.setUsername(data.username));
+        socket.username = data.username;
         break;
       }
       default: {
@@ -58,8 +59,15 @@ export default function webSocketHelper(dispatch) {
     }
   };
 
+  const onClose = event => {
+    if (Boolean(socket.username)) {
+      window.location.reload();
+    }
+  };
+
   let socket = createSocket();
   socket.onmessage = onMessage;
+  socket.onclose = onClose;
 
   return socket;
 }
