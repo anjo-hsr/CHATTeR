@@ -22,6 +22,7 @@ body {
 .siteHeader {
   height: $headerHeight !important;
   padding: 0 !important;
+
   & > .headerButton {
     padding: 0 !important;
   }
@@ -32,7 +33,7 @@ body {
   max-height: $headerHeight !important;
 }
 
-.username{
+.username {
   font-size: 3em !important;
   font-weight: lighter !important;
 }
@@ -56,10 +57,12 @@ body {
 .popup.transition.visible {
   max-width: 60%;
   margin-left: 10vw;
+
   & .peerInformation {
     width: 100% !important;
     margin: 0 0.5rem 0 0.5rem !important;
     padding: 0 !important;
+
     & .peerCard {
       min-width: 200px !important;
     }
@@ -95,14 +98,17 @@ body {
 .ui.card {
   background: $defaultBackgroundColor;
   margin: 0.5rem 0.2rem 0.5rem 0.2rem !important;
+
   & > .content:first-child {
     height: 5rem !important;
     font-size: 1.1rem !important;
     white-space: nowrap;
+
     & > .header {
       width: 75%;
       overflow: hidden;
     }
+
     & > .description {
       font-style: italic;
       width: 80%;
@@ -118,9 +124,11 @@ body {
 
 .event.myMessage > .content {
   text-align: right !important;
+
   & .summary {
     margin-right: 0 !important;
   }
+
   & .extra.text {
     margin-right: 0 !important;
     max-width: 100% !important;
@@ -142,6 +150,7 @@ body {
 .ui.feed {
   width: 100% !important;
   padding: 0 3rem 0 2rem !important;
+
   & .event > .content {
     margin: 0.5rem 4rem 0.5rem 2rem !important;
   }
@@ -173,11 +182,11 @@ body {
   margin-top: 3rem !important;
 }
 
-.ui.mini.circular.icon.inverted.button {
+.circular.button, .circular.icon {
   margin: auto 1rem auto -2rem !important;
-  padding: 0 !important;
   height: $deleteButtonSize !important;
   width: $deleteButtonSize !important;
+
   .event.myMessage > & {
     position: absolute !important;
     margin: auto -2rem auto 1rem !important;
@@ -186,12 +195,17 @@ body {
   }
 }
 
+.circular.button {
+  padding: 0 !important;
+}
+
 .ui.popup.transition.visible {
   font-style: italic;
 }
 
 .disabled {
   opacity: 1 !important;
+
   &.field {
     opacity: 0.5 !important;
   }

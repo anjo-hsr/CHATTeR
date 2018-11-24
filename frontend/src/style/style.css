@@ -124,16 +124,18 @@ body {
   right: 0.5em;
   margin-top: 3rem !important; }
 
-.ui.mini.circular.icon.inverted.button {
+.circular.button, .circular.icon {
   margin: auto 1rem auto -2rem !important;
-  padding: 0 !important;
   height: 2rem !important;
   width: 2rem !important; }
-  .event.myMessage > .ui.mini.circular.icon.inverted.button {
+  .event.myMessage > .circular.button, .event.myMessage > .circular.icon {
     position: absolute !important;
     margin: auto -2rem auto 1rem !important;
     right: 0;
     top: 30%; }
+
+.circular.button {
+  padding: 0 !important; }
 
 .ui.popup.transition.visible {
   font-style: italic; }

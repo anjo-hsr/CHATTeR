@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {Feed, Icon, Image, Popup} from 'semantic-ui-react';
+import {Button, Feed, Icon, Image, Popup} from 'semantic-ui-react';
 
 import MessageMoment from './MessageMoment';
 import isAvatarNeeded from '../../helpers/avatarHelpers';
@@ -26,7 +26,12 @@ export default class MessageHistory extends React.Component {
             className={this.isMe(message.author) ? 'myMessage' : ''}
             key={message.date + message.message + Math.random()}
           >
-            <Icon inverted circular color="grey" name="check circle" />
+            {this.isMe(message.author) ? (
+              <Icon inverted circular color="grey" name="check" />
+            ) : (
+              <Button circular color="grey" icon="pencil alternate" />
+            )}
+
             <Feed.Label>{isAvatarNeeded(array, index) && <Image src={Anonymous} />}</Feed.Label>
             <Feed.Content>
               <Feed.Summary>
