@@ -66,7 +66,9 @@ public class OutboundHandler {
   }
 
   private static void sendMessage(WsSession session, String messageString) {
-    session.send(messageString);
+    if(!(session == null || session.isOpen())) {
+      session.send(messageString);
+    }
   }
 
   public static void sendMessageToSibling(
