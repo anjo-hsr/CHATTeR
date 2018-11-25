@@ -28,6 +28,12 @@ public class InboundHandler {
         }
         break;
       }
+      case MessageTypes.CONFIRM_MESSAGE:{
+        System.out.println("--------------------------------");
+        updateMessage(handler, webSocketMessage.chatId, webSocketMessage.messageId, webSocketMessage.username);
+        OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
+        break;
+      }
       case MessageTypes.ADD_CHAT:
       case MessageTypes.CHANGE_CHAT: {
         handler.getChatHandler().saveChat(webSocketMessage);
@@ -67,16 +73,10 @@ public class InboundHandler {
   }
 
   private static void saveMessage(Handler handler, String chatId, MessageInformation message) {
-    JsonObject messageInformation = createMessageInformation(message);
-    handler.saveMessage(chatId, messageInformation.toString());
+    handler.saveMessage(chatId, message);
   }
 
-  private static JsonObject createMessageInformation(MessageInformation message) {
-    JsonObject messageInformation = new JsonObject();
-    messageInformation.addProperty("messageId", message.messageId);
-    messageInformation.addProperty("date", message.date);
-    messageInformation.addProperty("author", message.author);
-    messageInformation.addProperty("message", message.message);
-    return messageInformation;
+  private static void updateMessage(Handler handler,String chatId, String messageId, String signer){
+    handler.updateMessage(chatId, messageId, signer);
   }
 }

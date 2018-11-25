@@ -48,7 +48,8 @@ public class ChatterPeer {
 
     System.out.println("Master service started:");
     System.out.println(
-        "Master with peerID - " + myself.peerID() + " - at: " + myself.peerAddress());
+        String.format("Master with peerID - %s - at: %s", myself.peerID(), myself.peerAddress())
+    );
   }
 
   public ChatterPeer(ClientParameters parameters) throws IOException {
@@ -148,7 +149,9 @@ public class ChatterPeer {
 
   public void newNumberArrived() {
     System.out.println("Phone booth is ringing...");
-    System.out.println(chatterUser.getUsername() + ":We have a new number, I'll be right back.");
+    System.out.println(
+        String.format("%s: We have a new number, I'll be right back.", chatterUser.getUsername())
+    );
     chatterUser.setOnlineState(false);
 
     try {

@@ -3,6 +3,7 @@ package ch.anjo.chatter.websocket.handlers.handlerClasses;
 import ch.anjo.chatter.websocket.templates.WebSocketMessage;
 import ch.anjo.chatter.websocket.templates.chat.ChatInformation;
 import ch.anjo.chatter.websocket.templates.chat.ChatMessages;
+import ch.anjo.chatter.websocket.templates.message.MessageInformation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,15 +27,11 @@ public class ChatHandler {
       return new ArrayList<>();
     }
     ChatMessages messages = chatMessages.get(chatId);
-    return messages.getMessages();
+    return messages.getMessagesAsString();
   }
 
   public ChatInformation getChatInformation(String chatId) {
     return chatStore.get(chatId);
-  }
-
-  public void putChatInformation(String chatId, ChatInformation chatInformation) {
-    chatStore.put(chatId, chatInformation);
   }
 
   public void saveChat(WebSocketMessage webSocketMessage) {
@@ -45,7 +42,7 @@ public class ChatHandler {
     chatStore.remove(chatId);
   }
 
-  public void saveMessage(String chatId, String message) {
+  public void saveMessage(String chatId, MessageInformation message) {
     ChatMessages messages;
     if (!chatMessages.containsKey(chatId)) {
       messages = new ChatMessages();
@@ -54,5 +51,11 @@ public class ChatHandler {
     }
     messages.addMessage(message);
     chatMessages.put(chatId, messages);
+  }
+
+  public void updateMessage(String chatId, String messageId, String signer){
+    if (chatMessages.containsKey(chatId)) {
+      chatMessages.get(chatId).updateMessage(messageId, signer);
+    }
   }
 }

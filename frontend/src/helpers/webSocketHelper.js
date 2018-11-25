@@ -31,6 +31,10 @@ export default function webSocketHelper(dispatch) {
         dispatch(actionMessages.addMessages(data));
         break;
       }
+      case actionTypes.CONFIRM_MESSAGE: {
+        dispatch(actionMessages.confirmMessage(data));
+        break;
+      }
       case actionTypes.ADD_CHAT: {
         dispatch(actionChats.addChat({chatId: data.chatId, chatObject: data.chatInformation}));
         break;

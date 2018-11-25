@@ -41,7 +41,8 @@ public class SessionHandler {
   }
 
   public boolean existsSessionSibling() {
-    return sessions.getBackendSession() != null && sessions.getFrontendSession() != null;
+    return sessions.getBackendSession() != null && sessions.getFrontendSession() != null
+        && sessions.getBackendSession().isOpen() && sessions.getFrontendSession().isOpen();
   }
 
   public WsSession getSessionSibling(WsSession session) {
@@ -54,6 +55,7 @@ public class SessionHandler {
 
   public void printSession() {
     System.out.println(
-        DateGenerator.getDate() + this.username + " at -> " + this.sessions.toString());
+        String.format("%s %s at -> %s", DateGenerator.getDate(), this.username, this.sessions.toString())
+    );
   }
 }

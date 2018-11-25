@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Button, Grid, Header, Image, Item, Sidebar} from 'semantic-ui-react';
+import {Button, Grid, Header, Image, Sidebar} from 'semantic-ui-react';
 import {isMobile} from 'react-device-detect';
 import {Chats} from '../containers/chat/Chats';
 import {MessageWindow} from '../containers/message/MessageWindow';

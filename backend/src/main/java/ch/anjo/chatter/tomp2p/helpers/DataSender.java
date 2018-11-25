@@ -8,11 +8,8 @@ import ch.anjo.chatter.websocket.templates.WebSocketMessage;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import java.util.Objects;
 import net.tomp2p.dht.FutureGet;
-import net.tomp2p.dht.FutureSend;
 import net.tomp2p.dht.PeerDHT;
 import net.tomp2p.futures.BaseFuture;
 import net.tomp2p.futures.BaseFutureAdapter;
@@ -23,20 +20,8 @@ import net.tomp2p.storage.Data;
 
 public class DataSender {
 
-  private static BaseFutureAdapter<FutureSend> printConfirmation(
-      ChatterPeer myself, String jsonMessage) {
-    return new BaseFutureAdapter<FutureSend>() {
-      @Override
-      public void operationComplete(FutureSend future) {
-        JsonParser parser = new JsonParser();
-        JsonObject message = parser.parse(jsonMessage).getAsJsonObject();
-        message.addProperty("received", true);
-      }
-    };
-  }
-
   public static void sendWithConfirmation(ChatterPeer myself, String receiver, String jsonMessage) {
-    sendWithListener(myself, receiver, jsonMessage, printConfirmation(myself, jsonMessage));
+    sendWithoutListener(myself, receiver, jsonMessage);
   }
 
   public static void sendToAllWithoutConfirmation(ChatterPeer chatterPeer, String outboundMessage) {
@@ -90,28 +75,33 @@ public class DataSender {
                         }));
   }
 
-  private static void sendWithListener(
-      ChatterPeer myself, String receiver, String jsonMessage, BaseFutureAdapter listener) {
+  private static void sendWithoutListener(ChatterPeer myself, String receiver, String jsonMessage) {
     ChatterUser chatterUser = myself.getChatterUser();
 
-    Data friendData = myself.getDht().get(ChatterUser.getHash(receiver)).start().awaitUninterruptibly().data();
-    if (friendData == null) {
-      return;
-    }
-    ChatterUser friendUser = DataSender.readUser(friendData);
-    if (friendUser == null) {
-      return;
-    }
-    TomP2pMessage tomP2pMessage =
-        new TomP2pMessage(chatterUser.getUsername(), friendUser.getUsername(), jsonMessage);
+    myself.getDht()
+        .get(ChatterUser.getHash(receiver))
+        .start().addListener(
+        new BaseFutureAdapter<FutureGet>() {
+          @Override
+          public void operationComplete(FutureGet future) {
+            Data data = future.data();
+            if (!data.isEmpty()) {
+              ChatterUser friend = readUser(data);
+              TomP2pMessage tomP2pMessage =
+                  null;
+              if (friend != null) {
+                tomP2pMessage = new TomP2pMessage(chatterUser.getUsername(), friend.getUsername(), jsonMessage);
 
-    myself
-        .getDht()
-        .send(friendUser.getHash())
-        .object(tomP2pMessage)
-        .requestP2PConfiguration(new RequestP2PConfiguration(1, 5, 0))
-        .start()
-        .addListener(listener);
+                myself
+                    .getDht()
+                    .send(friend.getHash())
+                    .object(tomP2pMessage)
+                    .requestP2PConfiguration(new RequestP2PConfiguration(1, 5, 0))
+                    .start();
+              }
+            }
+          }
+        });
   }
 
   private static ChatterUser readUser(Data data) {

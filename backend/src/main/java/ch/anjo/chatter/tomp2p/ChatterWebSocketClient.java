@@ -159,9 +159,9 @@ public class ChatterWebSocketClient extends WebSocketClient {
     if (chatMemebersMap.containsKey(chatId)) {
       System.out.println("Direct");
       System.out.println(
-          String.format(
-              "Send message over chat (%s) to: %s",
-              chatId.substring(0, 9), chatMemebersMap.get(chatId).toString()));
+          String.format("Send message over chat (%s) to: %s",
+              chatId.substring(0, 9), chatMemebersMap.get(chatId).toString())
+      );
       Set<PeerInformation> chatPeers = chatMemebersMap.get(chatId);
       chatPeers.forEach(peer -> DataSender.sendWithConfirmation(myself, peer.getUsername(), jsonMessage));
       loopHandler.setNewMessage(webSocketMessage);

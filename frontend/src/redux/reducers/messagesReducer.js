@@ -12,6 +12,10 @@ export default function reducer(reduxStore = {}, action) {
       }, reduxStore);
     }
 
+    case actionTypes.CONFIRM_MESSAGE: {
+      return updateMessage(reduxStore, action.chatId, action.messageId, action.username);
+    }
+
     default:
       return reduxStore;
   }
@@ -20,7 +24,6 @@ export default function reducer(reduxStore = {}, action) {
 const concatMessages = (originalStore, chatId, message) => {
   let store = {...originalStore};
   let chatArray = store[chatId];
-  console.log(chatArray, store);
   if (Boolean(chatArray)) {
     if (!checkIfAlreadyInStore(store, chatId, message)) {
       store[chatId] = addMessage(chatArray, message);
@@ -42,4 +45,18 @@ const addMessage = (array, newElement) => {
   return array.sort((element1, element2) => {
     return new Date(element1.date) > new Date(element2.date) ? 1 : -1;
   });
+};
+
+const updateMessage = (originalStore, chatId, messageId, signer) => {
+  let store = {...originalStore};
+  let chatArray = store[chatId];
+  if (Boolean(chatArray)) {
+    store[chatId] = chatArray.map(message => {
+      if (message.messageId === messageId) {
+        message.signedBy = [...message.signedBy, signer];
+      }
+      return message;
+    });
+  }
+  return store;
 };

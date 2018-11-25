@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {Button, Feed, Icon, Image, Popup} from 'semantic-ui-react';
+import {Button, Feed, Image, Popup} from 'semantic-ui-react';
 
 import MessageMoment from './MessageMoment';
+import MessageState from '../view/MessageState';
 import isAvatarNeeded from '../../helpers/avatarHelpers';
 
 import Anonymous from '../../media/anonymous.png';
@@ -27,7 +28,10 @@ export default class MessageHistory extends React.Component {
             key={message.date + message.message + Math.random()}
           >
             {this.isMe(message.author) ? (
-              <Icon inverted circular color="grey" name="check" />
+              <MessageState
+                readers={message.signedBy}
+                didAllSign={message.signedBy.length >= this.props.chats[this.props.selectedChat].peers.length - 1}
+              />
             ) : (
               <Button circular color="grey" icon="pencil alternate" />
             )}
@@ -64,5 +68,6 @@ export default class MessageHistory extends React.Component {
 MessageHistory.propTypes = {
   username: PropTypes.string.isRequired,
   chatHistory: PropTypes.object,
+  chats: PropTypes.object,
   selectedChat: PropTypes.string
 };

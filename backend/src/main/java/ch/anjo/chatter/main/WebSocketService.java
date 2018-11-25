@@ -58,6 +58,7 @@ public class WebSocketService extends Thread {
 
                     if (backendSession != null && backendSession.equals(session)) {
                       OutboundHandler.sendUsername(handler);
+                      session.send(OutboundHandler.createGetPeer());
                     }
 
                     if (frontendSession != null && frontendSession.equals(session)) {
@@ -70,9 +71,9 @@ public class WebSocketService extends Thread {
               ws.onMessage(
                   (session, jsonMessage) -> {
                     Gson gson = new Gson();
-                    System.out.println(jsonMessage);
                     WebSocketMessage webSocketMessage =
                         gson.fromJson(jsonMessage, WebSocketMessage.class);
+                    System.out.println(jsonMessage);
                     InboundHandler.handleMessageTypes(
                         handler, session, jsonMessage, webSocketMessage);
                   });
@@ -82,6 +83,7 @@ public class WebSocketService extends Thread {
 
   private void getOpenBrowserMessage(String frontendUrl) {
     System.out.println(
-        " --- Please connect manually to the frontend via : " + frontendUrl + " ---");
+        String.format(" --- Please connect manually to the frontend via : %s ---", frontendUrl)
+    );
   }
 }

@@ -10,7 +10,8 @@ export default {
         ...message,
         messageId: shajs('sha256')
           .update(chatId + message.sender + message.date + message.message)
-          .digest('hex')
+          .digest('hex'),
+        signedBy: []
       }
     };
   },
@@ -20,6 +21,14 @@ export default {
       type: types.ADD_MESSAGES,
       messages: messageObject.messages,
       chatId: messageObject.chatId
+    };
+  },
+  confirmMessage({chatId, messageId, username}) {
+    return {
+      type: types.CONFIRM_MESSAGE,
+      chatId,
+      messageId,
+      username
     };
   }
 };

@@ -1,5 +1,6 @@
 package ch.anjo.chatter.websocket.handlers.handlerClasses;
 
+import ch.anjo.chatter.websocket.templates.message.MessageInformation;
 import io.javalin.websocket.WsSession;
 import java.util.List;
 
@@ -21,9 +22,19 @@ public class Handler {
     return sessionHandler;
   }
 
-  public void saveMessage(String chatId, String message) {
-    System.out.println("WebSocketMessage saved in :" + chatId + " - " + message);
+  public void saveMessage(String chatId, MessageInformation message) {
+    System.out.println(
+        String.format("WebSocketMessage saved in : %s - %s", chatId ,message.messageId)
+    );
     chatHandler.saveMessage(chatId, message);
+  }
+
+  public void updateMessage(String chatId, String messageId, String signer) {
+    System.out.println(
+        String.format("User %s signed the message: %s...@%s...",
+            signer, messageId.substring(0,9), chatId.substring(0,9))
+    );
+    chatHandler.updateMessage(chatId, messageId, signer);
   }
 
   public List<String> getMessages(String chatid) {

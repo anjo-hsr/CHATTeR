@@ -10,10 +10,10 @@ public class WebSocketMessage {
   public String message;
   public String username;
   public String chatId;
+  public String messageId;
   public PeerInformation[] peers;
   public MessageInformation messageInformation;
   public ChatInformation chatInformation;
-  public boolean confirmed;
 
   @Override
   public boolean equals(Object o) {
@@ -24,8 +24,7 @@ public class WebSocketMessage {
       return false;
     }
     WebSocketMessage that = (WebSocketMessage) o;
-    return confirmed == that.confirmed
-        && Objects.equal(type, that.type)
+    return Objects.equal(type, that.type)
         && Objects.equal(id, that.id)
         && Objects.equal(message, that.message)
         && Objects.equal(username, that.username)
@@ -38,6 +37,6 @@ public class WebSocketMessage {
   @Override
   public int hashCode() {
     return Objects.hashCode(
-        type, id, message, username, chatId, peers, messageInformation, chatInformation, confirmed);
+        type, id, message, username, chatId, peers, messageInformation, chatInformation);
   }
 }

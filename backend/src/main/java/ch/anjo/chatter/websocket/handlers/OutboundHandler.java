@@ -50,7 +50,7 @@ public class OutboundHandler {
 
   public static void sendUsername(Handler handler) {
     WsSession frontendSession = handler.getSessionHandler().getFrontendSession();
-    if (frontendSession == null) {
+    if (frontendSession == null || !frontendSession.isOpen()) {
       return;
     }
 
@@ -74,6 +74,8 @@ public class OutboundHandler {
     if (handler.getSessionHandler().existsSessionSibling()) {
       WsSession sessionSibling = handler.getSessionHandler().getSessionSibling(session);
       sessionSibling.send(messageString);
+    } else{
+      System.err.println("No sibling found! - Please check the WebSocket connections");
     }
   }
 
