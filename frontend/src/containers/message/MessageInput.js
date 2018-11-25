@@ -13,8 +13,11 @@ export const MessageInput = connect(
   reduxStore => {
     return {
       chatId: reduxStore.state.selectedChat,
-      username: reduxStore.state.username || '',
-      chatApproved: reduxStore.chats[reduxStore.state.selectedChat].approved
+      username: reduxStore.state.username,
+      chatApproved: reduxStore.chats[reduxStore.state.selectedChat].approved,
+      chatPeers: reduxStore.chats[reduxStore.state.selectedChat].peers.filter(
+        peer => peer !== reduxStore.state.username
+      )
     };
   },
   mapDispatchToProps

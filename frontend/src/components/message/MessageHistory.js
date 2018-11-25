@@ -30,7 +30,8 @@ export default class MessageHistory extends React.Component {
             {this.isMe(message.author) ? (
               <MessageState
                 readers={message.signedBy}
-                didAllSign={message.signedBy.length >= this.props.chats[this.props.selectedChat].peers.length - 1}
+                possibleReaders={message.possibleReaders}
+                didAllSign={message.signedBy.length === message.possibleReaders.length}
               />
             ) : (
               <Button circular color="grey" icon="pencil alternate" />

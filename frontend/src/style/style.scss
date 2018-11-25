@@ -68,6 +68,10 @@ body {
 
     & .peerCard {
       min-width: 200px !important;
+      & .icon {
+        position: absolute !important;
+        right: 0 !important;
+      }
     }
   }
 }

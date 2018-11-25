@@ -45,6 +45,9 @@ body {
     padding: 0 !important; }
     .popup.transition.visible .peerInformation .peerCard {
       min-width: 200px !important; }
+      .popup.transition.visible .peerInformation .peerCard .icon {
+        position: absolute !important;
+        right: 0 !important; }
 
 .ui.two.button .ui.inverted.button {
   text-align: center !important; }

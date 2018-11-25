@@ -24,7 +24,8 @@ export default class MessageInput extends React.Component {
           this.props.addMessage(this.props.chatId, {
             date: new Date(),
             author: this.props.username,
-            message: this.state.message
+            message: this.state.message,
+            possibleReaders: this.props.chatPeers
           });
           this.setState({message: ''});
         }}
@@ -57,5 +58,6 @@ export default class MessageInput extends React.Component {
 MessageInput.propTypes = {
   approved: PropTypes.bool,
   chatId: PropTypes.string.isRequired,
-  addMessage: PropTypes.func.isRequired
+  addMessage: PropTypes.func.isRequired,
+  chatPeers: PropTypes.arrayOf(PropTypes.string).isRequired
 };
