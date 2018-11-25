@@ -29,7 +29,6 @@ public class InboundHandler {
         break;
       }
       case MessageTypes.CONFIRM_MESSAGE:{
-        System.out.println("--------------------------------");
         updateMessage(handler, webSocketMessage.chatId, webSocketMessage.messageId, webSocketMessage.username);
         OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
         break;
