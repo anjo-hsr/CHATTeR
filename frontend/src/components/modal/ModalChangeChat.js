@@ -34,7 +34,7 @@ export default class ModalChangeChat extends React.Component {
   close = event => {
     event.preventDefault();
     this.setState({
-      name: '',
+      name: this.props.name,
       selectedPeers: this.props.selectedPeers,
       open: false
     });
