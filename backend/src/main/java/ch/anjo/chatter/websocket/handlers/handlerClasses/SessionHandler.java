@@ -60,7 +60,7 @@ public class SessionHandler {
   }
 
   public String getSessionType(WsSession session) {
-    String sessionType = "undefined";
+    String sessionType = String.format("undefined %s...", session.getId().substring(0,9));
     if(session == getFrontendSession()){
       sessionType = "Frontend";
     }
