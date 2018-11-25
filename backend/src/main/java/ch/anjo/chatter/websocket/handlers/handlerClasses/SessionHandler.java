@@ -58,4 +58,15 @@ public class SessionHandler {
         String.format("%s %s at -> %s", DateGenerator.getDate(), this.username, this.sessions.toString())
     );
   }
+
+  public String getSessionType(WsSession session) {
+    String sessionType = "undefined";
+    if(session == getFrontendSession()){
+      sessionType = "Frontend";
+    }
+    if(session == getBackendSession()){
+      sessionType = "Backend";
+    }
+    return sessionType;
+  }
 }

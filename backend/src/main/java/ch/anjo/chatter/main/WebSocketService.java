@@ -73,12 +73,17 @@ public class WebSocketService extends Thread {
                     Gson gson = new Gson();
                     WebSocketMessage webSocketMessage =
                         gson.fromJson(jsonMessage, WebSocketMessage.class);
-                    System.out.println(jsonMessage);
+                    printMessageInformation(handler, session, jsonMessage);
                     InboundHandler.handleMessageTypes(
                         handler, session, jsonMessage, webSocketMessage);
                   });
             })
         .start(webSocketPort);
+  }
+
+  private void printMessageInformation(Handler handler, WsSession session, String jsonMessage) {
+    final String sessionType = handler.getSessionHandler().getSessionType(session);
+    System.out.println(String.format("%s send: %s", sessionType, jsonMessage));
   }
 
   private void getOpenBrowserMessage(String frontendUrl) {
