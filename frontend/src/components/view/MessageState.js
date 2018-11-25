@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Card, Icon, Popup} from 'semantic-ui-react';
+import {Button, Card, Popup} from 'semantic-ui-react';
 
 import PeerCard from './PeerCard';
 
