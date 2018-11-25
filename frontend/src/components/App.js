@@ -18,7 +18,9 @@ export default class App extends React.Component {
       newSocketNeeded: true,
       socket: null,
       isSmallWindow: false,
-      refreshIntervalId: null
+      titleRefreshIntervalId: null,
+      dotInterval: 0,
+      webSocketRefreshIntervalId: null
     };
     this.getHeader = viewHelper.getHeader.bind(this);
     this.getSideBar = viewHelper.getSideBar.bind(this);
@@ -29,11 +31,15 @@ export default class App extends React.Component {
 
   componentDidMount() {
     this.setSocket();
-    let refreshIntervalId = setInterval(() => {
+    let titleRefreshIntervalId = setInterval(() => {
+      window.document.title = 'CHATTeR - Connecting' + '.'.repeat(this.state.dotInterval);
+      this.setState({dotInterval: (this.state.dotInterval + 1) % 4});
+    }, 250);
+    let webSocketRefreshIntervalId = setInterval(() => {
       console.log('Retry connection to webSocket');
       this.setSocket();
     }, numbers.reloadTimer);
-    this.setState({refreshIntervalId, isSmallWindow: window.innerWidth < 900});
+    this.setState({titleRefreshIntervalId, webSocketRefreshIntervalId, isSmallWindow: window.innerWidth < 900});
   }
 
   setSocket = () => {
@@ -52,7 +58,8 @@ export default class App extends React.Component {
       <div>
         {Boolean(this.props.username) ? (
           <Grid className="siteGrid" padded>
-            {clearInterval(this.state.refreshIntervalId)}
+            {clearInterval(this.state.webSocketRefreshIntervalId)}
+            {clearInterval(this.state.titleRefreshIntervalId)}
             {this.getHeader(this.props.username)}
             {isMobile || this.state.isSmallWindow ? (
               <Grid.Row className="siteContent" columns="equal">
