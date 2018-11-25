@@ -11,19 +11,23 @@ public class MessageInformation {
   public String author;
   public String message;
   public ArrayList<String> signedBy;
+  public ArrayList<String> possibleReaders;
 
 
   @Override
   public String toString() {
     JsonObject stringResponse = new JsonObject();
     JsonArray signers = new JsonArray();
+    JsonArray possibleReaders = new JsonArray();
 
     stringResponse.addProperty("messageId", messageId);
     stringResponse.addProperty("date", date);
     stringResponse.addProperty("author", author);
     stringResponse.addProperty("message", message);
-    signedBy.forEach(signers::add);
+    this.signedBy.forEach(signers::add);
     stringResponse.add("signedBy", signers);
+    this.possibleReaders.forEach(possibleReaders::add);
+    stringResponse.add("possibleReaders", possibleReaders);
 
     return stringResponse.toString();
   }
@@ -40,11 +44,12 @@ public class MessageInformation {
     return Objects.equal(messageId, that.messageId)
         && Objects.equal(date, that.date)
         && Objects.equal(author, that.author)
-        && Objects.equal(message, that.message);
+        && Objects.equal(message, that.message)
+        && Objects.equal(possibleReaders, that.possibleReaders);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(messageId, date, author, message);
+    return Objects.hashCode(messageId, date, author, message, possibleReaders);
   }
 }
