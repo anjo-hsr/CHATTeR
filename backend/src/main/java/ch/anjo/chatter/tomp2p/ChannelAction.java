@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -166,24 +167,27 @@ public class ChannelAction {
     JsonArray peers = new JsonArray();
     Set<String> friends = chatterPeer.getChatterUser().getFriends();
 
-    Set<JsonObject> peerSet =
-        friends
-            .stream()
-            .map(
-                friend ->
-                    chatterPeer
-                        .getDht()
-                        .get(ChatterUser.getHash(friend))
-                        .start()
-                        .awaitUninterruptibly()
-                        .data())
-            .filter(Objects::nonNull)
-            .map(ChatterPeer::readUser)
-            .filter(Objects::nonNull)
-            .map(ChatterUser::getInformation)
-            .collect(Collectors.toSet());
+    Set<JsonObject> peerSet = new HashSet<>();
+    friends
+        .forEach(
+            friend ->
+                chatterPeer
+                    .getDht()
+                    .get(ChatterUser.getHash(friend))
+                    .start()
+                    .addListener(new BaseFutureAdapter<FutureGet>() {
+                      @Override
+                      public void operationComplete(FutureGet future) {
+                        Data data = future.data();
+                        if (!data.isEmpty()) {
+                          ChatterUser friend = ChatterPeer.readUser(data);
+                          if (Objects.nonNull(friend)) {
+                            peerSet.add(friend.getInformation());
+                          }
+                        }
+                      }
+                    }));
 
-    peerSet.forEach(peers::add);
     responseJson.add("peers", peers);
 
     return responseJson.toString();
