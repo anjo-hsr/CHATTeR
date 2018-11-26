@@ -48,7 +48,6 @@ public class ChatterWebSocketClient extends WebSocketClient {
   @Override
   public void onOpen(ServerHandshake handshake) {
     System.out.println(DateGenerator.getDate() + "Connected with WebSocket.");
-    this.reconnect();
   }
 
   @Override
@@ -60,7 +59,6 @@ public class ChatterWebSocketClient extends WebSocketClient {
   public void onClose(int code, String reason, boolean remote) {
     System.out.println(DateGenerator.getDate() + "Closed connection:\n" + reason);
     ChatterWebSocketClient.generateChatterWebSocketClient(this.webSocketPort, this.username, this.myself);
-    this.reconnect();
   }
 
   @Override
