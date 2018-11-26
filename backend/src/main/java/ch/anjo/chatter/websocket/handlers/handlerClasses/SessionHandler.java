@@ -44,7 +44,9 @@ public class SessionHandler {
 
   public boolean existsSessionSibling() {
     return sessions.getBackendSession() != null
-        && sessions.getFrontendSession() != null;
+        && sessions.getBackendSession().isOpen()
+        && sessions.getFrontendSession() != null
+        && sessions.getFrontendSession().isOpen();
   }
 
   public WsSession getSessionSibling(WsSession session) {
