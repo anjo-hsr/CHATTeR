@@ -16,7 +16,7 @@
     mvn exec:java -Dexec.args="______"
     
     [mode] [username] [etherAddress]                              [optional: bPort]
-    master root       0xc0a71f7eb1a04a867a65022021f962b3a65a40a5  5000
+    master ernest       0xf1c6c939a7e06996154685cfb4c7474321c9356d  5000
     ```
 3. Start each other _Person of Interest_. The default local Port for TomP2P is :5000. If multiple instances
 per client would be needed use the optional local Port syntax's to start on different ports. Use therefore these parameters:   
@@ -24,9 +24,11 @@ per client would be needed use the optional local Port syntax's to start on diff
     mvn exec:java -Dexec.args="______"
     
     [mode] [username] [etherAddress]                              [optional: bPort] [user@rHost:rPort]    [optional: fPort]   
-    client harold     0x2329edfb5a326f1f6daf6cec37e50e7cc9f9b151  5001              root@127.0.0.1:5000   
-    client john       0x3079c583432ff5eb6a6a338d94f868c81db53f7c  5002              root@127.0.0.1:5000   
-    client lionel     0x72143bae18065e62eec38c6e9051e3357c48cd6d  5003              root@127.0.0.1:5000   
+    client root       0xc0a71f7eb1a04a867a65022021f962b3a65a40a5  5001              ernest@127.0.0.1:5000   
+    client harold     0x2329edfb5a326f1f6daf6cec37e50e7cc9f9b151  5002              ernest@127.0.0.1:5000   
+    client john       0x3079c583432ff5eb6a6a338d94f868c81db53f7c  5003              ernest@127.0.0.1:5000   
+    client lionel     0x72143bae18065e62eec38c6e9051e3357c48cd6d  5004              ernest@127.0.0.1:5000
+    client sameen     0x57f651c31e7fbe3827d7d898f405900463d63af5  5005              ernest@127.0.0.1:5000
     ```
 4. Access the frontend by default via [http://localhost:8000](http://localhost:8000/) on the specific host. If no 
   specific port for the frontend was defined it will be always +3000 Port to the backend listening port.
