@@ -17,14 +17,16 @@ public class SessionHandler {
 
   public void replaceSession(WsSession session, String type) {
     switch (type) {
-      case "frontend": {
-        this.sessions.setFrontendSession(session);
-        break;
-      }
-      case "backend": {
-        this.sessions.setBackendSession(session);
-        break;
-      }
+      case "frontend":
+        {
+          this.sessions.setFrontendSession(session);
+          break;
+        }
+      case "backend":
+        {
+          this.sessions.setBackendSession(session);
+          break;
+        }
     }
   }
 
@@ -41,8 +43,8 @@ public class SessionHandler {
   }
 
   public boolean existsSessionSibling() {
-    return sessions.getBackendSession() != null && sessions.getFrontendSession() != null
-        && sessions.getBackendSession().isOpen() && sessions.getFrontendSession().isOpen();
+    return sessions.getBackendSession() != null
+        && sessions.getFrontendSession() != null;
   }
 
   public WsSession getSessionSibling(WsSession session) {
@@ -55,16 +57,16 @@ public class SessionHandler {
 
   public void printSession() {
     System.out.println(
-        String.format("%s %s at -> %s", DateGenerator.getDate(), this.username, this.sessions.toString())
-    );
+        String.format(
+            "%s %s at -> %s", DateGenerator.getDate(), this.username, this.sessions.toString()));
   }
 
   public String getSessionType(WsSession session) {
-    String sessionType = String.format("undefined %s...", session.getId().substring(0,9));
-    if(session == getFrontendSession()){
+    String sessionType = String.format("undefined %s...", session.getId().substring(0, 9));
+    if (session == getFrontendSession()) {
       sessionType = "Frontend";
     }
-    if(session == getBackendSession()){
+    if (session == getBackendSession()) {
       sessionType = "Backend";
     }
     return sessionType;

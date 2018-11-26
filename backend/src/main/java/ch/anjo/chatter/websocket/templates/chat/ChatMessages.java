@@ -20,8 +20,9 @@ public class ChatMessages {
     messages.add(message);
   }
 
-  public void updateMessage(String messageId, String signer){
-    messages.stream()
+  public void updateMessage(String messageId, String signer) {
+    messages
+        .stream()
         .filter(message -> message.messageId.equals(messageId))
         .forEach(message -> message.signedBy.add(signer));
   }

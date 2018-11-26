@@ -13,7 +13,6 @@ public class MessageInformation {
   public ArrayList<String> signedBy;
   public ArrayList<String> possibleReaders;
 
-
   @Override
   public String toString() {
     JsonObject stringResponse = new JsonObject();

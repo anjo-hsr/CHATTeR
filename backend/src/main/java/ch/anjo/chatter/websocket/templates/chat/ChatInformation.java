@@ -25,8 +25,7 @@ public class ChatInformation {
       return false;
     }
     ChatInformation that = (ChatInformation) o;
-    return Objects.equal(name, that.name)
-        && Objects.equal(peers, that.peers);
+    return Objects.equal(name, that.name) && Objects.equal(peers, that.peers);
   }
 
   @Override

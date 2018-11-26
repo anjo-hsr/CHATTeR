@@ -28,22 +28,25 @@ public class ChatterServer {
 
     ChatterPeer chatterPeer = null;
     switch (parameters.getMode()) {
-      case "master": {
-        chatterPeer = new ChatterPeer(parameters);
-        break;
-      }
-      case "client": {
-        validator.setParameters(new ClientParameters(args));
-        if (validator.areClientParametersCorrect()) {
-          chatterPeer = new ChatterPeer((ClientParameters) validator.getParameters());
-        } else {
+      case "master":
+        {
+          chatterPeer = new ChatterPeer(parameters);
+          break;
+        }
+      case "client":
+        {
+          validator.setParameters(new ClientParameters(args));
+          if (validator.areClientParametersCorrect()) {
+            chatterPeer = new ChatterPeer((ClientParameters) validator.getParameters());
+          } else {
+            terminate();
+          }
+          break;
+        }
+      default:
+        {
           terminate();
         }
-        break;
-      }
-      default: {
-        terminate();
-      }
     }
 
     startServices(parameters, chatterPeer);
@@ -51,7 +54,8 @@ public class ChatterServer {
 
   private static void startServices(Parameters parameters, ChatterPeer myself) {
     Thread webSocketServer =
-        new WebSocketService(parameters.getWebSocketPort(), parameters.getFrontendPort(), parameters.getUsername());
+        new WebSocketService(
+            parameters.getWebSocketPort(), parameters.getFrontendPort(), parameters.getUsername());
     webSocketServer.start();
 
     TomP2pServer tomP2pServer =

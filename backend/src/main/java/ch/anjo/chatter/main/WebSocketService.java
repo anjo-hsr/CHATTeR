@@ -88,7 +88,6 @@ public class WebSocketService extends Thread {
 
   private void getOpenBrowserMessage(String frontendUrl) {
     System.out.println(
-        String.format(" --- Please connect manually to the frontend via : %s ---", frontendUrl)
-    );
+        String.format(" --- Please connect manually to the frontend via : %s ---", frontendUrl));
   }
 }

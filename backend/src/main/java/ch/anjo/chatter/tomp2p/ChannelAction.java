@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import net.tomp2p.dht.FutureGet;
 import net.tomp2p.dht.PeerDHT;
@@ -34,8 +33,7 @@ public class ChannelAction {
 
     System.out.println("Start peering with master:");
     System.out.println(
-        String.format("Master with peerID - %s - at: %s", master.peerID(), master.peerAddress())
-    );
+        String.format("Master with peerID - %s - at: %s", master.peerID(), master.peerAddress()));
 
     bootstrapBuilder
         .bootstrapTo(Collections.singletonList(chatterPeer.getMasterAddress()))
@@ -53,8 +51,9 @@ public class ChannelAction {
                             Data data = future.data();
                             if (data != null) {
                               System.out.println(
-                                  String.format("Friends received %s", ((ChatterUser) data.object()).getFriends())
-                              );
+                                  String.format(
+                                      "Friends received %s",
+                                      ((ChatterUser) data.object()).getFriends()));
 
                               ((ChatterUser) data.object())
                                   .getFriends()
@@ -68,8 +67,7 @@ public class ChannelAction {
                             chatterUser.setOnlineState(true);
                             dht.put(chatterUser.getHash()).data(new Data(chatterUser)).start();
                             System.out.println(
-                                String.format("Connected to %s", chatterPeer.getMasterName())
-                            );
+                                String.format("Connected to %s", chatterPeer.getMasterName()));
                             DataSender.sendToAllWithoutConfirmation(
                                 chatterPeer, generateGetPeerMessage());
                           }
@@ -96,33 +94,38 @@ public class ChannelAction {
               gson.fromJson(tomP2pMessage.getJsonMessage(), WebSocketMessage.class);
 
           switch (webSocketMessage.type) {
-            case MessageTypes.GET_PEERS: {
-              if (!tomP2pMessage.getSender().equals(chatterPeer.getChatterUser().getUsername())) {
-                String responseJson = ChannelAction.getFriends(chatterPeer);
-                chatterPeer.addFriend(tomP2pMessage.getSender());
+            case MessageTypes.GET_PEERS:
+              {
+                if (!tomP2pMessage.getSender().equals(chatterPeer.getChatterUser().getUsername())) {
+                  String responseJson = ChannelAction.getFriends(chatterPeer);
+                  chatterPeer.addFriend(tomP2pMessage.getSender());
 
-                return responseJson;
+                  return responseJson;
+                }
+                break;
               }
-              break;
-            }
             case MessageTypes.ADD_CHAT:
-            case MessageTypes.CHANGE_CHAT: {
-              webSocketClient.send(tomP2pMessage.getJsonMessage());
-              return null;
-            }
-            case MessageTypes.CONFIRM_MESSAGE: {
-              webSocketClient.send(tomP2pMessage.getJsonMessage());
-              return null;
-            }
-            case MessageTypes.ADD_MESSAGE: {
-              messageHistory.add(tomP2pMessage);
-              webSocketClient.send(tomP2pMessage.getJsonMessage());
-              confirmMessage(chatterPeer, webSocketMessage, tomP2pMessage);
-            }
-            default: {
-              webSocketClient.send(tomP2pMessage.getJsonMessage());
-              return null;
-            }
+            case MessageTypes.CHANGE_CHAT:
+              {
+                webSocketClient.send(tomP2pMessage.getJsonMessage());
+                return null;
+              }
+            case MessageTypes.CONFIRM_MESSAGE:
+              {
+                webSocketClient.send(tomP2pMessage.getJsonMessage());
+                return null;
+              }
+            case MessageTypes.ADD_MESSAGE:
+              {
+                messageHistory.add(tomP2pMessage);
+                webSocketClient.send(tomP2pMessage.getJsonMessage());
+                confirmMessage(chatterPeer, webSocketMessage, tomP2pMessage);
+              }
+            default:
+              {
+                webSocketClient.send(tomP2pMessage.getJsonMessage());
+                return null;
+              }
           }
 
           if (messageHistory
@@ -130,7 +133,7 @@ public class ChannelAction {
               .anyMatch(
                   message ->
                       webSocketMessage.messageInformation.author.equals(
-                          chatterPeer.getChatterUser().getUsername())
+                              chatterPeer.getChatterUser().getUsername())
                           || message.getJsonMessage().equals(tomP2pMessage.getJsonMessage()))) {
             return null;
           }
@@ -149,8 +152,8 @@ public class ChannelAction {
         });
   }
 
-  private static void confirmMessage(ChatterPeer chatterPeer, WebSocketMessage webSocketMessage,
-      TomP2pMessage tomP2pMessage) {
+  private static void confirmMessage(
+      ChatterPeer chatterPeer, WebSocketMessage webSocketMessage, TomP2pMessage tomP2pMessage) {
     JsonObject response = new JsonObject();
     response.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.CONFIRM_MESSAGE);
     response.addProperty("username", chatterPeer.getChatterUser().getUsername());
@@ -168,14 +171,14 @@ public class ChannelAction {
     Set<String> friends = chatterPeer.getChatterUser().getFriends();
 
     Set<JsonObject> peerSet = new HashSet<>();
-    friends
-        .forEach(
-            friend ->
-                chatterPeer
-                    .getDht()
-                    .get(ChatterUser.getHash(friend))
-                    .start()
-                    .addListener(new BaseFutureAdapter<FutureGet>() {
+    friends.forEach(
+        friend ->
+            chatterPeer
+                .getDht()
+                .get(ChatterUser.getHash(friend))
+                .start()
+                .addListener(
+                    new BaseFutureAdapter<FutureGet>() {
                       @Override
                       public void operationComplete(FutureGet future) {
                         Data data = future.data();

@@ -66,7 +66,7 @@ public class OutboundHandler {
   }
 
   private static void sendMessage(WsSession session, String messageString) {
-    if(!(session == null || session.isOpen())) {
+    if (!(session == null || session.isOpen())) {
       session.send(messageString);
     }
   }
@@ -76,7 +76,7 @@ public class OutboundHandler {
     if (handler.getSessionHandler().existsSessionSibling()) {
       WsSession sessionSibling = handler.getSessionHandler().getSessionSibling(session);
       sessionSibling.send(messageString);
-    } else{
+    } else {
       System.err.println("No sibling found! - Please check the WebSocket connections");
     }
   }

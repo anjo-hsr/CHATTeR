@@ -53,7 +53,7 @@ public class ChatHandler {
     chatMessages.put(chatId, messages);
   }
 
-  public void updateMessage(String chatId, String messageId, String signer){
+  public void updateMessage(String chatId, String messageId, String signer) {
     if (chatMessages.containsKey(chatId)) {
       chatMessages.get(chatId).updateMessage(messageId, signer);
     }

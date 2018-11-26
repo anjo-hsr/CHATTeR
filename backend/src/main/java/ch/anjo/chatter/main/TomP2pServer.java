@@ -24,15 +24,8 @@ public class TomP2pServer {
       // Wait till WebSocketServer in other thread was started.
       TimeUnit.SECONDS.sleep(10);
 
-      ChatterWebSocketClient webSocketClient =
-          new ChatterWebSocketClient(webSocketPort, username, myself);
-      webSocketClient.setConnectionLostTimeout(60);
-      ChannelAction.replyToTomP2PData(myself, webSocketClient);
-      if(!myself.getMasterName().equals(myself.getChatterUser().getUsername())) {
-        myself.addFriend(myself.getMasterName());
-      }
-      webSocketClient.run();
-    } catch (WebsocketNotConnectedException | InterruptedException | URISyntaxException e) {
+      ChatterWebSocketClient.generateChatterWebSocketClient(webSocketPort, username, myself);
+    } catch (WebsocketNotConnectedException | InterruptedException e) {
       e.printStackTrace();
       System.exit(1);
     }

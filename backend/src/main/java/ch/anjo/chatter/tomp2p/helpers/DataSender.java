@@ -78,30 +78,33 @@ public class DataSender {
   private static void sendWithoutListener(ChatterPeer myself, String receiver, String jsonMessage) {
     ChatterUser chatterUser = myself.getChatterUser();
 
-    myself.getDht()
+    myself
+        .getDht()
         .get(ChatterUser.getHash(receiver))
-        .start().addListener(
-        new BaseFutureAdapter<FutureGet>() {
-          @Override
-          public void operationComplete(FutureGet future) {
-            Data data = future.data();
-            if (!data.isEmpty()) {
-              ChatterUser friend = readUser(data);
-              TomP2pMessage tomP2pMessage =
-                  null;
-              if (friend != null) {
-                tomP2pMessage = new TomP2pMessage(chatterUser.getUsername(), friend.getUsername(), jsonMessage);
+        .start()
+        .addListener(
+            new BaseFutureAdapter<FutureGet>() {
+              @Override
+              public void operationComplete(FutureGet future) {
+                Data data = future.data();
+                if (!data.isEmpty()) {
+                  ChatterUser friend = readUser(data);
+                  TomP2pMessage tomP2pMessage = null;
+                  if (friend != null) {
+                    tomP2pMessage =
+                        new TomP2pMessage(
+                            chatterUser.getUsername(), friend.getUsername(), jsonMessage);
 
-                myself
-                    .getDht()
-                    .send(friend.getHash())
-                    .object(tomP2pMessage)
-                    .requestP2PConfiguration(new RequestP2PConfiguration(1, 5, 0))
-                    .start();
+                    myself
+                        .getDht()
+                        .send(friend.getHash())
+                        .object(tomP2pMessage)
+                        .requestP2PConfiguration(new RequestP2PConfiguration(1, 5, 0))
+                        .start();
+                  }
+                }
               }
-            }
-          }
-        });
+            });
   }
 
   private static ChatterUser readUser(Data data) {
