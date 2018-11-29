@@ -12,14 +12,16 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class OutboundHandler {
 
-  OutboundHandler() {}
+  OutboundHandler() {
+  }
 
   public static void sendChats(Handler handler) {
     WsSession frontendSession = handler.getSessionHandler().getFrontendSession();
-    if (frontendSession == null) {
+    if (Objects.isNull(frontendSession)) {
       return;
     }
 
@@ -50,7 +52,7 @@ public class OutboundHandler {
 
   public static void sendUsername(Handler handler) {
     WsSession frontendSession = handler.getSessionHandler().getFrontendSession();
-    if (frontendSession == null || !frontendSession.isOpen()) {
+    if (Objects.isNull(frontendSession) || !frontendSession.isOpen()) {
       return;
     }
 

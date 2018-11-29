@@ -3,6 +3,7 @@ package ch.anjo.chatter.tomp2p;
 import ch.anjo.chatchain.Constants;
 import ch.anjo.chatchain.infura.InfuraSettings;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import org.web3j.crypto.CipherException;
@@ -52,7 +53,7 @@ public class NotaryService {
   }
 
   private CompletableFuture<Boolean> isAValidWeb3Client(Web3j web3) {
-    if (web3 == null) {
+    if (Objects.isNull(web3)) {
       return CompletableFuture.supplyAsync(() -> false);
     }
 

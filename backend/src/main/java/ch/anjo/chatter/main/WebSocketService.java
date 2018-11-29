@@ -11,6 +11,7 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Objects;
 
 public class WebSocketService extends Thread {
 
@@ -46,7 +47,7 @@ public class WebSocketService extends Thread {
                         e.printStackTrace();
                         getOpenBrowserMessage(frontendUrl);
                       }
-                    } else if (handler.getSessionHandler().getBackendSession() == null) {
+                    } else if (Objects.isNull(handler.getSessionHandler().getBackendSession())) {
                       getOpenBrowserMessage(frontendUrl);
                     }
 
