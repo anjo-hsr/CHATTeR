@@ -62,9 +62,10 @@ public class ChatHandler {
     chatMessages.put(chatId, messages);
   }
 
-  void updateMessage(String chatId, String messageId, String signer) {
+  boolean updateMessage(String chatId, String messageId, String signer) {
     if (chatMessages.containsKey(chatId)) {
-      chatMessages.get(chatId).updateMessage(messageId, signer);
+      return chatMessages.get(chatId).updateMessage(messageId, signer);
     }
+    return false;
   }
 }

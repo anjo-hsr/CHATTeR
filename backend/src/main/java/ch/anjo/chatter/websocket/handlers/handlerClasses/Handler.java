@@ -28,12 +28,12 @@ public class Handler {
     chatHandler.saveMessage(chatId, message);
   }
 
-  public void updateMessage(String chatId, String messageId, String signer) {
+  public boolean updateMessage(String chatId, String messageId, String signer) {
     System.out.println(
         String.format(
             "User %s signed the message: %s...@%s...",
             signer, messageId.substring(0, 9), chatId.substring(0, 9)));
-    chatHandler.updateMessage(chatId, messageId, signer);
+    return chatHandler.updateMessage(chatId, messageId, signer);
   }
 
   public List<String> getMessages(String chatid) {
