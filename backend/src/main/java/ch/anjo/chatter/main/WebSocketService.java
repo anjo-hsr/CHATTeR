@@ -83,7 +83,7 @@ public class WebSocketService extends Thread {
 
   private void printMessageInformation(Handler handler, WsSession session, String jsonMessage) {
     final String sessionType = handler.getSessionHandler().getSessionType(session);
-    System.out.println(String.format("%s send: %s", sessionType, jsonMessage));
+    System.out.println(String.format("%s sent: %s", sessionType, jsonMessage));
   }
 
   private void getOpenBrowserMessage(String frontendUrl) {

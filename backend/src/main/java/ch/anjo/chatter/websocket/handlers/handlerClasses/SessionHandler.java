@@ -4,6 +4,7 @@ import ch.anjo.chatter.helpers.DateGenerator;
 import ch.anjo.chatter.websocket.templates.WebSocketPair;
 import io.javalin.websocket.WsSession;
 import java.util.List;
+import java.util.Objects;
 
 public class SessionHandler {
 
@@ -65,10 +66,10 @@ public class SessionHandler {
 
   public String getSessionType(WsSession session) {
     String sessionType = String.format("undefined %s...", session.getId().substring(0, 9));
-    if (session == getFrontendSession()) {
+    if (Objects.nonNull(getFrontendSession()) && session.getId().equals(getFrontendSession().getId())) {
       sessionType = "Frontend";
     }
-    if (session == getBackendSession()) {
+    if (Objects.nonNull(getBackendSession()) && session.getId().equals(getBackendSession().getId())) {
       sessionType = "Backend";
     }
     return sessionType;

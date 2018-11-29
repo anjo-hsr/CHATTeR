@@ -2,6 +2,7 @@ package ch.anjo.chatter.websocket.templates;
 
 import io.javalin.websocket.WsSession;
 import java.util.List;
+import java.util.Objects;
 
 public class WebSocketPair {
 
@@ -46,8 +47,24 @@ public class WebSocketPair {
     this.backendSession = backendSession;
   }
 
+  private String getFrontendSessionId(){
+    String id = "undefined";
+    if(Objects.nonNull(frontendSession)) {
+      id = frontendSession.getId().substring(0, 9);
+    }
+    return id;
+  }
+
+  private String getBackendSessionId(){
+    String id = "undefined";
+    if(Objects.nonNull(backendSession)) {
+      id = backendSession.getId().substring(0,9);
+    }
+    return id;
+  }
+
   @Override
   public String toString() {
-    return String.format("frontend: %s\tbackend: %s", frontendSession, backendSession);
+    return String.format("frontend: %s\tbackend: %s", getFrontendSessionId() , getBackendSessionId() );
   }
 }
