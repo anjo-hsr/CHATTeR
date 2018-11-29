@@ -7,13 +7,14 @@ import ch.anjo.chatter.websocket.templates.message.MessageInformation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class ChatHandler {
 
   private HashMap<String, ChatInformation> chatStore;
   private HashMap<String, ChatMessages> chatMessages;
 
-  public ChatHandler() {
+  ChatHandler() {
     this.chatStore = new HashMap<>();
     this.chatMessages = new HashMap<>();
   }
@@ -42,7 +43,15 @@ public class ChatHandler {
     chatStore.remove(chatId);
   }
 
-  public void saveMessage(String chatId, MessageInformation message) {
+  public boolean isMessageInHistory(WebSocketMessage webSocketMessage) {
+    if (Objects.nonNull(webSocketMessage)) {
+      ChatMessages possibleMessages = chatMessages.get(webSocketMessage.chatId);
+      return possibleMessages.contains(webSocketMessage.messageId);
+    }
+    return false;
+  }
+
+  void saveMessage(String chatId, MessageInformation message) {
     ChatMessages messages;
     if (!chatMessages.containsKey(chatId)) {
       messages = new ChatMessages();
@@ -53,7 +62,7 @@ public class ChatHandler {
     chatMessages.put(chatId, messages);
   }
 
-  public void updateMessage(String chatId, String messageId, String signer) {
+  void updateMessage(String chatId, String messageId, String signer) {
     if (chatMessages.containsKey(chatId)) {
       chatMessages.get(chatId).updateMessage(messageId, signer);
     }

@@ -26,4 +26,8 @@ public class ChatMessages {
         .filter(message -> message.messageId.equals(messageId))
         .forEach(message -> message.signedBy.add(signer));
   }
+
+  public boolean contains(String messageId) {
+    return messages.stream().anyMatch(message -> message.messageId.equals(messageId));
+  }
 }
