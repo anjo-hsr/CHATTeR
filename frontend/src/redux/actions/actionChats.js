@@ -32,19 +32,14 @@ export default {
     };
   },
 
-  preDeleteChat({chatId, chat, username}) {
-    let name = chat.name;
-    let peers = chat.peers.filter(peer => peer.name !== username);
-    if (peers.length <= 1) {
-      return {
-        type: types.DELETE_CHAT,
-        chatId
-      };
-    }
+  leaveChat({chatId, chatObject, username}) {
     return {
-      type: types.CHANGE_CHAT,
+      type: types.LEAVE_CHAT,
       chatId,
-      chatInformation: {name, peers}
+      chatInformation: {
+        name: chatObject.name || chatObject.peers.map(peer => peer.name).toString(),
+        peers: chatObject.peers.filter(peer => peer !== username)
+      }
     };
   },
 

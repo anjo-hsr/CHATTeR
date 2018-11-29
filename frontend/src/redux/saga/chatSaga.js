@@ -14,3 +14,7 @@ export function* changeChat(socket) {
 export function* approveChat(socket) {
   yield takeEvery(actionTypes.APPROVE_CHAT, action => sender(socket, action));
 }
+
+export function* leaveChat(socket) {
+  yield takeEvery(actionTypes.LEAVE_CHAT, action => sender(socket, action));
+}

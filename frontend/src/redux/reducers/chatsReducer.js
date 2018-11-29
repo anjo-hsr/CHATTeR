@@ -11,7 +11,7 @@ export default function reducer(reduxStore = {}, action) {
       return approveChat(reduxStore, action.chatId);
     }
 
-    case actionTypes.DELETE_CHAT: {
+    case actionTypes.LEAVE_CHAT: {
       return removeChat(reduxStore, action.chatId);
     }
 
@@ -35,8 +35,9 @@ const approveChat = (originalState, id) => {
 
 const removeChat = (originalState, id) => {
   let store = {...originalState};
-
   if (store[id] !== undefined) {
     delete store[id];
   }
+
+  return store;
 };

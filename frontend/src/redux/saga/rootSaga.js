@@ -1,6 +1,6 @@
 import {all, fork} from 'redux-saga/effects';
 
-import {addChat, approveChat, changeChat} from './chatSaga';
+import {addChat, approveChat, changeChat, leaveChat} from './chatSaga';
 import {addMessage, getMessages} from './messageSaga';
 
 export function* rootSaga(socket) {
@@ -8,6 +8,7 @@ export function* rootSaga(socket) {
     fork(addChat, socket),
     fork(approveChat, socket),
     fork(changeChat, socket),
+    fork(leaveChat, socket),
     fork(addMessage, socket),
     fork(getMessages, socket)
   ]);

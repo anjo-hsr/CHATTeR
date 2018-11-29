@@ -16,9 +16,11 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const getSelectObjects = (peers, excludedPeer) => {
-  return peers.filter(peer => peer.name !== excludedPeer).map(peer => {
-    return {...peer, label: peer.name, value: peer.name};
-  });
+  return peers
+    .filter(peer => peer.name !== excludedPeer)
+    .map(peer => {
+      return {...peer, label: peer.name, value: peer.name};
+    });
 };
 
 export const ModalAddChat = connect(

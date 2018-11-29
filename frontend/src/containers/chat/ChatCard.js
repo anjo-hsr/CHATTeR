@@ -8,16 +8,16 @@ const mapStateToProps = dispatch => ({
     dispatch(actionState.hideSidebar());
     dispatch(actionState.selectChat(chatId));
   },
-  deleteChat: (chatId, chat, self) => {
+  leaveChat: (chatId, chatObject, username) => {
     dispatch(actionState.selectChat(null));
-    dispatch(actionChats.preDeleteChat({chatId, chat, username: self}));
+    dispatch(actionChats.leaveChat({chatId, chatObject, username}));
   }
 });
 
 export const ChatCard = connect(
   reduxStore => {
     return {
-      self: reduxStore.state.username
+      username: reduxStore.state.username
     };
   },
   mapStateToProps

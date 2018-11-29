@@ -45,10 +45,12 @@ public class InboundHandler {
           OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
           break;
         }
-      case MessageTypes.DELETE_CHAT:
+      case MessageTypes.LEAVE_CHAT:
         {
           handler.getChatHandler().deleteChat(webSocketMessage.chatId);
-          OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
+          OutboundHandler.sendMessageToSibling(handler, session, jsonMessage.replace(
+              MessageTypes.LEAVE_CHAT, MessageTypes.CHANGE_CHAT
+          ));
           break;
         }
       case MessageTypes.SELECT_CHAT:

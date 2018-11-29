@@ -112,10 +112,6 @@ public class ChatterWebSocketClient extends WebSocketClient {
           sendNewChat(webSocketMessage, jsonMessage);
           break;
         }
-      case MessageTypes.DELETE_CHAT:
-        {
-          break;
-        }
       case MessageTypes.SELECT_CHAT:
         {
           break;

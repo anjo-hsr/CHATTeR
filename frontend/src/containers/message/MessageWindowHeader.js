@@ -4,9 +4,11 @@ import {actionChats} from '../../redux/actions/actions';
 import MessageWindowHeaderComponent from '../../components/message/MessageWindowHeader';
 
 const getChatPeers = (chatPeers, peers, username) => {
-  let mappedPeers = chatPeers.filter(chatPeer => chatPeer !== username).map(chatPeer => {
-    return {name: chatPeer};
-  });
+  let mappedPeers = chatPeers
+    .filter(chatPeer => chatPeer !== username)
+    .map(chatPeer => {
+      return {name: chatPeer};
+    });
   mappedPeers = mappedPeers.map(chatPeer => {
     let matchedPeer = peers.find(peer => peer.name === chatPeer);
     const isOnline = Boolean(matchedPeer) ? matchedPeer.isOnline : false;

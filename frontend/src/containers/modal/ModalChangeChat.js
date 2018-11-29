@@ -10,15 +10,19 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const filterPeers = (peers, excludedPeer) => {
-  return peers.filter(peer => peer.name !== excludedPeer).map(peer => {
-    return {...peer, label: peer.name, value: peer.name};
-  });
+  return peers
+    .filter(peer => peer.name !== excludedPeer)
+    .map(peer => {
+      return {...peer, label: peer.name, value: peer.name};
+    });
 };
 
 const filterSelectedPeers = (peers, excludedPeer) => {
-  return peers.filter(peer => peer !== excludedPeer).map(peer => {
-    return {label: peer, value: peer};
-  });
+  return peers
+    .filter(peer => peer !== excludedPeer)
+    .map(peer => {
+      return {label: peer, value: peer};
+    });
 };
 
 export const ModalChangeChat = connect(

@@ -10,7 +10,7 @@ import AnonymousGroup from '../../media/anonymousGroup.png';
 export default class ChatCard extends React.Component {
   getChatMembers = () => {
     const chatPartners = this.props.chat.peers
-      .filter(peer => peer !== this.props.self)
+      .filter(peer => peer !== this.props.username)
       .sort((peerA, peerB) => peerA - peerB);
     return chatPartners.concat('Me').toString();
   };
@@ -30,8 +30,8 @@ export default class ChatCard extends React.Component {
             <Button
               inverted
               color="red"
-              content="Remove"
-              onClick={() => this.props.deleteChat(this.props.chatId, this.props.chat, this.props.self)}
+              content="Leave"
+              onClick={() => this.props.leaveChat(this.props.chatId, this.props.chat, this.props.username)}
             />
             <Button
               inverted
@@ -51,7 +51,7 @@ export default class ChatCard extends React.Component {
 ChatCard.propTypes = {
   chatId: PropTypes.string.isRequired,
   chat: PropTypes.object.isRequired,
-  deleteChat: PropTypes.func.isRequired,
+  leaveChat: PropTypes.func.isRequired,
   selectChat: PropTypes.func.isRequired,
-  self: PropTypes.string.isRequired
+  username: PropTypes.string.isRequired
 };
