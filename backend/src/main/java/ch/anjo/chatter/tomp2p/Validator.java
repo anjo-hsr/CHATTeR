@@ -1,6 +1,9 @@
 package ch.anjo.chatter.tomp2p;
 
 import ch.anjo.chatter.tomp2p.parameters.Parameters;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Objects;
 import org.apache.commons.validator.routines.InetAddressValidator;
 
 public class Validator {
@@ -44,13 +47,28 @@ public class Validator {
   private boolean isRendezvousPointCorrect() {
     ChatterAddress rendezvousAddress;
     if ((rendezvousAddress = getRendezvousChatterAddress()) != null) {
-      InetAddressValidator ipValidator = new InetAddressValidator();
-      return isUsernameCorrect(rendezvousAddress.getUsername())
-          && ipValidator.isValid(rendezvousAddress.getHost())
-          && isPortValid(rendezvousAddress.getPort());
+      boolean areBasicsCorrect =
+          isUsernameCorrect(rendezvousAddress.getUsername()) && isPortValid(rendezvousAddress.getPort());
+      return areBasicsCorrect && isHostCorrect(rendezvousAddress);
     }
 
     return false;
+  }
+
+  private boolean isHostCorrect(ChatterAddress rendezvousAddress) {
+    InetAddressValidator ipValidator = new InetAddressValidator();
+
+    if (ipValidator.isValid(rendezvousAddress.getHost())) {
+      return true;
+    } else {
+      InetAddress rendezvousHost;
+      try {
+        rendezvousHost = InetAddress.getByName(rendezvousAddress.getHost());
+        return ipValidator.isValid(rendezvousHost.getHostAddress());
+      } catch (UnknownHostException e) {
+        return false;
+      }
+    }
   }
 
   public ChatterAddress getRendezvousChatterAddress() {
