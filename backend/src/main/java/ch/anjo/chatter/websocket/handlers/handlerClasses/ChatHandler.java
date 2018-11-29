@@ -45,8 +45,8 @@ public class ChatHandler {
 
   public boolean isMessageInHistory(WebSocketMessage webSocketMessage) {
     if (Objects.nonNull(webSocketMessage)) {
-      ChatMessages possibleMessages = chatMessages.get(webSocketMessage.chatId);
-      return possibleMessages.contains(webSocketMessage.messageId);
+      ChatMessages possibleMessages = chatMessages.getOrDefault(webSocketMessage.chatId, new ChatMessages());
+      return possibleMessages.contains(webSocketMessage.messageInformation.messageId);
     }
     return false;
   }

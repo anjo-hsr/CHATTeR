@@ -20,9 +20,7 @@ public class InboundHandler {
     switch (webSocketMessage.type) {
       case MessageTypes.ADD_MESSAGE:
         {
-          if (!handler
-              .getMessages(webSocketMessage.chatId)
-              .contains(webSocketMessage.messageInformation)) {
+          if (!handler.getChatHandler().isMessageInHistory(webSocketMessage)) {
             saveMessage(handler, webSocketMessage.chatId, webSocketMessage.messageInformation);
             OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
           }
