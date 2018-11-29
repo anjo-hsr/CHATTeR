@@ -67,8 +67,8 @@ public class InboundHandler {
       case MessageTypes.ADD_PEERS:
       case MessageTypes.UPDATE_CHAT_PEERS:
         {
-          OutboundHandler.sendPeers(
-              handler, jsonMessage.replace(MessageTypes.UPDATE_CHAT_PEERS, MessageTypes.ADD_PEERS));
+          OutboundHandler.sendMessageToSibling(
+              handler, session, jsonMessage.replace(MessageTypes.UPDATE_CHAT_PEERS, MessageTypes.ADD_PEERS));
           break;
         }
       case MessageTypes.GET_PEERS:

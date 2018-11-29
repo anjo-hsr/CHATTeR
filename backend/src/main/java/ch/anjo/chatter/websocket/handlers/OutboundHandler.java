@@ -61,16 +61,6 @@ public class OutboundHandler {
     frontendSession.send(message.toString());
   }
 
-  public static void sendPeers(Handler handler, String jsonMessage) {
-    sendMessage(handler.getSessionHandler().getFrontendSession(), jsonMessage);
-  }
-
-  private static void sendMessage(WsSession session, String messageString) {
-    if (!(session == null || session.isOpen())) {
-      session.send(messageString);
-    }
-  }
-
   public static void sendMessageToSibling(
       Handler handler, WsSession session, String messageString) {
     if (handler.getSessionHandler().existsSessionSibling()) {
