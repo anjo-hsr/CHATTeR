@@ -12,5 +12,5 @@ buildNumber.properties
 !/.mvn/wrapper/maven-wrapper.jar
 .idea
 
-# ignore blockchat.iml
+# ignore chatter.iml
 *.iml
