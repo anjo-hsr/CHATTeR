@@ -87,7 +87,7 @@ public class DataSender {
               @Override
               public void operationComplete(FutureGet future) {
                 Data data = future.data();
-                if (!data.isEmpty()) {
+                if (Objects.nonNull(data) && !data.isEmpty()) {
                   ChatterUser friend = readUser(data);
                   TomP2pMessage tomP2pMessage = null;
                   if (friend != null) {
