@@ -30,7 +30,7 @@ per client would be needed use the optional local Port syntax's to start on diff
     client lionel     0x72143bae18065e62eec38c6e9051e3357c48cd6d  5004              ernest@127.0.0.1:5000
     client sameen     0x57f651c31e7fbe3827d7d898f405900463d63af5  5005              ernest@127.0.0.1:5000
     ```
-4. Access the frontend by default via [http://localhost:8000](http://localhost:8000/) on the specific host. If no 
+4. Access the frontend by default via http://localhost:8000/ on the specific host. If no 
   specific port for the frontend was defined it will be always +3000 Port to the backend listening port.
 
 
@@ -38,4 +38,9 @@ per client would be needed use the optional local Port syntax's to start on diff
 -- paste here some cool gifs --
 
 
-Current bug under Windows: mvn initiated Java Thread cannot be closed without being terminated over task manager.
+## Sources:
+- [Ethereum Blockchain “Hello World” Smart Contract with JAVA](https://medium.com/coinmonks/ethereum-blockchain-hello-world-smart-contract-with-java-9b6ae2961ad1)
+- [Using Infura with web3j](https://docs.web3j.io/infura.html#)
+
+## Bugs:
+- Windows: mvn initiated Java Thread cannot be closed without being terminated over task manager.
