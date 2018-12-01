@@ -7,17 +7,17 @@ public class Constants {
   public static final String WALLET_PATH = "src/main/java/ch/anjo/chatchain/wallets";
   public static final String DEFAULT_PASSWORD = "ch.anjo.CHATTeR";
   public static final String WALLET_ERNEST =
-      "UTC--2018-11-07T21-55-57" + ".279095100Z--f1c6c939a7e06996154685cfb4c7474321c9356d";
-  public static final String WALLET_ROOT =
-      "UTC--2018-11-07T21-55-36" + ".966849900Z--c0a71f7eb1a04a867a65022021f962b3a65a40a5";
+      "UTC--2018-11-07T21-55-57" + ".710879800Z--ffcec74d5d93f714831e73d711daf8c841ccb274";
   public static final String WALLET_HAROLD =
-      "UTC--2018-11-07T21-55-46" + ".409702900Z--2329edfb5a326f1f6daf6cec37e50e7cc9f9b151";
+      "UTC--2018-11-07T21-55-46" + ".252551000Z--84e43852103686202476adbf9f9a3ef072600c26";
   public static final String WALLET_JOHN =
-      "UTC--2018-11-07T21-55-51" + ".688582300Z--3079c583432ff5eb6a6a338d94f868c81db53f7c";
+      "UTC--2018-11-07T21-55-51" + ".086337200Z--0c2a47237ce9a2820ea1f8d9666356c2c43be001";
   public static final String WALLET_LIONEL =
-      "UTC--2018-11-07T21-56-01" + ".481890900Z--72143bae18065e62eec38c6e9051e3357c48cd6d";
+      "UTC--2018-11-07T21-56-01" + ".920737900Z--9cd489a1d50b3069b803e38fdff462a107fc5816";
+  public static final String WALLET_ROOT =
+      "UTC--2018-11-07T21-55-36" + ".402539500Z--b02642ec68a0a3a23a5c74d3aa4ce337aa64dc7e";
   public static final String WALLET_SAMEEN =
-      "UTC--2018-11-07T21-56-10" + ".416792200Z--57f651c31e7fbe3827d7d898f405900463d63af5";
+      "UTC--2018-11-07T21-56-10" + ".279871900Z--eb55003a1b4d75f08731efee466b573ff0283f82";
   public static final String WALLET_CONTRACT =
-      "UTC--2018-11-01T08-22-27.050682695Z--88f5487996ded236e621b38c8ef870678a24b616";
+      "UTC--2018-11-01T08-22-27"  + ".050682695Z--88f5487996ded236e621b38c8ef870678a24b616";
 }
