@@ -22,7 +22,7 @@ public class NotaryService {
     credentials =
         WalletUtils.loadCredentials(password, Constants.WALLET_PATH + wallet);
     notaryContract = CHATTeRNotaryContract
-        .load(Constants.CONTRACT_ADDRESS, web3, credentials, new DefaultGasProvider());
+        .load(Constants.walletMap.get("contract").getAddress(), web3, credentials, new DefaultGasProvider());
   }
 
   public CompletableFuture<Void> storeMessage(String messageHash) {

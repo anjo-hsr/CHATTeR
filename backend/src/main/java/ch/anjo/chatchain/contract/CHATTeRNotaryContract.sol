@@ -1,3 +1,5 @@
+//Contract deployed with Remix at address 0x7ca169776f530A05aC930f0069ACce8277FCC2cd
+
 pragma solidity >0.4.99 <0.6.0;
 
 contract CHATTeRNotaryContract {

@@ -40,6 +40,7 @@ per client would be needed use the optional local Port syntax's to start on diff
 
 ## Sources:
 - [Ethereum Blockchain “Hello World” Smart Contract with JAVA](https://medium.com/coinmonks/ethereum-blockchain-hello-world-smart-contract-with-java-9b6ae2961ad1)
+- [Nodeless Ethereum Smart Contracts Development with Infura](https://medium.com/stacktical/nodeless-ethereum-smart-contracts-development-with-infura-d22d6a1fec10)
 - [Using Infura with web3j](https://docs.web3j.io/infura.html#)
 
 ## Bugs:
