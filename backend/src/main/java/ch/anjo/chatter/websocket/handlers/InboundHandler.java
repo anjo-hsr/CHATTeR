@@ -36,6 +36,9 @@ public class InboundHandler {
         }
         break;
       }
+      case MessageTypes.CHECK_SENDER:{
+        OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
+      }
       case MessageTypes.ADD_CHAT:
       case MessageTypes.CHANGE_CHAT: {
         handler.getChatHandler().saveChat(webSocketMessage);

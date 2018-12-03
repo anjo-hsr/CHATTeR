@@ -1,5 +1,6 @@
 package ch.anjo.chatter.main;
 
+import ch.anjo.chatter.helpers.JsonGenerator;
 import ch.anjo.chatter.websocket.handlers.InboundHandler;
 import ch.anjo.chatter.websocket.handlers.OutboundHandler;
 import ch.anjo.chatter.websocket.handlers.handlerClasses.Handler;
@@ -59,14 +60,14 @@ public class WebSocketService extends Thread {
 
                     if (backendSession != null && backendSession.equals(session)) {
                       OutboundHandler.sendUsername(handler);
-                      session.send(OutboundHandler.createGetPeer());
+                      session.send(JsonGenerator.generateGetPeers());
                     }
 
                     if (frontendSession != null && frontendSession.equals(session)) {
                       OutboundHandler.sendUsername(handler);
                       OutboundHandler.sendChats(handler);
                       OutboundHandler.sendMessageToSibling(
-                          handler, session, OutboundHandler.createGetPeer());
+                          handler, session, JsonGenerator.generateGetPeers());
                     }
                   });
               ws.onMessage(

@@ -1,5 +1,6 @@
 package ch.anjo.chatter.websocket.templates;
 
+import ch.anjo.chatchain.Address;
 import ch.anjo.chatter.websocket.templates.chat.ChatInformation;
 import ch.anjo.chatter.websocket.templates.message.MessageInformation;
 import com.google.common.base.Objects;
@@ -14,6 +15,7 @@ public class WebSocketMessage {
   public PeerInformation[] peers;
   public MessageInformation messageInformation;
   public ChatInformation chatInformation;
+  public Address senderAddress;
 
   @Override
   public boolean equals(Object o) {
@@ -31,7 +33,8 @@ public class WebSocketMessage {
         && Objects.equal(chatId, that.chatId)
         && Objects.equal(peers, that.peers)
         && Objects.equal(messageInformation, that.messageInformation)
-        && Objects.equal(chatInformation, that.chatInformation);
+        && Objects.equal(chatInformation, that.chatInformation)
+        && Objects.equal(senderAddress, that.senderAddress);
   }
 
   @Override

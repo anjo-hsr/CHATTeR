@@ -1,5 +1,6 @@
 package ch.anjo.chatter.tomp2p;
 
+import ch.anjo.chatter.helpers.JsonGenerator;
 import ch.anjo.chatter.helpers.MessageTypes;
 import ch.anjo.chatter.tomp2p.helpers.DataSender;
 import ch.anjo.chatter.websocket.templates.WebSocketMessage;
@@ -69,17 +70,11 @@ public class ChannelAction {
                             System.out.println(
                                 String.format("Connected to %s", chatterPeer.getMasterName()));
                             DataSender.sendToAllWithoutConfirmation(
-                                chatterPeer, generateGetPeerMessage());
+                                chatterPeer, JsonGenerator.generateGetPeer());
                           }
                         });
               }
             });
-  }
-
-  private static String generateGetPeerMessage() {
-    JsonObject getPeers = new JsonObject();
-    getPeers.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.GET_PEERS);
-    return getPeers.toString();
   }
 
   public static void replyToTomP2PData(ChatterPeer chatterPeer, WebSocketClient webSocketClient) {
@@ -154,13 +149,9 @@ public class ChannelAction {
 
   private static void confirmMessage(
       ChatterPeer chatterPeer, WebSocketMessage webSocketMessage, TomP2pMessage tomP2pMessage) {
-    JsonObject response = new JsonObject();
-    response.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.CONFIRM_MESSAGE);
-    response.addProperty("username", chatterPeer.getChatterUser().getUsername());
-    response.addProperty("chatId", webSocketMessage.chatId);
-    response.addProperty("messageId", webSocketMessage.messageInformation.messageId);
+    String response = JsonGenerator.generateConfirmMessage(chatterPeer, webSocketMessage);
     System.out.println(tomP2pMessage.getSender());
-    DataSender.sendWithConfirmation(chatterPeer, tomP2pMessage.getSender(), response.toString());
+    DataSender.sendWithConfirmation(chatterPeer, tomP2pMessage.getSender(), response);
   }
 
   private static String getFriends(ChatterPeer chatterPeer) {

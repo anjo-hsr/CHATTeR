@@ -1,5 +1,6 @@
 package ch.anjo.chatchain;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
 
@@ -26,29 +27,22 @@ public class Constants {
   );
 }
 
-class Wallet {
+class Wallet implements Serializable {
 
-  private final String walletString;
   private final String walletPath;
   private final String password;
 
   Wallet(String walletString, String password) {
     if (Objects.nonNull(password) && !password.equals("")) {
-      this.walletString = walletString;
       this.walletPath = "./backend/src/main/resources/wallets/" + walletString;
       this.password = password;
       return;
     }
-    this.walletString = null;
     this.walletPath = null;
     this.password = null;
   }
 
-  String getWalletString() {
-    return walletString;
-  }
-
-  public String getWalletPath() {
+  String getWalletPath() {
     return walletPath;
   }
 
@@ -57,34 +51,3 @@ class Wallet {
   }
 }
 
-class Address {
-
-  private final String address;
-  private final Wallet wallet;
-
-  Address(String address, String prefix, String password) {
-    if (address.startsWith("0x") && address.length() == 42) {
-      this.address = address;
-      if (Objects.nonNull(prefix)) {
-        this.wallet = new Wallet(prefix + address.substring(2), password);
-      } else {
-        this.wallet = null;
-      }
-      return;
-    }
-    this.address = null;
-    this.wallet = null;
-  }
-
-  public String getAddress() {
-    return address;
-  }
-
-  Wallet getWallet() {
-    return wallet;
-  }
-
-  String getShortAddress() {
-    return String.format("%s...", address.substring(0,20));
-  }
-}

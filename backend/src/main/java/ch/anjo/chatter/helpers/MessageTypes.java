@@ -8,6 +8,7 @@ public class MessageTypes {
   public static final String ADD_MESSAGE = "ADD_MESSAGE";
   public static final String ADD_MESSAGES = "ADD_MESSAGES";
   public static final String CONFIRM_MESSAGE = "CONFIRM_MESSAGE";
+  public static final String CHECK_SENDER = "CHECK_SENDER";
 
   public static final String ADD_PEERS = "ADD_PEERS";
   public static final String GET_PEERS = "GET_PEERS";

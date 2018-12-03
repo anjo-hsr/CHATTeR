@@ -4,19 +4,17 @@ public class Parameters {
 
   private final String mode;
   private final String username;
-  private final String etherAddress;
   private final int listeningPort;
   private final int webSocketPort;
   private final int frontendPort;
 
-  public Parameters(String args[]) {
+  public Parameters(String[] args) {
     this.mode = getMode(args[0]);
     this.username = args[1];
-    this.etherAddress = args[2];
-    this.listeningPort = args.length >= 4 ? Integer.valueOf(args[3]) : 5000;
+    this.listeningPort = args.length >= 3 ? Integer.valueOf(args[2]) : 5000;
 
     int index = indexOfRendezvousString(args);
-    this.webSocketPort = index == 5 ? Integer.valueOf(args[4]) : listeningPort + 3000;
+    this.webSocketPort = index == 4 ? Integer.valueOf(args[3]) : listeningPort + 3000;
     this.frontendPort = getWebSocketPortNumber(args[0]);
   }
 
@@ -41,9 +39,6 @@ public class Parameters {
     return username;
   }
 
-  public String getEtherAddress() {
-    return etherAddress;
-  }
 
   public int getListeningPort() {
     return listeningPort;
@@ -57,7 +52,7 @@ public class Parameters {
     return "";
   }
 
-  public int indexOfRendezvousString(String[] args) {
+  int indexOfRendezvousString(String[] args) {
     int index = 0;
     for (String arg : args) {
       if (arg.matches(".*@.*:.*")) {

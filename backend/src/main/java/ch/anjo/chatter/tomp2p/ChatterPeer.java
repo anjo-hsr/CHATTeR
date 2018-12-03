@@ -1,16 +1,13 @@
 package ch.anjo.chatter.tomp2p;
 
+import ch.anjo.chatchain.Constants;
 import ch.anjo.chatchain.NotaryService;
-import ch.anjo.chatter.helpers.MessageTypes;
 import ch.anjo.chatter.tomp2p.parameters.ClientParameters;
 import ch.anjo.chatter.tomp2p.parameters.Parameters;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import net.tomp2p.dht.FutureGet;
 import net.tomp2p.dht.PeerBuilderDHT;
@@ -42,12 +39,14 @@ public class ChatterPeer {
 
     this.dht =
         new PeerBuilderDHT(this.myself).storageLayer(new StorageLayer(new StorageMemory())).start();
-    this.chatterUser = new ChatterUser(parameters);
 
-    dht.put(chatterUser.getHash()).data(new Data(chatterUser)).start();
 
     this.masterName = parameters.getUsername();
     notaryService = new NotaryService(parameters.getUsername());
+
+    this.chatterUser = new ChatterUser(parameters, Constants.walletMap.get(parameters.getUsername()));
+    dht.put(chatterUser.getHash()).data(new Data(chatterUser)).start();
+
 
     System.out.println("Master service started:");
     System.out.println(
@@ -71,7 +70,7 @@ public class ChatterPeer {
     this.dht =
         new PeerBuilderDHT(this.myself).storageLayer(new StorageLayer(new StorageMemory())).start();
 
-    this.chatterUser = new ChatterUser(parameters);
+    this.chatterUser = new ChatterUser(parameters, Constants.walletMap.get(parameters.getUsername()));
     ChannelAction.createBootStrapBuilder(this, master);
   }
 
@@ -138,20 +137,6 @@ public class ChatterPeer {
                 }
               }
             });
-  }
-
-  private String generateAddPeers(String friend) {
-    return generateAddPeers(Collections.singletonList(friend));
-  }
-
-  private String generateAddPeers(List<String> friends) {
-    JsonObject addPeer = new JsonObject();
-    addPeer.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.ADD_PEERS);
-    JsonArray peers = new JsonArray();
-    friends.forEach(peers::add);
-
-    addPeer.add("peers", peers);
-    return addPeer.toString();
   }
 
   public void newNumberArrived() {

@@ -1,5 +1,6 @@
 package ch.anjo.chatter.tomp2p;
 
+import ch.anjo.chatchain.Address;
 import ch.anjo.chatter.tomp2p.parameters.Parameters;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
@@ -16,22 +17,22 @@ import net.tomp2p.peers.PeerAddress;
 public class ChatterUser implements Serializable {
 
   private final String username;
-  private final String etherAddress;
   private String ipAddress;
   private final int port;
   private Set<String> friends;
   private boolean isOnline;
+  private final Address etherAddress;
 
-  ChatterUser(Parameters parameters) {
-    this(parameters, new HashSet<>());
+  ChatterUser(Parameters parameters, Address etherAddress) {
+    this(parameters,etherAddress, new HashSet<>());
   }
 
-  private ChatterUser(Parameters parameters, Set<String> friends) {
+  private ChatterUser(Parameters parameters,Address etherAddress, Set<String> friends) {
     this.username = parameters.getUsername();
-    this.etherAddress = parameters.getEtherAddress();
     this.port = parameters.getListeningPort();
     this.friends = friends;
     this.isOnline = true;
+    this.etherAddress = etherAddress;
 
     // https://stackoverflow.com/questions/9481865/getting-the-ip-address-of-the-current-machine-using-java
     try (final DatagramSocket socket = new DatagramSocket()) {
@@ -86,6 +87,7 @@ public class ChatterUser implements Serializable {
     JsonObject response = new JsonObject();
     response.addProperty("name", username);
     response.addProperty("isOnline", isOnline);
+    response.addProperty("etherAddress", etherAddress.getAddress());
     return response;
   }
 }

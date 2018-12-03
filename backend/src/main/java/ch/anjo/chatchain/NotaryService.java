@@ -50,11 +50,11 @@ public class NotaryService {
     );
   }
 
-  public boolean checkMessage(String messageHash, String senderWallet) {
+  public boolean checkMessage(String messageHash, Address senderWallet) {
     try {
       byte[] hash = Hash.sha256(messageHash.getBytes());
       String senderResponse = notaryContract.getSender(hash).send();
-      return senderWallet.equals(senderResponse);
+      return senderWallet.getAddress().equals(senderResponse);
     } catch (Exception e) {
       e.printStackTrace();
     }

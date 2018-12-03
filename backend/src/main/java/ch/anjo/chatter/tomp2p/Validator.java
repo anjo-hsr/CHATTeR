@@ -3,7 +3,6 @@ package ch.anjo.chatter.tomp2p;
 import ch.anjo.chatter.tomp2p.parameters.Parameters;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Objects;
 import org.apache.commons.validator.routines.InetAddressValidator;
 
 public class Validator {
@@ -22,9 +21,8 @@ public class Validator {
     return areMasterParametersCorrect();
   }
 
-  public boolean areMasterParametersCorrect() {
+  private boolean areMasterParametersCorrect() {
     return isUsernameCorrect()
-        && isEtherAddressCorrect()
         && isPortValid(parameters.getListeningPort());
   }
 
@@ -33,22 +31,14 @@ public class Validator {
   }
 
   private boolean isUsernameCorrect() {
-    return isUsernameCorrect(parameters.getUsername());
-  }
-
-  private boolean isUsernameCorrect(String username) {
     return parameters.getUsername().matches("[a-zA-Z0-9]{1,25}");
-  }
-
-  private boolean isEtherAddressCorrect() {
-    return parameters.getEtherAddress().matches("0x[a-f0-9]{40}");
   }
 
   private boolean isRendezvousPointCorrect() {
     ChatterAddress rendezvousAddress;
     if ((rendezvousAddress = getRendezvousChatterAddress()) != null) {
       boolean areBasicsCorrect =
-          isUsernameCorrect(rendezvousAddress.getUsername()) && isPortValid(rendezvousAddress.getPort());
+          isUsernameCorrect() && isPortValid(rendezvousAddress.getPort());
       return areBasicsCorrect && isHostCorrect(rendezvousAddress);
     }
 
@@ -71,7 +61,7 @@ public class Validator {
     }
   }
 
-  public ChatterAddress getRendezvousChatterAddress() {
+  ChatterAddress getRendezvousChatterAddress() {
     String rendezvousString = parameters.getRendezvousString();
 
     if (rendezvousString.contains(":") && rendezvousString.contains("@")) {
@@ -92,7 +82,7 @@ public class Validator {
 
   public static boolean isArgsLengthOk(String[] args) {
     // The first three parameters are mandatory
-    return args.length >= 3;
+    return args.length >= 2;
   }
 
   public Parameters getParameters() {
