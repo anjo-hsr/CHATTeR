@@ -1,5 +1,6 @@
 package ch.anjo.chatter.tomp2p;
 
+import ch.anjo.chatchain.NotaryService;
 import ch.anjo.chatter.helpers.MessageTypes;
 import ch.anjo.chatter.tomp2p.parameters.ClientParameters;
 import ch.anjo.chatter.tomp2p.parameters.Parameters;
@@ -31,6 +32,7 @@ public class ChatterPeer {
   private List<TomP2pMessage> messageHistory = new ArrayList<>();
   private final String masterName;
   private PeerAddress masterAddress = null;
+  private final NotaryService notaryService;
 
   public ChatterPeer(Parameters parameters) throws IOException {
     this.myself =
@@ -45,6 +47,7 @@ public class ChatterPeer {
     dht.put(chatterUser.getHash()).data(new Data(chatterUser)).start();
 
     this.masterName = parameters.getUsername();
+    notaryService = new NotaryService(parameters.getUsername());
 
     System.out.println("Master service started:");
     System.out.println(
@@ -63,6 +66,7 @@ public class ChatterPeer {
         new PeerBuilder(byteHash(this.masterName)).ports(parameters.getListeningPort()).start();
     this.masterAddress = new PeerAddress(master.peerID(), masterAddress, masterPort, masterPort);
 
+    notaryService = new NotaryService(parameters.getUsername());
     this.myself = new PeerBuilder(byteHash(parameters.getUsername())).masterPeer(master).start();
     this.dht =
         new PeerBuilderDHT(this.myself).storageLayer(new StorageLayer(new StorageMemory())).start();
@@ -105,6 +109,10 @@ public class ChatterPeer {
 
   private Number160 byteHash(String username) {
     return new Number160(getHash(username).asBytes());
+  }
+
+  public NotaryService getNotaryService() {
+    return notaryService;
   }
 
   public void addFriend(String username) {
@@ -166,7 +174,7 @@ public class ChatterPeer {
     dht.shutdown().awaitUninterruptibly();
   }
 
-  public static ChatterUser readUser(Data data) {
+  static ChatterUser readUser(Data data) {
     try {
       return (ChatterUser) data.object();
     } catch (Exception e) {

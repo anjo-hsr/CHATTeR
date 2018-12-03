@@ -1,5 +1,6 @@
 package ch.anjo.chatter.tomp2p;
 
+import ch.anjo.chatchain.NotaryService;
 import ch.anjo.chatter.helpers.DateGenerator;
 import ch.anjo.chatter.helpers.MessageTypes;
 import ch.anjo.chatter.tomp2p.helpers.DataSender;
@@ -187,7 +188,9 @@ public class ChatterWebSocketClient extends WebSocketClient {
           String.format(
               "Send message over chat (%s) to: %s",
               chatId.substring(0, 9), chatMemebersMap.get(chatId).toString()));
+
       Set<PeerInformation> chatPeers = chatMemebersMap.get(chatId);
+      this.myself.getNotaryService().storeMessage(webSocketMessage.messageInformation.messageId);
       chatPeers.forEach(
           peer -> DataSender.sendWithConfirmation(myself, peer.getUsername(), jsonMessage));
       loopHandler.setNewMessage(webSocketMessage);

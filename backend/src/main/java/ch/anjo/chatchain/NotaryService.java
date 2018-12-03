@@ -13,29 +13,41 @@ import org.web3j.tx.gas.DefaultGasProvider;
 
 public class NotaryService {
 
-  private final Web3j web3;
-  private final Credentials credentials;
   private final CHATTeRNotaryContract notaryContract;
 
-  public NotaryService(String wallet, String password) throws IOException, CipherException {
-    web3 = Web3j.build(new HttpService(Constants.INFURA_ADDRESS));
-    credentials =
-        WalletUtils.loadCredentials(password, Constants.WALLET_PATH + wallet);
+  public NotaryService(String username) {
+    Web3j web3 = Web3j.build(new HttpService(Constants.INFURA_ADDRESS));
+    Credentials credentials;
+    try {
+      credentials = WalletUtils.loadCredentials(
+          Constants.walletMap.get(username).getWallet().getPassword(),
+          Constants.walletMap.get(username).getWallet().getWalletPath()
+      );
+    } catch (IOException | CipherException e) {
+      e.printStackTrace();
+      notaryContract = null;
+      return;
+    }
     notaryContract = CHATTeRNotaryContract
         .load(Constants.walletMap.get("contract").getAddress(), web3, credentials, new DefaultGasProvider());
+    System.out.println(
+        String.format("Wallet with address %s loaded", Constants.walletMap.get(username).getShortAddress())
+    );
+
   }
 
-  public CompletableFuture<Void> storeMessage(String messageHash) {
+  public void storeMessage(String messageHash) {
     byte[] hash = Hash.sha256(messageHash.getBytes());
 
-    return CompletableFuture.runAsync(
+    CompletableFuture.runAsync(
         () -> {
           try {
             notaryContract.storeMessage(hash).send();
           } catch (Exception e) {
             e.printStackTrace();
           }
-        });
+        }
+    );
   }
 
   public boolean checkMessage(String messageHash, String senderWallet) {
