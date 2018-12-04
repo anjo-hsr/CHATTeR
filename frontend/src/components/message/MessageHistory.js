@@ -34,22 +34,31 @@ export default class MessageHistory extends React.Component {
                 didAllSign={message.signedBy.length === message.possibleReaders.length}
               />
             ) : (
-              <Button
-                circular
-                color={Boolean(message.isSenderCorrect) ? 'blue' : 'grey'}
-                icon={Boolean(message.isSenderCorrect) ? 'handshake outline' : 'chain'}
-                disabled={Boolean(message.isSenderCorrect)}
-                onClick={() =>
-                  this.props.checkSignature({
-                    chatId: this.props.selectedChat,
-                    messageId: message.messageId,
-                    author: message.author,
-                    peers: this.props.peers
-                  })
-                }
-              />
+              <div>
+                <Button
+                  circular
+                  color={
+                    Boolean(message.isSenderCorrect) ? 'blue' : Boolean(message.isMessageOnContract) ? 'red' : 'grey'
+                  }
+                  icon={
+                    Boolean(message.isSenderCorrect)
+                      ? 'handshake outline'
+                      : Boolean(message.isMessageOnContract)
+                      ? 'broken chain'
+                      : 'chain'
+                  }
+                  disabled={Boolean(message.isSenderCorrect) || Boolean(message.isMessageOnContract)}
+                  onClick={() =>
+                    this.props.checkSignature({
+                      chatId: this.props.selectedChat,
+                      messageId: message.messageId,
+                      author: message.author,
+                      peers: this.props.peers
+                    })
+                  }
+                />
+              </div>
             )}
-
             <Feed.Label>{isAvatarNeeded(array, index) && <Image src={Anonymous} />}</Feed.Label>
             <Feed.Content>
               <Feed.Summary>
@@ -58,7 +67,11 @@ export default class MessageHistory extends React.Component {
                   <i>
                     <Popup
                       position="top center"
-                      trigger={<MessageMoment date={message.date} />}
+                      trigger={
+                        <div>
+                          <MessageMoment date={message.date} />
+                        </div>
+                      }
                       content={
                         <div>
                           {moment(message.date)

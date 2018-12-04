@@ -38,16 +38,17 @@ export default {
       type: types.CHECK_SIGNATURE,
       chatId,
       messageId,
-      senderAddress
+      senderAddress: senderAddress //senderAddress.substring(0, 39) + 'a'
     };
   },
 
-  responseCheckSignature({chatId, messageId, isSenderCorrect}) {
+  responseCheckSignature({chatId, messageId, isSenderCorrect, isMessageOnContract}) {
     return {
       type: types.RESPONSE_CHECK_SIGNATURE,
       chatId,
       messageId,
-      isSenderCorrect
+      isSenderCorrect,
+      isMessageOnContract
     };
   }
 };

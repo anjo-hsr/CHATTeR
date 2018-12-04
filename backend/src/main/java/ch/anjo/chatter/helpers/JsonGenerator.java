@@ -1,5 +1,6 @@
 package ch.anjo.chatter.helpers;
 
+import ch.anjo.chatchain.Address;
 import ch.anjo.chatter.tomp2p.ChatterPeer;
 import ch.anjo.chatter.tomp2p.ChatterUser;
 import ch.anjo.chatter.tomp2p.ChatterWebSocketClient;
@@ -80,7 +81,10 @@ public class JsonGenerator {
     CompletableFuture<String> senderAddress = myself.getNotaryService()
         .checkMessage(webSocketMessage.messageId);
     senderAddress.thenAccept(sender -> {
-      response.addProperty("isSenderCorrect", sender.equals(webSocketMessage.senderAddress));
+      boolean isSenderCorrect = sender.equals(webSocketMessage.senderAddress);
+      response.addProperty("isSenderCorrect", isSenderCorrect);
+      response.addProperty("isMessageOnContract", !sender.equals(Address.nullAddress));
+
       chatterWebSocketClient.send(response.toString());
     });
   }

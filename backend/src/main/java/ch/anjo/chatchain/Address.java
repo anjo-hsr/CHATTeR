@@ -17,6 +17,8 @@ public class Address implements Serializable {
     this.address = null;
   }
 
+  public static String nullAddress = "0x0000000000000000000000000000000000000000";
+
   Address(String address, String prefix, String password) {
     if (isAddressCorrect(address)) {
       this.address = address;

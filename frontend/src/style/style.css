@@ -143,9 +143,9 @@ body {
     right: 0;
     top: 30%; }
 
-.circular.button {
+.ui.circular.button {
   padding: 0 !important; }
-  .circular.button.disabled {
+  .ui.circular.button.disabled {
     opacity: 1 !important; }
 
 .ui.popup.transition.visible {
