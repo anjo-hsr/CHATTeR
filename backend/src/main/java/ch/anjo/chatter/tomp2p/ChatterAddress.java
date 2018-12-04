@@ -5,7 +5,7 @@ public class ChatterAddress {
   private final String host;
   private final int port;
 
-  public ChatterAddress(String username, String host, int port) {
+  ChatterAddress(String username, String host, int port) {
     this.username = username;
     this.host = host;
     this.port = port;

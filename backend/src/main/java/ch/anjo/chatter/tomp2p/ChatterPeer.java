@@ -2,6 +2,7 @@ package ch.anjo.chatter.tomp2p;
 
 import ch.anjo.chatchain.Constants;
 import ch.anjo.chatchain.NotaryService;
+import ch.anjo.chatter.helpers.JsonGenerator;
 import ch.anjo.chatter.tomp2p.parameters.ClientParameters;
 import ch.anjo.chatter.tomp2p.parameters.Parameters;
 import com.google.common.hash.HashCode;
@@ -9,6 +10,7 @@ import com.google.common.hash.Hashing;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import net.tomp2p.dht.FutureGet;
 import net.tomp2p.dht.PeerBuilderDHT;
 import net.tomp2p.dht.PeerDHT;
@@ -20,6 +22,7 @@ import net.tomp2p.p2p.PeerBuilder;
 import net.tomp2p.peers.Number160;
 import net.tomp2p.peers.PeerAddress;
 import net.tomp2p.storage.Data;
+import org.java_websocket.client.WebSocketClient;
 
 public class ChatterPeer {
 
@@ -40,13 +43,11 @@ public class ChatterPeer {
     this.dht =
         new PeerBuilderDHT(this.myself).storageLayer(new StorageLayer(new StorageMemory())).start();
 
-
     this.masterName = parameters.getUsername();
     notaryService = new NotaryService(parameters.getUsername());
 
     this.chatterUser = new ChatterUser(parameters, Constants.walletMap.get(parameters.getUsername()));
     dht.put(chatterUser.getHash()).data(new Data(chatterUser)).start();
-
 
     System.out.println("Master service started:");
     System.out.println(
@@ -76,10 +77,6 @@ public class ChatterPeer {
 
   public Peer getMyself() {
     return myself;
-  }
-
-  public Number160 getPeerId() {
-    return myself.peerID();
   }
 
   public PeerDHT getDht() {
@@ -115,6 +112,13 @@ public class ChatterPeer {
   }
 
   public void addFriend(String username) {
+    addFriend(username, null);
+  }
+
+  public void addFriend(String username, WebSocketClient webSocketClient) {
+    if (chatterUser.getUsername().equals(username)) {
+      return;
+    }
     dht.get(byteHash(username))
         .start()
         .addListener(
@@ -127,7 +131,9 @@ public class ChatterPeer {
                     if (friendData != null) {
                       ChatterUser friend = (ChatterUser) friendData.object();
                       chatterUser.addFriend(friend.getUsername());
-
+                      if (Objects.nonNull(webSocketClient)) {
+                        webSocketClient.send(JsonGenerator.generateAddPeer(friend));
+                      }
                       dht.put(chatterUser.getHash()).data(new Data(chatterUser)).start();
                     }
                   } catch (IOException | ClassNotFoundException e) {

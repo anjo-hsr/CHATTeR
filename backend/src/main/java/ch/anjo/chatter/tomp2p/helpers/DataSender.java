@@ -118,8 +118,4 @@ public class DataSender {
   public static HashCode getSha1Hash(String hashString) {
     return Hashing.sha1().hashBytes(hashString.getBytes());
   }
-
-  public static Number160 getHash(String otherUsername) {
-    return new Number160(getSha1Hash(otherUsername).asBytes());
-  }
 }

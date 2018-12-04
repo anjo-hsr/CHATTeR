@@ -12,8 +12,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 import net.tomp2p.dht.FutureGet;
 import net.tomp2p.dht.PeerDHT;
 import net.tomp2p.futures.BaseFuture;
@@ -23,9 +21,9 @@ import net.tomp2p.p2p.builder.BootstrapBuilder;
 import net.tomp2p.storage.Data;
 import org.java_websocket.client.WebSocketClient;
 
-public class ChannelAction {
+class ChannelAction {
 
-  public static void createBootStrapBuilder(ChatterPeer chatterPeer, Peer master) {
+  static void createBootStrapBuilder(ChatterPeer chatterPeer, Peer master) {
     Peer myself = chatterPeer.getMyself();
     ChatterUser chatterUser = chatterPeer.getChatterUser();
     PeerDHT dht = chatterPeer.getDht();
@@ -77,7 +75,7 @@ public class ChannelAction {
             });
   }
 
-  public static void replyToTomP2PData(ChatterPeer chatterPeer, WebSocketClient webSocketClient) {
+  static void replyToTomP2PData(ChatterPeer chatterPeer, WebSocketClient webSocketClient) {
     Peer myself = chatterPeer.getMyself();
     List<TomP2pMessage> messageHistory = chatterPeer.getMessageHistory();
     myself.objectDataReply(
@@ -89,38 +87,32 @@ public class ChannelAction {
               gson.fromJson(tomP2pMessage.getJsonMessage(), WebSocketMessage.class);
 
           switch (webSocketMessage.type) {
-            case MessageTypes.GET_PEERS:
-              {
-                if (!tomP2pMessage.getSender().equals(chatterPeer.getChatterUser().getUsername())) {
-                  String responseJson = ChannelAction.getFriends(chatterPeer);
-                  chatterPeer.addFriend(tomP2pMessage.getSender());
-
-                  return responseJson;
-                }
-                break;
+            case MessageTypes.GET_PEERS: {
+              if (!tomP2pMessage.getSender().equals(chatterPeer.getChatterUser().getUsername())) {
+                String responseJson = ChannelAction.getFriends(chatterPeer);
+                chatterPeer.addFriend(tomP2pMessage.getSender(), webSocketClient);
+                return responseJson;
               }
+              break;
+            }
             case MessageTypes.ADD_CHAT:
-            case MessageTypes.CHANGE_CHAT:
-              {
-                webSocketClient.send(tomP2pMessage.getJsonMessage());
-                return null;
-              }
-            case MessageTypes.CONFIRM_MESSAGE:
-              {
-                webSocketClient.send(tomP2pMessage.getJsonMessage());
-                return null;
-              }
-            case MessageTypes.ADD_MESSAGE:
-              {
-                messageHistory.add(tomP2pMessage);
-                webSocketClient.send(tomP2pMessage.getJsonMessage());
-                confirmMessage(chatterPeer, webSocketMessage, tomP2pMessage);
-              }
-            default:
-              {
-                webSocketClient.send(tomP2pMessage.getJsonMessage());
-                return null;
-              }
+            case MessageTypes.CHANGE_CHAT: {
+              webSocketClient.send(tomP2pMessage.getJsonMessage());
+              return null;
+            }
+            case MessageTypes.CONFIRM_MESSAGE: {
+              webSocketClient.send(tomP2pMessage.getJsonMessage());
+              return null;
+            }
+            case MessageTypes.ADD_MESSAGE: {
+              messageHistory.add(tomP2pMessage);
+              webSocketClient.send(tomP2pMessage.getJsonMessage());
+              confirmMessage(chatterPeer, webSocketMessage, tomP2pMessage);
+            }
+            default: {
+              webSocketClient.send(tomP2pMessage.getJsonMessage());
+              return null;
+            }
           }
 
           if (messageHistory
@@ -128,18 +120,8 @@ public class ChannelAction {
               .anyMatch(
                   message ->
                       webSocketMessage.messageInformation.author.equals(
-                              chatterPeer.getChatterUser().getUsername())
+                          chatterPeer.getChatterUser().getUsername())
                           || message.getJsonMessage().equals(tomP2pMessage.getJsonMessage()))) {
-            return null;
-          }
-          // Notary service needed
-
-          Stream<TomP2pMessage> unverifiedMessages =
-              messageHistory.stream().filter(Predicate.not(TomP2pMessage::isVerified));
-          if (webSocketMessage.type.equals(MessageTypes.CONFIRM_MESSAGE)) {
-            String from = tomP2pMessage.getSender();
-            String etherAddress;
-            // Send notary --> Approved that message has received
             return null;
           }
 

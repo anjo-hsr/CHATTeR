@@ -11,7 +11,7 @@ public class SessionHandler {
   private WebSocketPair sessions;
   private final String username;
 
-  public SessionHandler(String username) {
+  SessionHandler(String username) {
     this.sessions = new WebSocketPair();
     this.username = username;
   }

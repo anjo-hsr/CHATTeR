@@ -32,7 +32,7 @@ public class ChatterWebSocketClient extends WebSocketClient {
   private final Map<String, String> messageWaitingRoom;
   private LoopHandler loopHandler;
 
-  ChatterWebSocketClient(int webSocketPort, String username, ChatterPeer myself)
+  private ChatterWebSocketClient(int webSocketPort, String username, ChatterPeer myself)
       throws URISyntaxException {
     super(new URI("ws://localhost:" + webSocketPort + "/chat?wsType=backend"));
     this.webSocketPort = webSocketPort;
@@ -132,7 +132,7 @@ public class ChatterWebSocketClient extends WebSocketClient {
 
   private void checkSender(WebSocketMessage webSocketMessage) {
     String response = JsonGenerator.generateCheckSender(webSocketMessage, myself);
-    this.send(response.toString());
+    this.send(response);
   }
 
   private void sendPeers() {

@@ -1,9 +1,7 @@
 package ch.anjo.chatter.main;
 
-import ch.anjo.chatter.tomp2p.ChannelAction;
 import ch.anjo.chatter.tomp2p.ChatterPeer;
 import ch.anjo.chatter.tomp2p.ChatterWebSocketClient;
-import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
 import org.java_websocket.exceptions.WebsocketNotConnectedException;
 

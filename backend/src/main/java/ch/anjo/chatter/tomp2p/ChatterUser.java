@@ -24,10 +24,10 @@ public class ChatterUser implements Serializable {
   private final Address etherAddress;
 
   ChatterUser(Parameters parameters, Address etherAddress) {
-    this(parameters,etherAddress, new HashSet<>());
+    this(parameters, etherAddress, new HashSet<>());
   }
 
-  private ChatterUser(Parameters parameters,Address etherAddress, Set<String> friends) {
+  private ChatterUser(Parameters parameters, Address etherAddress, Set<String> friends) {
     this.username = parameters.getUsername();
     this.port = parameters.getListeningPort();
     this.friends = friends;
@@ -49,10 +49,6 @@ public class ChatterUser implements Serializable {
 
   public Set<String> getFriends() {
     return friends;
-  }
-
-  boolean isOnline() {
-    return isOnline;
   }
 
   private HashCode getSha1Hash(String hashString) {

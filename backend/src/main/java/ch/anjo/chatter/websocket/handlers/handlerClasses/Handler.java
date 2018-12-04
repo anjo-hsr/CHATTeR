@@ -1,15 +1,13 @@
 package ch.anjo.chatter.websocket.handlers.handlerClasses;
 
 import ch.anjo.chatter.websocket.templates.message.MessageInformation;
-import io.javalin.websocket.WsSession;
-import java.util.List;
 
 public class Handler {
 
   private ChatHandler chatHandler;
   private SessionHandler sessionHandler;
 
-  public Handler(WsSession session, String username) {
+  public Handler(String username) {
     this.chatHandler = new ChatHandler();
     this.sessionHandler = new SessionHandler(username);
   }
@@ -34,9 +32,5 @@ public class Handler {
             "User %s signed the message: %s...@%s...",
             signer, messageId.substring(0, 9), chatId.substring(0, 9)));
     return chatHandler.updateMessage(chatId, messageId, signer);
-  }
-
-  public List<String> getMessages(String chatid) {
-    return chatHandler.getChatMessages(chatid);
   }
 }
