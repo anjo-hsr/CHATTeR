@@ -145,6 +145,8 @@ body {
 
 .circular.button {
   padding: 0 !important; }
+  .circular.button.disabled {
+    opacity: 1 !important; }
 
 .ui.popup.transition.visible {
   font-style: italic; }

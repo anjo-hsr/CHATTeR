@@ -1,5 +1,6 @@
 package ch.anjo.chatter.websocket.handlers;
 
+import ch.anjo.chatter.helpers.JsonGenerator;
 import ch.anjo.chatter.helpers.MessageTypes;
 import ch.anjo.chatter.websocket.handlers.handlerClasses.Handler;
 import ch.anjo.chatter.websocket.templates.WebSocketMessage;
@@ -36,8 +37,13 @@ public class InboundHandler {
         }
         break;
       }
-      case MessageTypes.CHECK_SENDER:{
+      case MessageTypes.CHECK_SIGNATURE: {
         OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
+        break;
+      }
+      case MessageTypes.RESPONSE_CHECK_SIGNATURE: {
+        OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
+        break;
       }
       case MessageTypes.ADD_CHAT:
       case MessageTypes.CHANGE_CHAT: {

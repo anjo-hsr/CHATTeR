@@ -8,7 +8,7 @@ public class Address implements Serializable {
   private final String address;
   private final Wallet wallet;
 
-  Address(String address) {
+  public Address(String address) {
     this.wallet = null;
     if (!isAddressCorrect(address)) {
       this.address = address;

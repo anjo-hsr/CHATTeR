@@ -1,5 +1,6 @@
 package ch.anjo.chatter.tomp2p;
 
+import ch.anjo.chatter.helpers.DateGenerator;
 import ch.anjo.chatter.helpers.JsonGenerator;
 import ch.anjo.chatter.helpers.MessageTypes;
 import ch.anjo.chatter.tomp2p.helpers.DataSender;
@@ -47,11 +48,14 @@ class ChannelAction {
                         new BaseFutureAdapter<FutureGet>() {
                           @Override
                           public void operationComplete(FutureGet future) throws Exception {
+                            System.out.println(
+                                String.format("Connected to %s", chatterPeer.getMasterName()));
+
                             Data data = future.data();
                             if (data != null) {
                               System.out.println(
                                   String.format(
-                                      "Friends received %s",
+                                      "%sFriends received %s", DateGenerator.getDate(),
                                       ((ChatterUser) data.object()).getFriends()));
 
                               ((ChatterUser) data.object())
@@ -63,12 +67,10 @@ class ChannelAction {
                                               chatterPeer.getChatterUser().getUsername()))
                                   .forEach(chatterUser::addFriend);
                             }
+                            DataSender.sendIAmOnline(
+                                chatterPeer, JsonGenerator.generateAddPeers(chatterUser));
                             chatterUser.setOnlineState(true);
                             dht.put(chatterUser.getHash()).data(new Data(chatterUser)).start();
-                            System.out.println(
-                                String.format("Connected to %s", chatterPeer.getMasterName()));
-                            DataSender.sendToAllWithoutConfirmation(
-                                chatterPeer, JsonGenerator.generateGetPeer());
                           }
                         });
               }
@@ -87,10 +89,16 @@ class ChannelAction {
               gson.fromJson(tomP2pMessage.getJsonMessage(), WebSocketMessage.class);
 
           switch (webSocketMessage.type) {
+            case MessageTypes.ADD_PEERS: {
+              if (!tomP2pMessage.getSender().equals(chatterPeer.getChatterUser().getUsername())) {
+                webSocketClient.send(tomP2pMessage.getJsonMessage());
+              }
+            }
+
             case MessageTypes.GET_PEERS: {
               if (!tomP2pMessage.getSender().equals(chatterPeer.getChatterUser().getUsername())) {
                 String responseJson = ChannelAction.getFriends(chatterPeer);
-                chatterPeer.addFriend(tomP2pMessage.getSender(), webSocketClient);
+                chatterPeer.addFriend(tomP2pMessage.getSender());
                 return responseJson;
               }
               break;

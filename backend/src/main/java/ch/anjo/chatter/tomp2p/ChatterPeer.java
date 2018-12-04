@@ -112,10 +112,6 @@ public class ChatterPeer {
   }
 
   public void addFriend(String username) {
-    addFriend(username, null);
-  }
-
-  public void addFriend(String username, WebSocketClient webSocketClient) {
     if (chatterUser.getUsername().equals(username)) {
       return;
     }
@@ -131,9 +127,7 @@ public class ChatterPeer {
                     if (friendData != null) {
                       ChatterUser friend = (ChatterUser) friendData.object();
                       chatterUser.addFriend(friend.getUsername());
-                      if (Objects.nonNull(webSocketClient)) {
-                        webSocketClient.send(JsonGenerator.generateAddPeer(friend));
-                      }
+
                       dht.put(chatterUser.getHash()).data(new Data(chatterUser)).start();
                     }
                   } catch (IOException | ClassNotFoundException e) {

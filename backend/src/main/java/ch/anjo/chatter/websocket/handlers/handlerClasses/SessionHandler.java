@@ -18,21 +18,15 @@ public class SessionHandler {
 
   public void replaceSession(WsSession session, String type) {
     switch (type) {
-      case "frontend":
-        {
-          this.sessions.setFrontendSession(session);
-          break;
-        }
-      case "backend":
-        {
-          this.sessions.setBackendSession(session);
-          break;
-        }
+      case "frontend": {
+        this.sessions.setFrontendSession(session);
+        break;
+      }
+      case "backend": {
+        this.sessions.setBackendSession(session);
+        break;
+      }
     }
-  }
-
-  public List<WsSession> getSessions() {
-    return sessions.getSessions();
   }
 
   public WsSession getFrontendSession() {

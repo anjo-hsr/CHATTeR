@@ -20,6 +20,7 @@ public class ChatterUser implements Serializable {
   private String ipAddress;
   private final int port;
   private Set<String> friends;
+  private ChatterUser masterFriend;
   private boolean isOnline;
   private final Address etherAddress;
 

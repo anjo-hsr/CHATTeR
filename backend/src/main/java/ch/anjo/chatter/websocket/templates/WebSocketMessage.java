@@ -15,7 +15,7 @@ public class WebSocketMessage {
   public PeerInformation[] peers;
   public MessageInformation messageInformation;
   public ChatInformation chatInformation;
-  public Address senderAddress;
+  public String senderAddress;
 
   @Override
   public boolean equals(Object o) {

@@ -31,10 +31,10 @@ body {
 }
 
 .chatterImage {
-    vertical-align: middle;
-    width: 100% !important;
-    height: auto !important;
-  }
+  vertical-align: middle;
+  width: 100% !important;
+  height: auto !important;
+}
 
 .username {
   font-size: 3em !important;
@@ -68,6 +68,7 @@ body {
 
     & .peerCard {
       min-width: 200px !important;
+
       & .icon {
         position: absolute !important;
         right: 0 !important;
@@ -212,6 +213,10 @@ body {
 
 .circular.button {
   padding: 0 !important;
+
+  &.disabled {
+    opacity: 1 !important;
+  }
 }
 
 .ui.popup.transition.visible {

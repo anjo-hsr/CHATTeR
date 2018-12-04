@@ -50,14 +50,12 @@ public class NotaryService {
     );
   }
 
-  public boolean checkMessage(String messageHash, Address senderWallet) {
+  public CompletableFuture<String> checkMessage(String messageHash) {
+    byte[] hash = Hash.sha256(messageHash.getBytes());
     try {
-      byte[] hash = Hash.sha256(messageHash.getBytes());
-      String senderResponse = notaryContract.getSender(hash).send();
-      return senderWallet.getAddress().equals(senderResponse);
+      return notaryContract.getSender(hash).sendAsync();
     } catch (Exception e) {
-      e.printStackTrace();
+      return null;
     }
-    return false;
   }
 }

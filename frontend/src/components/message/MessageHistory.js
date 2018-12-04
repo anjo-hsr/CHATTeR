@@ -34,7 +34,20 @@ export default class MessageHistory extends React.Component {
                 didAllSign={message.signedBy.length === message.possibleReaders.length}
               />
             ) : (
-              <Button circular color="grey" icon="pencil alternate" />
+              <Button
+                circular
+                color={Boolean(message.isSenderCorrect) ? 'blue' : 'grey'}
+                icon={Boolean(message.isSenderCorrect) ? 'handshake outline' : 'chain'}
+                disabled={Boolean(message.isSenderCorrect)}
+                onClick={() =>
+                  this.props.checkSignature({
+                    chatId: this.props.selectedChat,
+                    messageId: message.messageId,
+                    author: message.author,
+                    peers: this.props.peers
+                  })
+                }
+              />
             )}
 
             <Feed.Label>{isAvatarNeeded(array, index) && <Image src={Anonymous} />}</Feed.Label>
@@ -67,6 +80,7 @@ export default class MessageHistory extends React.Component {
 }
 
 MessageHistory.propTypes = {
+  checkSignature: PropTypes.func.isRequired,
   username: PropTypes.string.isRequired,
   chatHistory: PropTypes.object,
   chats: PropTypes.object,

@@ -15,7 +15,7 @@ import net.tomp2p.futures.BaseFuture;
 import net.tomp2p.futures.BaseFutureAdapter;
 import net.tomp2p.p2p.Peer;
 import net.tomp2p.p2p.RequestP2PConfiguration;
-import net.tomp2p.peers.Number160;
+import net.tomp2p.peers.PeerAddress;
 import net.tomp2p.storage.Data;
 
 public class DataSender {
@@ -24,7 +24,7 @@ public class DataSender {
     sendWithoutListener(myself, receiver, jsonMessage);
   }
 
-  public static void sendToAllWithoutConfirmation(ChatterPeer chatterPeer, String outboundMessage) {
+  public static void sendIAmOnline(ChatterPeer chatterPeer, String outboundMessage) {
     Peer myself = chatterPeer.getMyself();
     ChatterUser chatterUser = chatterPeer.getChatterUser();
     PeerDHT dht = chatterPeer.getDht();
@@ -41,38 +41,22 @@ public class DataSender {
                           public void operationComplete(FutureGet future) {
                             Data data = future.data();
                             if (!data.isEmpty()) {
-                              ChatterUser friend = readUser(data);
+                              ChatterUser futureFriend = readUser(data);
                               TomP2pMessage tomP2pMessage =
                                   new TomP2pMessage(
                                       chatterUser.getUsername(),
-                                      Objects.requireNonNull(friend).getUsername(),
+                                      Objects.requireNonNull(futureFriend).getUsername(),
                                       outboundMessage);
+                              PeerAddress futureFriendAddress = futureFriend.getPeerAddress();
                               myself
-                                  .sendDirect(friend.getPeerAddress())
+                                  .sendDirect(futureFriendAddress)
                                   .object(tomP2pMessage)
-                                  .start()
-                                  .addListener(
-                                      new BaseFutureAdapter<BaseFuture>() {
-                                        @Override
-                                        public void operationComplete(BaseFuture baseFuture) {
-                                          Data peerResponse = future.data();
-                                          if (!peerResponse.isEmpty()) {
-                                            Gson gson = new Gson();
-                                            WebSocketMessage webSocketMessage =
-                                                gson.fromJson(
-                                                    tomP2pMessage.getJsonMessage(),
-                                                    WebSocketMessage.class);
-
-                                            if (webSocketMessage.type.equals(
-                                                MessageTypes.GET_PEERS)) {
-                                              chatterPeer.addFriend(friend.getUsername());
-                                            }
-                                          }
-                                        }
-                                      });
+                                  .start();
                             }
                           }
-                        }));
+                        }
+                    )
+        );
   }
 
   private static void sendWithoutListener(ChatterPeer myself, String receiver, String jsonMessage) {

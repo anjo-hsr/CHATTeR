@@ -23,12 +23,31 @@ export default {
       chatId: messageObject.chatId
     };
   },
+
   confirmMessage({chatId, messageId, username}) {
     return {
       type: types.CONFIRM_MESSAGE,
       chatId,
       messageId,
       username
+    };
+  },
+
+  checkSignature({chatId, messageId, senderAddress}) {
+    return {
+      type: types.CHECK_SIGNATURE,
+      chatId,
+      messageId,
+      senderAddress
+    };
+  },
+
+  responseCheckSignature({chatId, messageId, isSenderCorrect}) {
+    return {
+      type: types.RESPONSE_CHECK_SIGNATURE,
+      chatId,
+      messageId,
+      isSenderCorrect
     };
   }
 };

@@ -89,7 +89,7 @@ public class ChatterWebSocketClient extends WebSocketClient {
         sendMessageToPeers(webSocketMessage, jsonMessage);
         break;
       }
-      case MessageTypes.CHECK_SENDER: {
+      case MessageTypes.CHECK_SIGNATURE: {
         checkSender(webSocketMessage);
         break;
       }
@@ -131,8 +131,7 @@ public class ChatterWebSocketClient extends WebSocketClient {
   }
 
   private void checkSender(WebSocketMessage webSocketMessage) {
-    String response = JsonGenerator.generateCheckSender(webSocketMessage, myself);
-    this.send(response);
+    JsonGenerator.generateAndSendCheckSender(webSocketMessage, myself, this);
   }
 
   private void sendPeers() {
@@ -152,7 +151,7 @@ public class ChatterWebSocketClient extends WebSocketClient {
         .filter(Objects::nonNull)
         .forEach(
             friend -> {
-              send(JsonGenerator.generateAddPeer(friend));
+              send(JsonGenerator.generateAddPeers(friend));
             });
   }
 

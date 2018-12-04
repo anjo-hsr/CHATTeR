@@ -2,6 +2,7 @@ package ch.anjo.chatter.helpers;
 
 import ch.anjo.chatter.tomp2p.ChatterPeer;
 import ch.anjo.chatter.tomp2p.ChatterUser;
+import ch.anjo.chatter.tomp2p.ChatterWebSocketClient;
 import ch.anjo.chatter.websocket.handlers.handlerClasses.Handler;
 import ch.anjo.chatter.websocket.templates.PeerInformation;
 import ch.anjo.chatter.websocket.templates.WebSocketMessage;
@@ -12,6 +13,7 @@ import com.google.gson.JsonParser;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 public class JsonGenerator {
 
@@ -57,24 +59,30 @@ public class JsonGenerator {
     return response.toString();
   }
 
-  public static String generateAddPeer(ChatterUser friend) {
+  public static String generateAddPeers(ChatterUser friend) {
     JsonObject response = new JsonObject();
     response.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.ADD_PEERS);
 
-    JsonObject peer = friend.getInformation();
     JsonArray peers = new JsonArray();
-    peers.add(peer);
+    peers.add(friend.getInformation());
     response.add("peers", peers);
     return response.toString();
   }
 
-  public static String generateCheckSender(WebSocketMessage webSocketMessage, ChatterPeer myself) {
-    boolean isSenderCorrect = myself.getNotaryService()
-        .checkMessage(webSocketMessage.messageId, webSocketMessage.senderAddress);
+  public static void generateAndSendCheckSender(WebSocketMessage webSocketMessage, ChatterPeer myself,
+      ChatterWebSocketClient chatterWebSocketClient) {
     JsonObject response = new JsonObject();
-    response.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.CHECK_SENDER);
-    response.addProperty("trustworthy", isSenderCorrect);
-    return response.toString();
+    response.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.RESPONSE_CHECK_SIGNATURE);
+    response.addProperty("sender", webSocketMessage.senderAddress);
+    response.addProperty("chatId", webSocketMessage.chatId);
+    response.addProperty("messageId", webSocketMessage.messageId);
+
+    CompletableFuture<String> senderAddress = myself.getNotaryService()
+        .checkMessage(webSocketMessage.messageId);
+    senderAddress.thenAccept(sender -> {
+      response.addProperty("isSenderCorrect", sender.equals(webSocketMessage.senderAddress));
+      chatterWebSocketClient.send(response.toString());
+    });
   }
 
   public static String generateConfirmMessage(ChatterPeer chatterPeer, WebSocketMessage webSocketMessage) {
@@ -92,12 +100,6 @@ public class JsonGenerator {
     getChatPeers.addProperty("chatId", webSocketMessage.chatId);
     getChatPeers.addProperty("id", messageId);
     return getChatPeers.toString();
-  }
-
-  public static String generateGetPeer() {
-    JsonObject getPeers = new JsonObject();
-    getPeers.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.GET_PEERS);
-    return getPeers.toString();
   }
 
   public static String generateGetPeers() {

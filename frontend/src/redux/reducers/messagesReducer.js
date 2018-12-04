@@ -16,6 +16,10 @@ export default function reducer(reduxStore = {}, action) {
       return updateMessage(reduxStore, action.chatId, action.messageId, action.username);
     }
 
+    case actionTypes.RESPONSE_CHECK_SIGNATURE: {
+      return addCheckOfSignature(reduxStore, action.chatId, action.messageId, action.isSenderCorrect);
+    }
+
     default:
       return reduxStore;
   }
@@ -54,6 +58,20 @@ const updateMessage = (originalStore, chatId, messageId, signer) => {
     store[chatId] = chatArray.map(message => {
       if (message.messageId === messageId) {
         message.signedBy = [...message.signedBy, signer];
+      }
+      return message;
+    });
+  }
+  return store;
+};
+
+const addCheckOfSignature = (originalStore, chatId, messageId, isSenderCorrect) => {
+  let store = {...originalStore};
+  let chatArray = store[chatId];
+  if (Boolean(chatArray)) {
+    store[chatId] = chatArray.map(message => {
+      if (message.messageId === messageId) {
+        message.isSenderCorrect = isSenderCorrect;
       }
       return message;
     });
