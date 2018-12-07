@@ -15,7 +15,7 @@
     ```
     mvn exec:java -Dexec.args="______"
     
-    [mode] [username] [optional: bPort]
+    [mode] [username] [optional: backendPort]
     master ernest     5000
     ```
 3. Start each other _Person of Interest_. The default local Port for TomP2P is :5000. If multiple instances
@@ -23,7 +23,7 @@ per client would be needed use the optional local Port syntax's to start on diff
     ```
     mvn exec:java -Dexec.args="______"
     
-    [mode] [username] [optional: bPort]  [user@rHost:rPort]     [optional: fPort]   
+    [mode] [username] [optional: backendPort]  [user@rHost:remotePort]     [optional: frontendPort]   
     client root       5001               ernest@127.0.0.1:5000  
     client harold     5002               ernest@127.0.0.1:5000  
     client john       5003               ernest@127.0.0.1:5000  
