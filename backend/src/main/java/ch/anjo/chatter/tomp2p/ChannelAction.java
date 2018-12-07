@@ -106,7 +106,6 @@ class ChannelAction {
             case MessageTypes.ADD_CHAT:
             case MessageTypes.CHANGE_CHAT: {
               webSocketClient.send(tomP2pMessage.getJsonMessage());
-
               return null;
             }
             case MessageTypes.CONFIRM_MESSAGE: {
@@ -140,9 +139,11 @@ class ChannelAction {
 
   private static void confirmMessage(
       ChatterPeer chatterPeer, WebSocketMessage webSocketMessage, TomP2pMessage tomP2pMessage) {
-    String response = JsonGenerator.generateConfirmMessage(chatterPeer, webSocketMessage);
-    System.out.println(tomP2pMessage.getSender());
-    DataSender.sendWithConfirmation(chatterPeer, tomP2pMessage.getSender(), response);
+    if (!webSocketMessage.messageInformation.author.equals(chatterPeer.getChatterUser().getUsername())) {
+      String response = JsonGenerator.generateConfirmMessage(chatterPeer, webSocketMessage);
+      System.out.println(tomP2pMessage.getSender());
+      DataSender.sendWithConfirmation(chatterPeer, tomP2pMessage.getSender(), response);
+    }
   }
 
   private static String getFriends(ChatterPeer chatterPeer) {
