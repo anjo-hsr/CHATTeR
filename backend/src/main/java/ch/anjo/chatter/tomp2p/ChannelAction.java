@@ -1,5 +1,7 @@
 package ch.anjo.chatter.tomp2p;
 
+import static ch.anjo.chatter.tomp2p.ChatterPeer.readUser;
+
 import ch.anjo.chatter.helpers.DateGenerator;
 import ch.anjo.chatter.helpers.JsonGenerator;
 import ch.anjo.chatter.helpers.MessageTypes;
@@ -8,6 +10,7 @@ import ch.anjo.chatter.websocket.templates.WebSocketMessage;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -19,6 +22,7 @@ import net.tomp2p.futures.BaseFuture;
 import net.tomp2p.futures.BaseFutureAdapter;
 import net.tomp2p.p2p.Peer;
 import net.tomp2p.p2p.builder.BootstrapBuilder;
+import net.tomp2p.peers.PeerAddress;
 import net.tomp2p.storage.Data;
 import org.java_websocket.client.WebSocketClient;
 
@@ -55,7 +59,8 @@ class ChannelAction {
                             if (data != null) {
                               System.out.println(
                                   String.format(
-                                      "%sFriends received %s", DateGenerator.getDate(),
+                                      "%sFriends received %s",
+                                      DateGenerator.getDate(),
                                       ((ChatterUser) data.object()).getFriends()));
 
                               ((ChatterUser) data.object())
@@ -105,6 +110,7 @@ class ChannelAction {
             }
             case MessageTypes.ADD_CHAT:
             case MessageTypes.CHANGE_CHAT: {
+              sendPeerInformation(chatterPeer, tomP2pMessage, webSocketMessage);
               webSocketClient.send(tomP2pMessage.getJsonMessage());
               return null;
             }
@@ -137,9 +143,37 @@ class ChannelAction {
         });
   }
 
+  private static void sendPeerInformation(ChatterPeer chatterPeer,
+      WebSocketMessage webSocketMessage) {
+    String response = JsonGenerator.generateAddPeers(chatterPeer.getChatterUser());
+    ChatterUser chatterUser = chatterPeer.getChatterUser();
+    webSocketMessage.chatInformation.peers.forEach(peer -> {
+      chatterPeer.getDht().get(ChatterUser.getHash(peer))
+          .start()
+          .addListener(
+              new BaseFutureAdapter<FutureGet>() {
+                @Override
+                public void operationComplete(FutureGet future) {
+                  Data data = future.data();
+                  if (!data.isEmpty()) {
+                    ChatterUser futureFriend = readUser(data);
+                    TomP2pMessage tomP2pMessage =
+                        new TomP2pMessage(
+                            chatterUser.getUsername(),
+                            Objects.requireNonNull(futureFriend).getUsername(),
+                            response);
+                    PeerAddress futureFriendAddress = futureFriend.getPeerAddress();
+                    chatterPeer.getMyself().sendDirect(futureFriendAddress).object(tomP2pMessage).start();
+                  }
+                }
+              });
+    });
+  }
+
   private static void confirmMessage(
       ChatterPeer chatterPeer, WebSocketMessage webSocketMessage, TomP2pMessage tomP2pMessage) {
-    if (!webSocketMessage.messageInformation.author.equals(chatterPeer.getChatterUser().getUsername())) {
+    if (!webSocketMessage.messageInformation.author.equals(
+        chatterPeer.getChatterUser().getUsername())) {
       String response = JsonGenerator.generateConfirmMessage(chatterPeer, webSocketMessage);
       System.out.println(tomP2pMessage.getSender());
       DataSender.sendWithConfirmation(chatterPeer, tomP2pMessage.getSender(), response);
@@ -166,7 +200,7 @@ class ChannelAction {
                       public void operationComplete(FutureGet future) {
                         Data data = future.data();
                         if (!data.isEmpty()) {
-                          ChatterUser friend = ChatterPeer.readUser(data);
+                          ChatterUser friend = readUser(data);
                           if (Objects.nonNull(friend)) {
                             peerSet.add(friend.getInformation());
                           }
