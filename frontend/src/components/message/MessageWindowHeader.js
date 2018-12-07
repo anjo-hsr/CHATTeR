@@ -19,31 +19,36 @@ export default class MessageWindowHeader extends React.Component {
           <Header>{'Chat with ' + this.props.chatName}</Header>
         </Grid.Column>
         <Grid.Column width="2" verticalAlign="middle">
+          <Button
+            icon="sign out alternate"
+            color="red"
+            size="large"
+            inverted
+            onClick={() =>
+              this.props.leaveChat({
+                chatId: this.props.selectedChat,
+                chatObject: this.props.chatObject,
+                username: this.props.username
+              })
+            }
+          />
+        </Grid.Column>
+        <Grid.Column width="2" verticalAlign="middle">
           <ModalChangeChat />
         </Grid.Column>
         <Grid.Column width="2" verticalAlign="middle">
           <PeerStates chatPeers={this.props.chatPeers} />
         </Grid.Column>
-        {this.props.chatApproved && (
-          <Grid.Column width="2" verticalAlign="middle">
-            <Button
-              icon="sign in alternate"
-              color="green"
-              size="large"
-              inverted
-              onClick={() => this.props.approveChat(this.props.selectedChat)}
-            />
-          </Grid.Column>
-        )}
       </Grid.Row>
     );
   }
 }
 
 MessageWindowHeader.propTypes = {
-  approveChat: PropTypes.func,
-  chatApproved: PropTypes.bool,
+  leaveChat: PropTypes.func,
   selectedChat: PropTypes.string.isRequired,
   chatName: PropTypes.string.isRequired,
-  chatPeers: PropTypes.array.isRequired
+  chatPeers: PropTypes.array.isRequired,
+  username: PropTypes.string.isRequired,
+  chatObject: PropTypes.object.isRequired
 };

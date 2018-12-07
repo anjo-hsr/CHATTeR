@@ -19,8 +19,8 @@ const getChatPeers = (chatPeers, peers, username) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  approveChat: chatId => {
-    dispatch(actionChats.approveChat(chatId));
+  leaveChat: ({chatId, chatObject, username}) => {
+    dispatch(actionChats.leaveChat({chatId, chatObject, username}));
   }
 });
 
@@ -32,8 +32,9 @@ export const MessageWindowHeader = connect(
       isGroup: chat.peers.length > 2,
       chatName: chat.name,
       chatPeers: getChatPeers(chat.peers, reduxStore.peers, reduxStore.state.username),
-      chatApproved: chat.approved,
-      isSidebarOpen: reduxStore.state.isSidebarOpen
+      chatObject: reduxStore.chats[reduxStore.state.selectedChat],
+      isSidebarOpen: reduxStore.state.isSidebarOpen,
+      username: reduxStore.state.username
     };
   },
   mapDispatchToProps
