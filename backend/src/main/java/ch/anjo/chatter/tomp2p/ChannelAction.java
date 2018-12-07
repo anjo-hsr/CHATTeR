@@ -110,7 +110,7 @@ class ChannelAction {
             }
             case MessageTypes.ADD_CHAT:
             case MessageTypes.CHANGE_CHAT: {
-              sendPeerInformation(chatterPeer, tomP2pMessage, webSocketMessage);
+              sendPeerInformation(chatterPeer, webSocketMessage);
               webSocketClient.send(tomP2pMessage.getJsonMessage());
               return null;
             }
@@ -143,8 +143,7 @@ class ChannelAction {
         });
   }
 
-  private static void sendPeerInformation(ChatterPeer chatterPeer,
-      WebSocketMessage webSocketMessage) {
+  private static void sendPeerInformation(ChatterPeer chatterPeer, WebSocketMessage webSocketMessage) {
     String response = JsonGenerator.generateAddPeers(chatterPeer.getChatterUser());
     ChatterUser chatterUser = chatterPeer.getChatterUser();
     webSocketMessage.chatInformation.peers.forEach(peer -> {
