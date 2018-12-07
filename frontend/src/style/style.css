@@ -127,6 +127,11 @@ body {
 .messageInput {
   height: 10vh !important; }
 
+.chainInformation {
+  width: 100% !important;
+  position: sticky !important;
+  top: 0 !important; }
+
 .addChat {
   position: absolute !important;
   bottom: 0;

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {Button, Feed, Image, Popup} from 'semantic-ui-react';
+import {Button, Feed, Image, Message, Popup} from 'semantic-ui-react';
 
 import MessageMoment from './MessageMoment';
 import MessageState from '../view/MessageState';
@@ -20,25 +20,42 @@ export default class MessageHistory extends React.Component {
   };
 
   render() {
+    let hideInformation = !this.getCurrentChatHistory().some(
+      message => typeof message.isMessageOnContract === 'boolean' && !message.isMessageOnContract
+    );
     return (
-      <Feed>
-        {this.getCurrentChatHistory().map((message, index, array) => (
-          <Feed.Event
-            className={this.isMe(message.author) ? 'myMessage' : ''}
-            key={message.date + message.message + Math.random()}
-          >
-            {this.isMe(message.author) ? (
-              <MessageState
-                readers={message.signedBy}
-                possibleReaders={message.possibleReaders}
-                didAllSign={message.signedBy.length === message.possibleReaders.length}
-              />
-            ) : (
-              <div>
+      <div>
+        <Message
+          className="chainInformation"
+          color="yellow"
+          hidden={hideInformation}
+          header="Message not found"
+          content="Please wait a few seconds and try again to check the message."
+        />
+        <Feed>
+          {this.getCurrentChatHistory().map((message, index, array) => (
+            <Feed.Event
+              className={this.isMe(message.author) ? 'myMessage' : ''}
+              key={message.date + message.message + Math.random()}
+            >
+              {this.isMe(message.author) ? (
+                <MessageState
+                  readers={message.signedBy}
+                  possibleReaders={message.possibleReaders}
+                  didAllSign={message.signedBy.length === message.possibleReaders.length}
+                />
+              ) : (
                 <Button
                   circular
+                  disabled={Boolean(message.isSenderCorrect) || Boolean(message.isMessageOnContract)}
                   color={
-                    Boolean(message.isSenderCorrect) ? 'blue' : Boolean(message.isMessageOnContract) ? 'red' : 'grey'
+                    Boolean(message.isSenderCorrect)
+                      ? 'blue'
+                      : Boolean(message.isMessageOnContract)
+                      ? 'red'
+                      : typeof message.isMessageOnContract === 'boolean'
+                      ? 'yellow'
+                      : 'grey'
                   }
                   icon={
                     Boolean(message.isSenderCorrect)
@@ -47,7 +64,6 @@ export default class MessageHistory extends React.Component {
                       ? 'broken chain'
                       : 'chain'
                   }
-                  disabled={Boolean(message.isSenderCorrect) || Boolean(message.isMessageOnContract)}
                   onClick={() =>
                     this.props.checkSignature({
                       chatId: this.props.selectedChat,
@@ -57,37 +73,37 @@ export default class MessageHistory extends React.Component {
                     })
                   }
                 />
-              </div>
-            )}
-            <Feed.Label>{isAvatarNeeded(array, index) && <Image src={Anonymous} />}</Feed.Label>
-            <Feed.Content>
-              <Feed.Summary>
-                {(this.isMe(message.author) ? 'I' : message.author) + ' wrote'}
-                <Feed.Date>
-                  <i>
-                    <Popup
-                      position="top center"
-                      trigger={
-                        <div>
-                          <MessageMoment date={message.date} />
-                        </div>
-                      }
-                      content={
-                        <div>
-                          {moment(message.date)
-                            .format('YYYY-MM-DD HH:mm:ss')
-                            .toString()}
-                        </div>
-                      }
-                    />
-                  </i>
-                </Feed.Date>
-              </Feed.Summary>
-              <Feed.Extra text>{message.message}</Feed.Extra>
-            </Feed.Content>
-          </Feed.Event>
-        ))}
-      </Feed>
+              )}
+              <Feed.Label>{isAvatarNeeded(array, index) && <Image src={Anonymous} />}</Feed.Label>
+              <Feed.Content>
+                <Feed.Summary>
+                  {(this.isMe(message.author) ? 'I' : message.author) + ' wrote'}
+                  <Feed.Date>
+                    <i>
+                      <Popup
+                        position="top center"
+                        trigger={
+                          <div>
+                            <MessageMoment date={message.date} />
+                          </div>
+                        }
+                        content={
+                          <div>
+                            {moment(message.date)
+                              .format('YYYY-MM-DD HH:mm:ss')
+                              .toString()}
+                          </div>
+                        }
+                      />
+                    </i>
+                  </Feed.Date>
+                </Feed.Summary>
+                <Feed.Extra text>{message.message}</Feed.Extra>
+              </Feed.Content>
+            </Feed.Event>
+          ))}
+        </Feed>
+      </div>
     );
   }
 }
