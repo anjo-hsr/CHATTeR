@@ -77,10 +77,6 @@ public class InboundHandler {
         OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
         break;
       }
-      case MessageTypes.APPROVE_CHAT: {
-        OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
-        break;
-      }
       default:
     }
   }

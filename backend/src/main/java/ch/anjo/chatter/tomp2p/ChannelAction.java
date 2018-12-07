@@ -106,6 +106,7 @@ class ChannelAction {
             case MessageTypes.ADD_CHAT:
             case MessageTypes.CHANGE_CHAT: {
               webSocketClient.send(tomP2pMessage.getJsonMessage());
+
               return null;
             }
             case MessageTypes.CONFIRM_MESSAGE: {

@@ -14,7 +14,6 @@ export const MessageInput = connect(
     return {
       chatId: reduxStore.state.selectedChat,
       username: reduxStore.state.username,
-      chatApproved: reduxStore.chats[reduxStore.state.selectedChat].approved,
       chatPeers: reduxStore.chats[reduxStore.state.selectedChat].peers.filter(
         peer => peer !== reduxStore.state.username
       )

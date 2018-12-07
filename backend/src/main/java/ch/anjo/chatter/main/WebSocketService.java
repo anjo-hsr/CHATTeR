@@ -1,5 +1,6 @@
 package ch.anjo.chatter.main;
 
+import ch.anjo.chatter.helpers.DateGenerator;
 import ch.anjo.chatter.helpers.JsonGenerator;
 import ch.anjo.chatter.websocket.handlers.InboundHandler;
 import ch.anjo.chatter.websocket.handlers.OutboundHandler;
@@ -85,7 +86,7 @@ public class WebSocketService extends Thread {
 
   private void printMessageInformation(Handler handler, WsSession session, String jsonMessage) {
     final String sessionType = handler.getSessionHandler().getSessionType(session);
-    System.out.println(String.format("%s sent: %s", sessionType, jsonMessage));
+    System.out.println(String.format("%s %s sent: %s", DateGenerator.getDate(), sessionType, jsonMessage));
   }
 
   private void getOpenBrowserMessage(String frontendUrl) {

@@ -122,10 +122,6 @@ public class ChatterWebSocketClient extends WebSocketClient {
         sendPeers();
         break;
       }
-      case MessageTypes.APPROVE_CHAT: {
-        bootStrapNewPeers(webSocketMessage.chatId);
-        break;
-      }
       default:
     }
   }

@@ -1,34 +1,25 @@
 import {actionTypes as types} from './actions';
 
 export default {
-  addChat({chatId, chatObject, approved}) {
+  addChat({chatId, chatObject}) {
     return {
       type: types.ADD_CHAT,
       chatId,
       chatInformation: {
         name: chatObject.name || chatObject.peers.map(peer => peer.name).toString(),
-        peers: chatObject.peers,
-        approved: approved || false
+        peers: chatObject.peers
       }
     };
   },
 
-  changeChat({chatId, chatObject, approved}) {
+  changeChat({chatId, chatObject}) {
     return {
       type: types.CHANGE_CHAT,
       chatId,
       chatInformation: {
         name: chatObject.name || chatObject.peers.map(peer => peer.name).toString(),
-        peers: chatObject.peers,
-        approved: approved || false
+        peers: chatObject.peers
       }
-    };
-  },
-
-  approveChat(chatId) {
-    return {
-      type: types.APPROVE_CHAT,
-      chatId
     };
   },
 
