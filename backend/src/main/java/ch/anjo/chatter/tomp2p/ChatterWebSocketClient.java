@@ -177,14 +177,14 @@ public class ChatterWebSocketClient extends WebSocketClient {
       loopHandler.setNewMessage(webSocketMessage);
       return;
     }
-    String messageId = generateMessageId(webSocketMessage);
-    messageWaitingRoom.put(messageId, jsonMessage);
+    String waitingMessageId = generateWaitingMessageId();
+    messageWaitingRoom.put(waitingMessageId, jsonMessage);
 
-    requestPeers(webSocketMessage, messageId);
+    requestPeers(webSocketMessage, waitingMessageId);
   }
 
-  private void requestPeers(WebSocketMessage webSocketMessage, String messageId) {
-    String getChatPeers = JsonGenerator.generateGetChatPeers(webSocketMessage, messageId);
+  private void requestPeers(WebSocketMessage webSocketMessage, String waitingMessageId) {
+    String getChatPeers = JsonGenerator.generateGetChatPeers(webSocketMessage, waitingMessageId);
     this.send(getChatPeers);
   }
 
@@ -198,7 +198,7 @@ public class ChatterWebSocketClient extends WebSocketClient {
 
     chatMemebersMap.put(webSocketMessage.chatId, peerSet);
 
-    if (webSocketMessage.id.equals("")) {
+    if (webSocketMessage.waitingMessageId.equals("")) {
       System.out.println("Updated peers via Chat update");
     } else {
       System.out.println("Received peers via new WebSocketMessage.");
@@ -207,20 +207,15 @@ public class ChatterWebSocketClient extends WebSocketClient {
   }
 
   private void sendWaitingMessageToPeers(WebSocketMessage webSocketMessage) {
-    String jsonMessage = messageWaitingRoom.remove(webSocketMessage.id);
+    String jsonMessage = messageWaitingRoom.remove(webSocketMessage.waitingMessageId);
     Gson gson = new Gson();
     webSocketMessage = gson.fromJson(jsonMessage, WebSocketMessage.class);
     sendMessageToPeers(webSocketMessage, jsonMessage);
   }
 
-  private String generateMessageId(WebSocketMessage webSocketMessage) {
+  private String generateWaitingMessageId() {
     byte[] array = new byte[256]; // length is bounded by 7
     new Random().nextBytes(array);
     return Hashing.sha256().hashBytes(array).toString();
-  }
-
-  private void bootStrapNewPeers(String chatId) {
-    Set<PeerInformation> peers = new HashSet<>(chatMemebersMap.get(chatId));
-    this.send(JsonGenerator.generateUpdateChatPeers(myself, peers));
   }
 }

@@ -98,11 +98,11 @@ public class JsonGenerator {
     return response.toString();
   }
 
-  public static String generateGetChatPeers(WebSocketMessage webSocketMessage, String messageId) {
+  public static String generateGetChatPeers(WebSocketMessage webSocketMessage, String waitingMessageId) {
     JsonObject getChatPeers = new JsonObject();
     getChatPeers.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.GET_CHAT_PEERS);
     getChatPeers.addProperty("chatId", webSocketMessage.chatId);
-    getChatPeers.addProperty("id", messageId);
+    getChatPeers.addProperty("id", waitingMessageId);
     return getChatPeers.toString();
   }
 

@@ -64,7 +64,7 @@ public class InboundHandler {
       }
       case MessageTypes.GET_CHAT_PEERS: {
         OutboundHandler.sendChatPeers(
-            handler, session, webSocketMessage.id, webSocketMessage.chatId);
+            handler, session, webSocketMessage.waitingMessageId, webSocketMessage.chatId);
         break;
       }
       case MessageTypes.ADD_PEERS:

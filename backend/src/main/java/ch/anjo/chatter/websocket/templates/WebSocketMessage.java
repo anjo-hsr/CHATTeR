@@ -1,6 +1,5 @@
 package ch.anjo.chatter.websocket.templates;
 
-import ch.anjo.chatchain.Address;
 import ch.anjo.chatter.websocket.templates.chat.ChatInformation;
 import ch.anjo.chatter.websocket.templates.message.MessageInformation;
 import com.google.common.base.Objects;
@@ -8,6 +7,7 @@ import com.google.common.base.Objects;
 public class WebSocketMessage {
   public String type;
   public String id;
+  public String waitingMessageId;
   public String message;
   public String username;
   public String chatId;
@@ -27,7 +27,7 @@ public class WebSocketMessage {
     }
     WebSocketMessage that = (WebSocketMessage) o;
     return Objects.equal(type, that.type)
-        && Objects.equal(id, that.id)
+        && Objects.equal(waitingMessageId, that.waitingMessageId)
         && Objects.equal(message, that.message)
         && Objects.equal(username, that.username)
         && Objects.equal(chatId, that.chatId)
