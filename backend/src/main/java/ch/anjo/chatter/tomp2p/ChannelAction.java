@@ -99,6 +99,7 @@ class ChannelAction {
               if (!tomP2pMessage.getSender().equals(chatterPeer.getChatterUser().getUsername())) {
                 webSocketClient.send(tomP2pMessage.getJsonMessage());
               }
+              return null;
             }
 
             case MessageTypes.GET_PEERS: {
@@ -107,7 +108,7 @@ class ChannelAction {
                 chatterPeer.addFriend(tomP2pMessage.getSender());
                 return responseJson;
               }
-              break;
+              return null;
             }
             case MessageTypes.ADD_CHAT:
             case MessageTypes.CHANGE_CHAT: {
@@ -123,6 +124,7 @@ class ChannelAction {
               messageHistory.add(tomP2pMessage);
               webSocketClient.send(tomP2pMessage.getJsonMessage());
               confirmMessage(chatterPeer, webSocketMessage, tomP2pMessage);
+              break;
             }
             default: {
               webSocketClient.send(tomP2pMessage.getJsonMessage());
