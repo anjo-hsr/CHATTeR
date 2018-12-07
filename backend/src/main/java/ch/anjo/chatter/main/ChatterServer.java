@@ -28,25 +28,20 @@ public class ChatterServer {
 
     ChatterPeer chatterPeer = null;
     switch (parameters.getMode()) {
-      case "master":
-        {
-          chatterPeer = new ChatterPeer(parameters);
+      case "master": {
+        chatterPeer = new ChatterPeer(parameters);
+        break;
+      }
+      case "client": {
+        validator.setParameters(new ClientParameters(args));
+        if (validator.areClientParametersCorrect()) {
+          chatterPeer = new ChatterPeer((ClientParameters) validator.getParameters());
           break;
         }
-      case "client":
-        {
-          validator.setParameters(new ClientParameters(args));
-          if (validator.areClientParametersCorrect()) {
-            chatterPeer = new ChatterPeer((ClientParameters) validator.getParameters());
-          } else {
-            terminate();
-          }
-          break;
-        }
-      default:
-        {
-          terminate();
-        }
+      }
+      default: {
+        terminate();
+      }
     }
 
     startServices(parameters, chatterPeer);
