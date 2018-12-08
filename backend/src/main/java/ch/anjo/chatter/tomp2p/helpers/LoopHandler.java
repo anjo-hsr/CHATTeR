@@ -3,7 +3,10 @@ package ch.anjo.chatter.tomp2p.helpers;
 import ch.anjo.chatter.websocket.templates.WebSocketMessage;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class LoopHandler {
 
@@ -26,7 +29,7 @@ public class LoopHandler {
   private void cleanUpMessages() {
     Calendar now = Calendar.getInstance();
 
-    lastMessages
+    Set<WebSocketMessage> deleteSet = lastMessages
         .keySet()
         .stream()
         .filter(
@@ -35,6 +38,12 @@ public class LoopHandler {
               now.add(Calendar.MINUTE, -2);
               return now.after(messageDate);
             })
-        .forEach(lastMessages::remove);
+        .collect(Collectors.toSet());
+
+    Iterator<WebSocketMessage> iterator = deleteSet.iterator();
+    while(iterator.hasNext()){
+      iterator.remove();
+    }
+
   }
 }
