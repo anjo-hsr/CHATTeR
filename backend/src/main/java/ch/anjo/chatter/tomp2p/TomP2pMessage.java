@@ -19,28 +19,12 @@ public class TomP2pMessage implements Serializable {
     this.verified = false;
   }
 
-  public String getSender() {
+  String getSender() {
     return sender;
   }
 
-  public String getReceiver() {
-    return receiver;
-  }
-
-  public PeerAddress getReceiverAddress() {
-    return receiverAddress;
-  }
-
-  public String getJsonMessage() {
+  String getJsonMessage() {
     return jsonMessage;
-  }
-
-  public boolean isVerified() {
-    return verified;
-  }
-
-  public void verify() {
-    verified = true;
   }
 
   @Override

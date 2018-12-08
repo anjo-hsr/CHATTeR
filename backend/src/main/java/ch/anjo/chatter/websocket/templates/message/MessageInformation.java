@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 
 public class MessageInformation {
+
   public String messageId;
   public String date;
   public String author;

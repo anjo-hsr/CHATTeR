@@ -1,6 +1,7 @@
 package ch.anjo.chatter.tomp2p;
 
 public class ChatterAddress {
+
   private final String username;
   private final String host;
   private final int port;
@@ -15,11 +16,11 @@ public class ChatterAddress {
     return username;
   }
 
-  public String getHost() {
+  String getHost() {
     return host;
   }
 
-  public int getPort() {
+  int getPort() {
     return port;
   }
 }

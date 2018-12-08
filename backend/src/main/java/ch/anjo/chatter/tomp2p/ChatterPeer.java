@@ -2,7 +2,6 @@ package ch.anjo.chatter.tomp2p;
 
 import ch.anjo.chatchain.Constants;
 import ch.anjo.chatchain.NotaryService;
-import ch.anjo.chatter.helpers.JsonGenerator;
 import ch.anjo.chatter.tomp2p.parameters.ClientParameters;
 import ch.anjo.chatter.tomp2p.parameters.Parameters;
 import com.google.common.hash.HashCode;
@@ -10,7 +9,6 @@ import com.google.common.hash.Hashing;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import net.tomp2p.dht.FutureGet;
 import net.tomp2p.dht.PeerBuilderDHT;
 import net.tomp2p.dht.PeerDHT;
@@ -22,7 +20,6 @@ import net.tomp2p.p2p.PeerBuilder;
 import net.tomp2p.peers.Number160;
 import net.tomp2p.peers.PeerAddress;
 import net.tomp2p.storage.Data;
-import org.java_websocket.client.WebSocketClient;
 
 public class ChatterPeer {
 
@@ -87,15 +84,15 @@ public class ChatterPeer {
     return chatterUser;
   }
 
-  public List<TomP2pMessage> getMessageHistory() {
+  List<TomP2pMessage> getMessageHistory() {
     return messageHistory;
   }
 
-  public String getMasterName() {
+  String getMasterName() {
     return masterName;
   }
 
-  public PeerAddress getMasterAddress() {
+  PeerAddress getMasterAddress() {
     return masterAddress;
   }
 

@@ -1,8 +1,6 @@
 package ch.anjo.chatchain;
 
-import java.io.Serializable;
 import java.util.Map;
-import java.util.Objects;
 
 public class Constants {
 

@@ -1,6 +1,5 @@
 package ch.anjo.chatter.websocket.handlers;
 
-import ch.anjo.chatter.helpers.JsonGenerator;
 import ch.anjo.chatter.helpers.MessageTypes;
 import ch.anjo.chatter.websocket.handlers.handlerClasses.Handler;
 import ch.anjo.chatter.websocket.templates.WebSocketMessage;
