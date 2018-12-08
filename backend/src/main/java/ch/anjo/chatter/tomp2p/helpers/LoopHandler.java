@@ -1,22 +1,20 @@
 package ch.anjo.chatter.tomp2p.helpers;
 
 import ch.anjo.chatter.websocket.templates.WebSocketMessage;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class LoopHandler {
 
-  private Map<WebSocketMessage, Date> lastMessages;
+  private Map<WebSocketMessage, Calendar> lastMessages;
 
   public LoopHandler() {
     this.lastMessages = new HashMap<>();
   }
 
   public void setNewMessage(WebSocketMessage webSocketMessage) {
-    lastMessages.put(webSocketMessage, new Date());
+    lastMessages.put(webSocketMessage, Calendar.getInstance());
   }
 
   public boolean isLoopMessage(WebSocketMessage webSocketMessage) {
@@ -26,19 +24,17 @@ public class LoopHandler {
   }
 
   private void cleanUpMessages() {
-    Date currentDate = new Date();
+    Calendar now = Calendar.getInstance();
 
-    Set<WebSocketMessage> deleteSet =
-        lastMessages
-            .keySet()
-            .stream()
-            .filter(
-                webSocketMessage -> {
-                  Date messageDate = lastMessages.get(webSocketMessage);
-                  return currentDate.getMinutes() - messageDate.getMinutes() > 2;
-                })
-            .collect(Collectors.toSet());
-
-    deleteSet.forEach(lastMessages::remove);
+    lastMessages
+        .keySet()
+        .stream()
+        .filter(
+            webSocketMessage -> {
+              Calendar messageDate = lastMessages.get(webSocketMessage);
+              now.add(Calendar.MINUTE, -2);
+              return now.after(messageDate);
+            })
+        .forEach(lastMessages::remove);
   }
 }

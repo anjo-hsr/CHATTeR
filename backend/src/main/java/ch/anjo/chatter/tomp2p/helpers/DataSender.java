@@ -3,8 +3,6 @@ package ch.anjo.chatter.tomp2p.helpers;
 import ch.anjo.chatter.tomp2p.ChatterPeer;
 import ch.anjo.chatter.tomp2p.ChatterUser;
 import ch.anjo.chatter.tomp2p.TomP2pMessage;
-import com.google.common.hash.HashCode;
-import com.google.common.hash.Hashing;
 import java.util.Objects;
 import net.tomp2p.dht.FutureGet;
 import net.tomp2p.dht.PeerDHT;
