@@ -42,6 +42,7 @@ public class LoopHandler {
 
     Iterator<WebSocketMessage> iterator = deleteSet.iterator();
     while(iterator.hasNext()){
+      iterator.next();
       iterator.remove();
     }
 
