@@ -5,6 +5,7 @@ import ch.anjo.chatter.websocket.templates.message.MessageInformation;
 import com.google.common.base.Objects;
 
 public class WebSocketMessage {
+
   public String type;
   public String id;
   public String waitingMessageId;

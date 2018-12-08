@@ -8,15 +8,6 @@ public class Address implements Serializable {
   private final String address;
   private final Wallet wallet;
 
-  public Address(String address) {
-    this.wallet = null;
-    if (!isAddressCorrect(address)) {
-      this.address = address;
-      return;
-    }
-    this.address = null;
-  }
-
   public static String nullAddress = "0x0000000000000000000000000000000000000000";
 
   Address(String address, String prefix, String password) {

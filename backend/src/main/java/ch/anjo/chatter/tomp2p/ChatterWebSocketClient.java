@@ -28,7 +28,7 @@ public class ChatterWebSocketClient extends WebSocketClient {
   private final int webSocketPort;
   private final ChatterPeer myself;
   private final String username;
-  private Map<String, Set<PeerInformation>> chatMemebersMap;
+  private Map<String, Set<PeerInformation>> chatMembersMap;
   private final Map<String, String> messageWaitingRoom;
   private LoopHandler loopHandler;
 
@@ -38,7 +38,7 @@ public class ChatterWebSocketClient extends WebSocketClient {
     this.webSocketPort = webSocketPort;
     this.myself = myself;
     this.username = username;
-    this.chatMemebersMap = new HashMap<>();
+    this.chatMembersMap = new HashMap<>();
     this.messageWaitingRoom = new HashMap<>();
     this.loopHandler = new LoopHandler();
   }
@@ -106,7 +106,7 @@ public class ChatterWebSocketClient extends WebSocketClient {
                 .map(PeerInformation::new)
                 .filter(peer -> !myself.getChatterUser().getUsername().equals(peer.name))
                 .collect(Collectors.toSet());
-        chatMemebersMap.put(webSocketMessage.chatId, Sets.newHashSet(peers));
+        chatMembersMap.put(webSocketMessage.chatId, Sets.newHashSet(peers));
         this.send(JsonGenerator.generateUpdateChatPeers(myself, peers));
         sendNewChat(webSocketMessage, jsonMessage);
         break;
@@ -161,14 +161,14 @@ public class ChatterWebSocketClient extends WebSocketClient {
     }
 
     String chatId = webSocketMessage.chatId;
-    if (chatMemebersMap.containsKey(chatId)) {
+    if (chatMembersMap.containsKey(chatId)) {
       System.out.println("Direct");
       System.out.println(
           String.format(
               "Send message over chat (%s) to: %s",
-              chatId.substring(0, 9), chatMemebersMap.get(chatId).toString()));
+              chatId.substring(0, 9), chatMembersMap.get(chatId).toString()));
 
-      Set<PeerInformation> chatPeers = chatMemebersMap.get(chatId);
+      Set<PeerInformation> chatPeers = chatMembersMap.get(chatId);
       if (webSocketMessage.type.equals(MessageTypes.ADD_MESSAGE)) {
         this.myself.getNotaryService().storeMessage(webSocketMessage.messageInformation.messageId);
       }
@@ -196,7 +196,7 @@ public class ChatterWebSocketClient extends WebSocketClient {
             .toArray(PeerInformation[]::new);
     HashSet<PeerInformation> peerSet = new HashSet<>(Set.of(otherPeers));
 
-    chatMemebersMap.put(webSocketMessage.chatId, peerSet);
+    chatMembersMap.put(webSocketMessage.chatId, peerSet);
 
     if (webSocketMessage.waitingMessageId.equals("")) {
       System.out.println("Updated peers via Chat update");

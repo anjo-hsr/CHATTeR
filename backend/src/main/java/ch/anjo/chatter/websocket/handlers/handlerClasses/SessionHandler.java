@@ -3,7 +3,6 @@ package ch.anjo.chatter.websocket.handlers.handlerClasses;
 import ch.anjo.chatter.helpers.DateGenerator;
 import ch.anjo.chatter.websocket.templates.WebSocketPair;
 import io.javalin.websocket.WsSession;
-import java.util.List;
 import java.util.Objects;
 
 public class SessionHandler {

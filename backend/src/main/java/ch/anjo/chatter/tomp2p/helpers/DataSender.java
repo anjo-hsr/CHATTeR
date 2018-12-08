@@ -1,17 +1,13 @@
 package ch.anjo.chatter.tomp2p.helpers;
 
-import ch.anjo.chatter.helpers.MessageTypes;
 import ch.anjo.chatter.tomp2p.ChatterPeer;
 import ch.anjo.chatter.tomp2p.ChatterUser;
 import ch.anjo.chatter.tomp2p.TomP2pMessage;
-import ch.anjo.chatter.websocket.templates.WebSocketMessage;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
-import com.google.gson.Gson;
 import java.util.Objects;
 import net.tomp2p.dht.FutureGet;
 import net.tomp2p.dht.PeerDHT;
-import net.tomp2p.futures.BaseFuture;
 import net.tomp2p.futures.BaseFutureAdapter;
 import net.tomp2p.p2p.Peer;
 import net.tomp2p.p2p.RequestP2PConfiguration;
@@ -97,9 +93,5 @@ public class DataSender {
     } catch (Exception e) {
       return null;
     }
-  }
-
-  public static HashCode getSha1Hash(String hashString) {
-    return Hashing.sha1().hashBytes(hashString.getBytes());
   }
 }

@@ -1,8 +1,9 @@
 package ch.anjo.chatter.websocket.templates;
 
 public class PeerInformation {
+
   public String name;
-  public boolean isOnline;
+  private boolean isOnline;
 
   public PeerInformation(String name) {
     this.name = name;
@@ -15,10 +16,6 @@ public class PeerInformation {
 
   public String getUsername() {
     return name;
-  }
-
-  public boolean isOnline() {
-    return isOnline;
   }
 
   @Override

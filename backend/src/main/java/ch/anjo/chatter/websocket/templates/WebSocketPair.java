@@ -1,7 +1,6 @@
 package ch.anjo.chatter.websocket.templates;
 
 import io.javalin.websocket.WsSession;
-import java.util.List;
 import java.util.Objects;
 
 public class WebSocketPair {
@@ -12,15 +11,6 @@ public class WebSocketPair {
   public WebSocketPair() {
     this.frontendSession = null;
     this.backendSession = null;
-  }
-
-  public WebSocketPair(WsSession frontendSession, WsSession backendSession) {
-    this.frontendSession = frontendSession;
-    this.backendSession = backendSession;
-  }
-
-  public List<WsSession> getSessions() {
-    return List.of(frontendSession, backendSession);
   }
 
   public WsSession getFrontendSession() {
@@ -47,24 +37,24 @@ public class WebSocketPair {
     this.backendSession = backendSession;
   }
 
-  private String getFrontendSessionId(){
+  private String getFrontendSessionId() {
     String id = "undefined";
-    if(Objects.nonNull(frontendSession)) {
+    if (Objects.nonNull(frontendSession)) {
       id = frontendSession.getId().substring(0, 9);
     }
     return id;
   }
 
-  private String getBackendSessionId(){
+  private String getBackendSessionId() {
     String id = "undefined";
-    if(Objects.nonNull(backendSession)) {
-      id = backendSession.getId().substring(0,9);
+    if (Objects.nonNull(backendSession)) {
+      id = backendSession.getId().substring(0, 9);
     }
     return id;
   }
 
   @Override
   public String toString() {
-    return String.format("frontend: %s\tbackend: %s", getFrontendSessionId() , getBackendSessionId() );
+    return String.format("frontend: %s\tbackend: %s", getFrontendSessionId(), getBackendSessionId());
   }
 }

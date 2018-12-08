@@ -15,10 +15,6 @@ public class LoopHandler {
     this.lastMessages = new HashMap<>();
   }
 
-  public Map<WebSocketMessage, Date> getLastMessages() {
-    return lastMessages;
-  }
-
   public void setNewMessage(WebSocketMessage webSocketMessage) {
     lastMessages.put(webSocketMessage, new Date());
   }
