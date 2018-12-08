@@ -134,6 +134,15 @@ body {
   opacity: 0.5 !important;
 }
 
+#newSender {
+  margin-top: 1em;
+  border-top: thin solid $CHATTeR-color;
+}
+
+#sameSender {
+  margin-top: -0.5em;
+}
+
 .event.myMessage > .content {
   text-align: right !important;
 
@@ -191,7 +200,7 @@ body {
   height: 10vh !important;
 }
 
-.chainInformation{
+.chainInformation {
   width: 100% !important;
   position: sticky !important;
   top: 0 !important;

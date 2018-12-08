@@ -1,4 +1,4 @@
-export default function isAvatarNeeded(array, index) {
+export default function isOtherAuthorThanBefore(array, index) {
   if (index === 0) {
     return true;
   }
