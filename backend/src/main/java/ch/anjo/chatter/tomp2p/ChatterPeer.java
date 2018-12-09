@@ -85,7 +85,7 @@ public class ChatterPeer {
     return chatterUser;
   }
 
-  List<TomP2pMessage> getMessageHistory() {
+  public List<TomP2pMessage> getMessageHistory() {
     return messageHistory;
   }
 
