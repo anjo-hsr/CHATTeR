@@ -15,7 +15,7 @@ export default class Chats extends React.Component {
         <Grid.Row className="chatOverview">
           <Scrollbars autoHide autoHideTimeout={numbers.autoHideTimeout} autoHideDuration={numbers.autoHideDuration}>
             <Card.Group>
-              {this.props.keys.map(chatId => (
+              {Object.keys(this.props.chats).map(chatId => (
                 <ChatCard
                   key={chatId}
                   chatId={chatId}
@@ -37,7 +37,6 @@ export default class Chats extends React.Component {
 }
 
 Chats.propTypes = {
-  keys: PropTypes.arrayOf(PropTypes.string).isRequired,
   chats: PropTypes.objectOf(
     PropTypes.shape({
       name: PropTypes.string,
