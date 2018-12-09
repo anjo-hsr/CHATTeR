@@ -143,14 +143,13 @@ body {
   margin-top: -0.5em;
 }
 
-.event {
+.event, .event.myMessage {
   width: 90% !important;
 }
 
 .event.myMessage {
   display: inline-block;
   position: relative;
-  width: 90% !important;
 
   & > .label {
     position: absolute !important;

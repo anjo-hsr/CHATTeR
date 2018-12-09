@@ -94,13 +94,12 @@ body {
 #sameSender {
   margin-top: -0.5em; }
 
-.event {
+.event, .event.myMessage {
   width: 90% !important; }
 
 .event.myMessage {
   display: inline-block;
-  position: relative;
-  width: 90% !important; }
+  position: relative; }
   .event.myMessage > .label {
     position: absolute !important;
     top: 0.5rem;
