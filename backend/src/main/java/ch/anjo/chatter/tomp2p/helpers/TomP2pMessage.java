@@ -1,4 +1,4 @@
-package ch.anjo.chatter.tomp2p;
+package ch.anjo.chatter.tomp2p.helpers;
 
 import com.google.common.base.Objects;
 import java.io.Serializable;

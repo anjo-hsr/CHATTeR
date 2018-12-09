@@ -2,6 +2,7 @@ package ch.anjo.chatter.tomp2p;
 
 import ch.anjo.chatchain.Constants;
 import ch.anjo.chatchain.NotaryService;
+import ch.anjo.chatter.tomp2p.helpers.TomP2pMessage;
 import ch.anjo.chatter.tomp2p.parameters.ClientParameters;
 import ch.anjo.chatter.tomp2p.parameters.Parameters;
 import com.google.common.hash.HashCode;
@@ -156,7 +157,7 @@ public class ChatterPeer {
     dht.shutdown().awaitUninterruptibly();
   }
 
-  static ChatterUser readUser(Data data) {
+  public static ChatterUser readUser(Data data) {
     try {
       return (ChatterUser) data.object();
     } catch (Exception e) {
