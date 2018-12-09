@@ -143,17 +143,8 @@ body {
   margin-top: -0.5em;
 }
 
-.event.myMessage > .content {
-  text-align: right !important;
-
-  & .summary {
-    margin-right: 0 !important;
-  }
-
-  & .extra.text {
-    margin-right: 0 !important;
-    max-width: 100% !important;
-  }
+.event {
+  width: 90% !important;
 }
 
 .event.myMessage {
@@ -165,6 +156,19 @@ body {
     position: absolute !important;
     top: 0.5rem;
     right: 1rem;
+  }
+
+  & > .content {
+    text-align: right !important;
+
+    & .summary {
+      margin-right: 0 !important;
+    }
+
+    & .extra.text {
+      margin-right: 0 !important;
+      max-width: 100% !important;
+    }
   }
 }
 

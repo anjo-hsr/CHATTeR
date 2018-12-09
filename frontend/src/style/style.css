@@ -94,13 +94,8 @@ body {
 #sameSender {
   margin-top: -0.5em; }
 
-.event.myMessage > .content {
-  text-align: right !important; }
-  .event.myMessage > .content .summary {
-    margin-right: 0 !important; }
-  .event.myMessage > .content .extra.text {
-    margin-right: 0 !important;
-    max-width: 100% !important; }
+.event {
+  width: 90% !important; }
 
 .event.myMessage {
   display: inline-block;
@@ -110,6 +105,13 @@ body {
     position: absolute !important;
     top: 0.5rem;
     right: 1rem; }
+  .event.myMessage > .content {
+    text-align: right !important; }
+    .event.myMessage > .content .summary {
+      margin-right: 0 !important; }
+    .event.myMessage > .content .extra.text {
+      margin-right: 0 !important;
+      max-width: 100% !important; }
 
 .ui.feed {
   width: 100% !important;
