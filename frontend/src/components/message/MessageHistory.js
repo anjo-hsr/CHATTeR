@@ -21,7 +21,6 @@ export default class MessageHistory extends React.Component {
     const prevHistory = this.props.chatHistory[this.props.selectedChat] || [];
     if (currentHistory.length !== prevHistory.length || this.props.selectedChat !== prevProps.selectedChat) {
       scroll.scrollToBottom({duration: 1000, delay: 2000, smooth: 'easeInOutQuint', containerId: 'messageHistory'});
-      console.log('Should scroll now');
     }
   }
 

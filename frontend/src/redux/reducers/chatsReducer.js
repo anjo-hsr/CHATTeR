@@ -36,7 +36,6 @@ const checkForChatState = (originalState, peers) => {
         }
       });
       const isOnline = numberOfOnlinePeers === store[key].peers.length - 1;
-      console.log(isOnline, numberOfOnlinePeers);
       store[key] = {...store[key], isOnline, numberOfOnlinePeers};
     });
   });
