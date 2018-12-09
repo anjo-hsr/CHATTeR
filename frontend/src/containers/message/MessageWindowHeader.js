@@ -31,6 +31,7 @@ export const MessageWindowHeader = connect(
       selectedChat: reduxStore.state.selectedChat,
       isGroup: chat.peers.length > 2,
       chatName: chat.name,
+      isOnline: chat.isOnline || false,
       chatPeers: getChatPeers(chat.peers, reduxStore.peers, reduxStore.state.username),
       chatObject: reduxStore.chats[reduxStore.state.selectedChat],
       isSidebarOpen: reduxStore.state.isSidebarOpen,

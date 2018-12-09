@@ -31,7 +31,9 @@ const checkForChatState = (originalState, peers) => {
       let numberOfOnlinePeers = store[key].numberOfOnlinePeers || 0;
       store[key].peers.forEach(chatPeer => {
         const peerMatch = peer.name === chatPeer;
-        numberOfOnlinePeers += peerMatch && peer.isOnline ? 1 : 0;
+        if (peerMatch) {
+          numberOfOnlinePeers += peer.isOnline ? 1 : 0;
+        }
       });
       const isOnline = numberOfOnlinePeers === store[key].peers.length - 1;
       console.log(isOnline, numberOfOnlinePeers);

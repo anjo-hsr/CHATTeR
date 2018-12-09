@@ -13,7 +13,10 @@ export default class MessageWindowHeader extends React.Component {
     return (
       <Grid.Row columns="equal" className="messageInformation">
         <Grid.Column width="2" verticalAlign="middle">
-          <Image src={this.props.isGroup ? AnonymousGroup : Anonymous} />
+          <Image
+            className={'chatAvatar ' + (this.props.isOnline ? 'online' : 'offline')}
+            src={this.props.chatPeers.length >= 2 ? AnonymousGroup : Anonymous}
+          />
         </Grid.Column>
         <Grid.Column verticalAlign="middle">
           <Header>{'Chat with ' + this.props.chatName}</Header>

@@ -21,9 +21,10 @@ export default class ChatCard extends React.Component {
         <Card.Content>
           <Card.Header content={this.props.chat.name || this.props.chat.peers[0]} />
           <Card.Description content={this.getChatMembers()} />
-          <div className={'chatAvatar ' + (this.props.chat.isOnline ? 'online' : 'offline')}>
-            <Image src={this.props.chat.peers.length > 2 ? AnonymousGroup : Anonymous} />
-          </div>
+          <Image
+            className={'chatAvatar ' + (this.props.chat.isOnline ? 'online' : 'offline')}
+            src={this.props.chat.peers.length > 2 ? AnonymousGroup : Anonymous}
+          />
         </Card.Content>
         <Card.Content extra>
           <Button.Group vertical={isMobile} widths="5">
