@@ -3,6 +3,7 @@ package ch.anjo.chatter.tomp2p;
 import ch.anjo.chatter.helpers.DateGenerator;
 import ch.anjo.chatter.helpers.JsonGenerator;
 import ch.anjo.chatter.helpers.MessageTypes;
+import ch.anjo.chatter.tomp2p.helpers.DataReceiver;
 import ch.anjo.chatter.tomp2p.helpers.DataSender;
 import ch.anjo.chatter.tomp2p.helpers.LoopHandler;
 import ch.anjo.chatter.websocket.templates.PeerInformation;
@@ -73,7 +74,7 @@ public class ChatterWebSocketClient extends WebSocketClient {
         myself.addFriend(myself.getMasterName());
       }
 
-      ChannelAction.replyToTomP2PData(myself, webSocketClient);
+      DataReceiver.replyToTomP2PData(myself, webSocketClient);
       webSocketClient.run();
     } catch (URISyntaxException e) {
       e.printStackTrace();

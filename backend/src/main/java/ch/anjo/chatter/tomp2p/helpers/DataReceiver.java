@@ -11,7 +11,7 @@ import net.tomp2p.p2p.Peer;
 import org.java_websocket.client.WebSocketClient;
 
 public class DataReceiver {
-  static void replyToTomP2PData(ChatterPeer chatterPeer, WebSocketClient webSocketClient) {
+  public static void replyToTomP2PData(ChatterPeer chatterPeer, WebSocketClient webSocketClient) {
     Peer myself = chatterPeer.getMyself();
     List<TomP2pMessage> messageHistory = chatterPeer.getMessageHistory();
     myself.objectDataReply(
