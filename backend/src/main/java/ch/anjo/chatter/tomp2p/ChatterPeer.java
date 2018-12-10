@@ -137,13 +137,33 @@ public class ChatterPeer {
             });
   }
 
+  public static ChatterUser readUser(Data data) {
+    try {
+      return (ChatterUser) data.object();
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
   public void newNumberArrived() {
     System.out.println("--Phone booth is ringing...--");
     System.out.println("machine: CAN.YOU.HEAR.ME?");
-    System.out.println(
-        String.format("%s: Ohhh hell yeah", chatterUser.getUsername()));
-    System.out.println(
-        String.format("%s: Guys, we have a new number, I'll be right back.", chatterUser.getUsername()));
+    System.out.println(String.format("%s: Ohhh hell yeah", chatterUser.getUsername()));
+    System.out.println(String.format("%s: Guys, we have a new number, I'll be right back.", chatterUser.getUsername()));
+
+    terminate();
+  }
+
+  public void lastWords() {
+    System.out.println("--Phone booth is ringing...--");
+    System.out.println("--Recorder starts playing...--");
+    System.out.println(String.format("%s: If you can hear this, you’re alone. The only thing left of me is the sound"
+            + "of my voice. I don’t know if any of us made it. So let me tell you who we were. And how we fought back.",
+        chatterUser.getUsername()));
+    terminate();
+  }
+
+  private void terminate() {
     chatterUser.setOnlineState(false);
 
     try {
@@ -155,13 +175,5 @@ public class ChatterPeer {
     myself.announceShutdown().start().awaitUninterruptibly();
     myself.shutdown().awaitUninterruptibly();
     dht.shutdown().awaitUninterruptibly();
-  }
-
-  public static ChatterUser readUser(Data data) {
-    try {
-      return (ChatterUser) data.object();
-    } catch (Exception e) {
-      return null;
-    }
   }
 }

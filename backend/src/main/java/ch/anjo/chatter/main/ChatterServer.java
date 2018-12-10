@@ -30,12 +30,14 @@ public class ChatterServer {
     switch (parameters.getMode()) {
       case "master": {
         chatterPeer = new ChatterPeer(parameters);
+        lastWords(chatterPeer);
         break;
       }
       case "client": {
         validator.setParameters(new ClientParameters(args));
         if (validator.areClientParametersCorrect()) {
           chatterPeer = new ChatterPeer((ClientParameters) validator.getParameters());
+          newNumberArrived(chatterPeer);
           break;
         }
       }
@@ -72,6 +74,10 @@ public class ChatterServer {
   }
 
   private static void newNumberArrived(ChatterPeer myself) {
-    new Thread(myself::newNumberArrived).start();
+    Runtime.getRuntime().addShutdownHook(new Thread(myself::newNumberArrived));
+  }
+
+  private static void lastWords(ChatterPeer myself) {
+    Runtime.getRuntime().addShutdownHook(new Thread(myself::lastWords));
   }
 }
