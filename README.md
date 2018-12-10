@@ -24,11 +24,11 @@ per client would be needed use the optional local Port syntax's to start on diff
     mvn exec:java -Dexec.args="______"
     
     [mode] [username] [optional: backendPort]  [user@rHost:remotePort]     [optional: frontendPort]   
-    client root       5001               ernest@127.0.0.1:5000  
-    client harold     5002               ernest@127.0.0.1:5000  
-    client john       5003               ernest@127.0.0.1:5000  
-    client lionel     5004               ernest@127.0.0.1:5000  
-    client sameen     5005               ernest@127.0.0.1:5000  
+    client root       5001                     ernest@127.0.0.1:5000  
+    client harold     5002                     ernest@127.0.0.1:5000  
+    client john       5003                     ernest@127.0.0.1:5000  
+    client lionel     5004                     ernest@127.0.0.1:5000  
+    client sameen     5005                     ernest@127.0.0.1:5000  
     ```
 4. Access the frontend by default via http://localhost:8000/ on the specific host. If no 
   specific port for the frontend was defined it will be always +3000 Port to the backend listening port.
