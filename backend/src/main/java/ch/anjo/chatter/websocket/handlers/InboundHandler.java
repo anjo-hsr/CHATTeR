@@ -59,6 +59,7 @@ public class InboundHandler {
       }
       case MessageTypes.SELECT_CHAT: {
         OutboundHandler.sendChatMessages(handler, webSocketMessage.chatId);
+        OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
         break;
       }
       case MessageTypes.GET_CHAT_PEERS: {

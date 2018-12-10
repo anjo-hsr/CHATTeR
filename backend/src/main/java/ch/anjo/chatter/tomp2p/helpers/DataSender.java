@@ -17,7 +17,7 @@ public class DataSender {
     sendWithoutListener(myself, receiver, jsonMessage);
   }
 
-  public static void sendIAmOnline(ChatterPeer chatterPeer, String outboundMessage) {
+  public static void sendOnlineState(ChatterPeer chatterPeer, String outboundMessage) {
     Peer myself = chatterPeer.getMyself();
     ChatterUser chatterUser = chatterPeer.getChatterUser();
     PeerDHT dht = chatterPeer.getDht();

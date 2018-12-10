@@ -69,7 +69,7 @@ public class ChannelAction {
                                               chatterPeer.getChatterUser().getUsername()))
                                   .forEach(chatterUser::addFriend);
                             }
-                            DataSender.sendIAmOnline(
+                            DataSender.sendOnlineState(
                                 chatterPeer, JsonGenerator.generateAddPeers(chatterUser));
                             chatterUser.setOnlineState(true);
                             dht.put(chatterUser.getHash()).data(new Data(chatterUser)).start();

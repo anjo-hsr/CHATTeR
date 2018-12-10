@@ -113,6 +113,7 @@ public class ChatterWebSocketClient extends WebSocketClient {
         break;
       }
       case MessageTypes.SELECT_CHAT: {
+        this.send(ChannelAction.getFriends(myself));
         break;
       }
       case MessageTypes.SEND_CHAT_PEERS: {
