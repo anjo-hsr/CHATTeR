@@ -158,7 +158,7 @@ public class ChatterPeer {
     System.out.println("--Phone booth is ringing...--");
     System.out.println("--Recorder starts playing...--");
     System.out.println(String.format("%s: If you can hear this, you’re alone. The only thing left of me is the sound"
-            + "of my voice. I don’t know if any of us made it. So let me tell you who we were. And how we fought back.",
+            + "of my voice.\nI don’t know if any of us made it. So let me tell you who we were. And how we fought back.",
         chatterUser.getUsername()));
     terminate();
   }
