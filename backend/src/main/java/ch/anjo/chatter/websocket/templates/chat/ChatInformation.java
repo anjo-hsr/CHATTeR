@@ -7,6 +7,7 @@ public class ChatInformation {
 
   public String name;
   public List<String> peers;
+  public List<String> oldPeers;
 
   public String getName() {
     return name;
@@ -14,6 +15,10 @@ public class ChatInformation {
 
   public List<String> getPeers() {
     return peers;
+  }
+
+  public List<String> getOldPeers() {
+    return oldPeers;
   }
 
   @Override

@@ -16,6 +16,7 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
@@ -99,10 +100,12 @@ public class ChatterWebSocketClient extends WebSocketClient {
       }
       case MessageTypes.ADD_CHAT:
       case MessageTypes.CHANGE_CHAT: {
+        List<String> searchPeers = webSocketMessage.chatInformation.peers;
+        if (Objects.nonNull(webSocketMessage.chatInformation.oldPeers)) {
+          searchPeers = webSocketMessage.chatInformation.oldPeers;
+        }
         Set<PeerInformation> peers =
-            webSocketMessage
-                .chatInformation
-                .peers
+            searchPeers
                 .stream()
                 .map(PeerInformation::new)
                 .filter(peer -> !myself.getChatterUser().getUsername().equals(peer.name))

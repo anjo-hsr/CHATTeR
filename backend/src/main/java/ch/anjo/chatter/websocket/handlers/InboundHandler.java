@@ -4,7 +4,11 @@ import ch.anjo.chatter.helpers.MessageTypes;
 import ch.anjo.chatter.websocket.handlers.handlerClasses.Handler;
 import ch.anjo.chatter.websocket.templates.WebSocketMessage;
 import ch.anjo.chatter.websocket.templates.message.MessageInformation;
+import com.google.gson.JsonArray;
 import io.javalin.websocket.WsSession;
+import java.util.List;
+import java.util.Objects;
+import org.jetbrains.annotations.NotNull;
 
 public class InboundHandler {
 
@@ -46,6 +50,11 @@ public class InboundHandler {
       }
       case MessageTypes.ADD_CHAT:
       case MessageTypes.CHANGE_CHAT: {
+        if (handler.getSessionHandler().getFrontendSession().equals(session) && Objects
+            .nonNull(handler.getChatHandler().getChatInformation(webSocketMessage.chatId))) {
+          List<String> oldChatPeers = handler.getChatHandler().getChatInformation(webSocketMessage.chatId).getPeers();
+          jsonMessage = injectOldPeers(jsonMessage, oldChatPeers);
+        }
         handler.getChatHandler().saveChat(webSocketMessage);
         OutboundHandler.sendMessageToSibling(handler, session, jsonMessage);
         break;
@@ -79,6 +88,15 @@ public class InboundHandler {
       }
       default:
     }
+  }
+
+  @NotNull
+  private static String injectOldPeers(String jsonMessage, List<String> oldChatPeers) {
+    JsonArray oldPeerArray = new JsonArray();
+    oldChatPeers.forEach(oldPeerArray::add);
+    String searchString = ",\"peers\":";
+    String injectionString = ",\"oldPeers\":" + oldPeerArray.toString() + searchString;
+    return jsonMessage.replace(searchString, injectionString);
   }
 
   private static void saveMessage(Handler handler, String chatId, MessageInformation message) {
