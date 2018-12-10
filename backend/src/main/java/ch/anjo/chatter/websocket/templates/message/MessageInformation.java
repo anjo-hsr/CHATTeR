@@ -16,18 +16,22 @@ public class MessageInformation {
 
   @Override
   public String toString() {
+    if (java.util.Objects.nonNull(possibleReaders)) {
+      possibleReaders = new ArrayList<>();
+    }
+
     JsonObject stringResponse = new JsonObject();
     JsonArray signers = new JsonArray();
-    JsonArray possibleReaders = new JsonArray();
+    JsonArray possibleReadersJson = new JsonArray();
 
     stringResponse.addProperty("messageId", messageId);
     stringResponse.addProperty("date", date);
     stringResponse.addProperty("author", author);
     stringResponse.addProperty("message", message);
-    this.signedBy.forEach(signers::add);
+    signedBy.forEach(signers::add);
     stringResponse.add("signedBy", signers);
-    this.possibleReaders.forEach(possibleReaders::add);
-    stringResponse.add("possibleReaders", possibleReaders);
+    possibleReaders.forEach(possibleReadersJson::add);
+    stringResponse.add("possibleReaders", possibleReadersJson);
 
     return stringResponse.toString();
   }

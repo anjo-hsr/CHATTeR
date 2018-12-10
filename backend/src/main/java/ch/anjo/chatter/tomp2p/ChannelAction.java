@@ -131,10 +131,12 @@ public class ChannelAction {
                       @Override
                       public void operationComplete(FutureGet future) {
                         Data data = future.data();
-                        if (!data.isEmpty()) {
-                          ChatterUser friend = readUser(data);
-                          if (Objects.nonNull(friend)) {
-                            peerSet.add(friend.getInformation());
+                        if (Objects.nonNull(data)) {
+                          if (!data.isEmpty()) {
+                            ChatterUser friend = readUser(data);
+                            if (Objects.nonNull(friend)) {
+                              peerSet.add(friend.getInformation());
+                            }
                           }
                         }
                       }
