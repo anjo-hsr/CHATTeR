@@ -12,9 +12,31 @@ export default {
     };
   },
 
+  addChatInbound({chatId, chatObject}) {
+    return {
+      type: types.ADD_CHAT_INBOUND,
+      chatId,
+      chatInformation: {
+        name: chatObject.name || chatObject.peers.map(peer => peer.name).toString(),
+        peers: chatObject.peers
+      }
+    };
+  },
+
   changeChat({chatId, chatObject}) {
     return {
       type: types.CHANGE_CHAT,
+      chatId,
+      chatInformation: {
+        name: chatObject.name || chatObject.peers.map(peer => peer.name).toString(),
+        peers: chatObject.peers
+      }
+    };
+  },
+
+  changeChatInbound({chatId, chatObject}) {
+    return {
+      type: types.CHANGE_CHAT_INBOUND,
       chatId,
       chatInformation: {
         name: chatObject.name || chatObject.peers.map(peer => peer.name).toString(),

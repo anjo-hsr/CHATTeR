@@ -15,7 +15,7 @@ export default function webSocketHelper(dispatch) {
     switch (data.type) {
       case actionTypes.ADD_MESSAGE: {
         dispatch(
-          actionMessages.addInboundMessage({
+          actionMessages.addMessageInbound({
             chatId: data.chatId,
             message: {
               date: data.messageInformation.date,
@@ -40,11 +40,11 @@ export default function webSocketHelper(dispatch) {
         break;
       }
       case actionTypes.ADD_CHAT: {
-        dispatch(actionChats.addChat({chatId: data.chatId, chatObject: data.chatInformation}));
+        dispatch(actionChats.addChatInbound({chatId: data.chatId, chatObject: data.chatInformation}));
         break;
       }
       case actionTypes.CHANGE_CHAT: {
-        dispatch(actionChats.changeChat({chatId: data.chatId, chatObject: data.chatInformation}));
+        dispatch(actionChats.changeChatInbound({chatId: data.chatId, chatObject: data.chatInformation}));
         break;
       }
       case actionTypes.ADD_CHATS: {

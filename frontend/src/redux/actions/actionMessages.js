@@ -16,7 +16,7 @@ export default {
     };
   },
 
-  addInboundMessage({chatId, message}) {
+  addMessageInbound({chatId, message}) {
     return {
       type: types.ADD_INBOUND_MESSAGE,
       chatId,

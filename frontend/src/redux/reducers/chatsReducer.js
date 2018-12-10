@@ -3,7 +3,9 @@ import {actionTypes} from '../actions/actions';
 export default function reducer(reduxStore = {}, action) {
   switch (action.type) {
     case actionTypes.ADD_CHAT:
-    case actionTypes.CHANGE_CHAT: {
+    case actionTypes.ADD_CHAT_INBOUND:
+    case actionTypes.CHANGE_CHAT:
+    case actionTypes.CHANGE_CHAT_INBOUND: {
       return Object.assign({}, reduxStore, {[action.chatId]: action.chatInformation});
     }
 
