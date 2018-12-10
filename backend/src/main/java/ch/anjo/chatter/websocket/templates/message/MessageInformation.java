@@ -48,8 +48,7 @@ public class MessageInformation {
     return Objects.equal(messageId, that.messageId)
         && Objects.equal(date, that.date)
         && Objects.equal(author, that.author)
-        && Objects.equal(message, that.message)
-        && Objects.equal(possibleReaders, that.possibleReaders);
+        && Objects.equal(message, that.message);
   }
 
   @Override
