@@ -15,7 +15,7 @@ export default function webSocketHelper(dispatch) {
     switch (data.type) {
       case actionTypes.ADD_MESSAGE: {
         dispatch(
-          actionMessages.addMessage({
+          actionMessages.addInboundMessage({
             chatId: data.chatId,
             message: {
               date: data.messageInformation.date,

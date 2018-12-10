@@ -16,6 +16,20 @@ export default {
     };
   },
 
+  addInboundMessage({chatId, message}) {
+    return {
+      type: types.ADD_INBOUND_MESSAGE,
+      chatId,
+      messageInformation: {
+        ...message,
+        messageId: shajs('sha256')
+          .update(chatId + message.author + new Date(message.date) + message.message)
+          .digest('hex'),
+        signedBy: []
+      }
+    };
+  },
+
   addMessages(messageObject) {
     return {
       type: types.ADD_MESSAGES,
