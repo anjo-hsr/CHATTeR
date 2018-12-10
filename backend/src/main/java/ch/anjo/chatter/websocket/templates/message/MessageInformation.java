@@ -16,7 +16,7 @@ public class MessageInformation {
 
   @Override
   public String toString() {
-    if (java.util.Objects.nonNull(possibleReaders)) {
+    if (java.util.Objects.isNull(possibleReaders)) {
       possibleReaders = new ArrayList<>();
     }
 
