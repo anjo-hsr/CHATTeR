@@ -36,7 +36,7 @@ export default class App extends React.Component {
       this.setState({dotInterval: (this.state.dotInterval + 1) % 4});
     }, 250);
     let webSocketRefreshIntervalId = setInterval(() => {
-      console.log('Retry connection to webSocket');
+      console.log('Retry connecting to webSocket of backend');
       this.setSocket();
     }, numbers.reloadTimer);
     this.setState({titleRefreshIntervalId, webSocketRefreshIntervalId, isSmallWindow: window.innerWidth < 900});
