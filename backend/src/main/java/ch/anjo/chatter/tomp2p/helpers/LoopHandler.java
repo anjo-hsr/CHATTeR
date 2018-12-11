@@ -22,12 +22,12 @@ public class LoopHandler {
   }
 
   public boolean isLoopMessage(WebSocketMessage webSocketMessage) {
-    boolean didALoopOccurred = false;
+    boolean isALoopMessage = false;
     if(Objects.nonNull(webSocketMessage)){
-      didALoopOccurred = lastMessages.keySet().stream().anyMatch(webSocketMessage::equals);
+      isALoopMessage = lastMessages.keySet().stream().anyMatch(webSocketMessage::equals);
     }
     cleanUpMessages();
-    return didALoopOccurred;
+    return isALoopMessage;
   }
 
   private void cleanUpMessages() {
