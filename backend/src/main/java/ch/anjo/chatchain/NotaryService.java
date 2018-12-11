@@ -51,7 +51,7 @@ public class NotaryService {
         () -> {
           try {
             notaryContract.storeMessage(hash).send();
-            System.out.println("Message saged in smartContract.");
+            System.out.println("Message saved in smartContract.");
           } catch (Exception e) {
             if (counter <= 9) {
               tryToStoreMessage(hash, newCounter);
