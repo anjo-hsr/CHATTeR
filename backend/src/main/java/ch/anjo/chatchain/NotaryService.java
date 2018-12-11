@@ -3,6 +3,7 @@ package ch.anjo.chatchain;
 import ch.anjo.chatchain.contract.CHATTeRNotaryContract;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.Hash;
@@ -39,15 +40,38 @@ public class NotaryService {
   public void storeMessage(String messageHash) {
     byte[] hash = Hash.sha256(messageHash.getBytes());
 
+    tryToStoreMessage(hash, 0);
+  }
+
+  private void tryToStoreMessage(byte[] hash, int counter) {
+    int newCounter = counter + 1;
+    waitIfRepeatedTry(counter);
+
     CompletableFuture.runAsync(
         () -> {
           try {
             notaryContract.storeMessage(hash).send();
+            System.out.println("Message saged in smartContract.");
           } catch (Exception e) {
-            e.printStackTrace();
+            if (counter <= 9) {
+              tryToStoreMessage(hash, newCounter);
+            } else {
+              e.printStackTrace();
+            }
           }
         }
     );
+  }
+
+  private void waitIfRepeatedTry(int counter) {
+    if (counter > 1) {
+      System.out.println(String.format("Try to store the message again in 3 Seconds. (%s / 10)", counter));
+      try {
+        TimeUnit.SECONDS.sleep(3);
+      } catch (InterruptedException e) {
+        System.out.println("Problem with sleeping thread.");
+      }
+    }
   }
 
   public CompletableFuture<String> checkMessage(String messageHash) {
