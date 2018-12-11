@@ -200,7 +200,7 @@ public class ChatterWebSocketClient extends WebSocketClient {
 
     chatMembersMap.put(webSocketMessage.chatId, peerSet);
 
-    if (webSocketMessage.waitingMessageId.equals("")) {
+    if (Objects.nonNull(webSocketMessage.waitingMessageId) && webSocketMessage.waitingMessageId.equals("")) {
       System.out.println("Updated peers via Chat update");
     } else {
       System.out.println("Received peers via new WebSocketMessage.");
