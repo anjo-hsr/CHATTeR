@@ -3,7 +3,7 @@ import {actionTypes} from '../actions/actions';
 export default function reducer(reduxStore = {}, action) {
   switch (action.type) {
     case actionTypes.ADD_MESSAGE:
-    case actionTypes.ADD_INBOUND_MESSAGE: {
+    case actionTypes.ADD_MESSAGE_INBOUND: {
       return concatMessages(reduxStore, action.chatId, action.messageInformation);
     }
 
