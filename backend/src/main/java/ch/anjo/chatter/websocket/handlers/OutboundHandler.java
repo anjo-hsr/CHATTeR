@@ -49,10 +49,10 @@ public class OutboundHandler {
   }
 
 
-  static void sendChatPeers(Handler handler, WsSession session, String id, String chatId) {
+  static void sendChatPeers(Handler handler, WsSession session, String waitingMessageId, String chatId) {
     List<String> peerList = handler.getChatHandler().getChatInformation(chatId).getPeers();
 
-    String peerMessage = JsonGenerator.generateSendChatPeers(id, chatId, peerList);
+    String peerMessage = JsonGenerator.generateSendChatPeers(waitingMessageId, chatId, peerList);
 
     session.send(peerMessage);
   }

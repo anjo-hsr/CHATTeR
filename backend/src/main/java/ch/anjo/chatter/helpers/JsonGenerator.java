@@ -102,7 +102,7 @@ public class JsonGenerator {
     JsonObject getChatPeers = new JsonObject();
     getChatPeers.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.GET_CHAT_PEERS);
     getChatPeers.addProperty("chatId", webSocketMessage.chatId);
-    getChatPeers.addProperty("id", waitingMessageId);
+    getChatPeers.addProperty("waitingMessageId", waitingMessageId);
     return getChatPeers.toString();
   }
 
@@ -115,10 +115,10 @@ public class JsonGenerator {
     return getPeer.toString();
   }
 
-  public static String generateSendChatPeers(String id, String chatId, List<String> peerList) {
+  public static String generateSendChatPeers(String waitingMessageId, String chatId, List<String> peerList) {
     JsonObject peerMessage = new JsonObject();
     peerMessage.addProperty(MessageTypes.TYPE_KEYWORD, MessageTypes.SEND_CHAT_PEERS);
-    peerMessage.addProperty("id", id);
+    peerMessage.addProperty("waitingMessageId", waitingMessageId);
     peerMessage.addProperty("chatId", chatId);
 
     JsonArray chatPeers = new JsonArray();

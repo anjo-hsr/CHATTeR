@@ -7,7 +7,6 @@ import com.google.common.base.Objects;
 public class WebSocketMessage {
 
   public String type;
-  public String id;
   public String waitingMessageId;
   public String message;
   public String username;
@@ -41,6 +40,6 @@ public class WebSocketMessage {
   @Override
   public int hashCode() {
     return Objects.hashCode(
-        type, id, message, username, chatId, peers, messageInformation, chatInformation);
+        type, waitingMessageId, message, username, chatId, peers, messageInformation, chatInformation);
   }
 }
