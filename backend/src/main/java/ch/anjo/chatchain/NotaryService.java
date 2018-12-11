@@ -65,9 +65,9 @@ public class NotaryService {
 
   private void waitIfRepeatedTry(int counter) {
     if (counter > 1) {
-      System.out.println(String.format("Try to store the message again in 3 Seconds. (%s / 10)", counter));
+      System.out.println(String.format("Try to store the message again in 10 Seconds.  #%s of 10)", counter));
       try {
-        TimeUnit.SECONDS.sleep(3);
+        TimeUnit.SECONDS.sleep(10);
       } catch (InterruptedException e) {
         System.out.println("Problem with sleeping thread.");
       }
